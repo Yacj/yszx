@@ -2,7 +2,9 @@ import 'nprogress/nprogress.css'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import NProgress from 'nprogress'
+import {Message, MessagePlugin} from 'tdesign-vue-next'
 import { setPageTitle } from '@/utils'
+import { useUserStore } from '@/store/modules/user'
 
 let routes: RouteRecordRaw[] = [
   {
@@ -11,6 +13,14 @@ let routes: RouteRecordRaw[] = [
     component: () => import('@/pages/login.vue'),
     meta: {
       title: '登录',
+    },
+  },
+  {
+    path: '/403',
+    name: '403',
+    component: () => import('@/pages/403.vue'),
+    meta: {
+      title: '暂无权限',
     },
   },
 ]
@@ -33,7 +43,16 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   NProgress.start()
-  next()
+  const userStore = useUserStore()
+  const token = userStore.token
+  if (!token && to.path === '/user') {
+    MessagePlugin.error('请先登录')
+    router.push('/login')
+    next()
+  }
+  else {
+    next()
+  }
 })
 
 router.afterEach((to) => {

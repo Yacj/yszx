@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import BaseHeader from '@/components/BaseHeader/BaseHeader.vue'
+import BaseFooter from '@/components/BaseFooter/BaseFooter.vue'
+import FloatButton from '@/components/FloatButton/FloatButton.vue'
 </script>
 
 <template>
@@ -12,26 +14,26 @@ import BaseHeader from '@/components/BaseHeader/BaseHeader.vue'
         <t-content class="main mt-5">
           <RouterView />
         </t-content>
-        <t-footer>
-          1212
-        </t-footer>
+        <BaseFooter />
       </t-layout>
     </t-layout>
+    <FloatButton />
     <t-back-top
       container=".layout"
       :visible-height="200"
-      style="position: absolute"
+      class="absolute"
       :offset="['24px', '80px']"
+      theme="primary"
     />
   </t-layout>
 </template>
 
 <style scoped lang="scss">
-.test{
-  overflow: auto
-}
 .layout {
   height: calc(100vh - var(--td-comp-size-xxxl));
   overflow-y: scroll;
+}
+:deep(.t-layout__header) {
+  box-shadow: var(--td-shadow-3);
 }
 </style>

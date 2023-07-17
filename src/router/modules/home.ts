@@ -21,6 +21,22 @@ const routes: RouteRecordRaw[] = [
           title: '首页',
         },
       },
+      {
+        path: 'list',
+        name: 'HomeList',
+        component: () => import('@/pages/home/list.vue'),
+        meta: {
+          title: '列表页',
+        },
+      },
+      {
+        path: 'detail',
+        name: 'HomeDetail',
+        component: () => import('@/pages/home/detail.vue'),
+        meta: {
+          title: '详情页',
+        },
+      },
     ],
   },
 ]

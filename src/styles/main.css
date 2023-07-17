@@ -1,7 +1,7 @@
 @import "scroll.css";
 @import "theme.css";
 :root{
-  --td-bg-color-page: var(--td-gray-color-1) !important;
+  --footer-bg: #32333b
 }
 html,
 body,
@@ -27,6 +27,9 @@ a:hover{
 .main{
   transition: all 0.3s ease-in-out;
 }
+.t-dialog{
+  padding: 20px 24px !important;
+}
 #nprogress {
   pointer-events: none;
 }
@@ -41,4 +44,40 @@ a:hover{
 
   width: 100%;
   height: 2px;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* 进入dark模式和退出dark模式时，两个图像的位置顺序正好相反 */
+.dark::view-transition-old(root) {
+  z-index: 1;
+}
+.dark::view-transition-new(root) {
+  z-index: 999;
+}
+
+::view-transition-old(root) {
+  z-index: 999;
+}
+::view-transition-new(root) {
+  z-index: 1;
+}
+/* transition fade-slide */
+.fade-slide-leave-active,
+.fade-slide-enter-active {
+  transition: all 0.3s;
+}
+
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
 }
