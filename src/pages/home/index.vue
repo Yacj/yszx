@@ -55,7 +55,7 @@ const value = ref(1)
       </div>
     </div>
     <div class="hot w-full">
-      <t-card :bordered="false" class="hot-card">
+      <t-card :bordered="false">
         <h4 class="text-2xl font-bold dark:text-white text-center mt-3 hot-title">
           热门分类
         </h4>
@@ -124,27 +124,43 @@ const value = ref(1)
         </t-card>
       </div>
     </div>
-    <t-card>
-      <div class="hot-class container mx-auto mt-3">
+    <t-card class="home-card" :bordered="false">
+      <div class="hot-class container mx-auto">
         <div class="flex-y-center justify-between">
-          <div class="title-left">
+          <div class="title-left flex-center">
             <h3 class="text-2xl font-bold dark:text-white title-before">
               热门课程
             </h3>
-          </div>
-          <div class="other flex-center">
-            <t-tabs v-model="value" class="mr-16" size="large">
+            <t-tabs v-model="value" class="ml-10" size="large">
               <t-tab-panel :value="1" label="学前音乐" />
               <t-tab-panel :value="2" label="小学英语" />
               <t-tab-panel :value="3" label="初中语文" />
             </t-tabs>
+          </div>
+          <div class="other">
             <span>
               查看全部 >
             </span>
           </div>
         </div>
-        <div class="hot-class-list">
-          {{ value }}
+        <div class="hot-class-list flex mt-3">
+          <div class="w-[230px]">
+            <img src="../../assets/img/img-cover.png" alt="">
+          </div>
+          <div class="flex-1 ml-5">
+            <ul class="grid gap-1  grid-cols-1 sm:grid-cols-5 2xl:gap-6">
+              <t-card class="home-full-card" :bordered="false">
+                <template #cover>
+                  <img src="../../assets/img/list-cover.png" alt="" class="h-[152px]">
+                </template>
+                <router-link to="/home/detail">
+                  <div class="desc text-center text-base font-400">
+                    2021年教师资格证面试备考指导
+                  </div>
+                </router-link>
+              </t-card>
+            </ul>
+          </div>
         </div>
       </div>
     </t-card>
@@ -198,6 +214,19 @@ const value = ref(1)
   }
   .t-tabs__bar{
     background-color: transparent !important;
+  }
+}
+:deep(.home-card){
+  border-radius: 0 !important;
+}
+.home-full-card{
+  box-shadow: 0 6px 10px 0 rgba(95,101,105,.15);
+  transition: all .2s;
+  cursor: pointer;
+  &:hover{
+    transform: translateY(-2px);
+    //box-shadow: 0 12px 20px 0 rgba(95,101,105,.15);
+    box-shadow: 0 6px 10px 0 rgba(95,101,105,.3);
   }
 }
 </style>

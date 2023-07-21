@@ -6,7 +6,7 @@ const router = useRouter()
 <template>
   <t-breadcrumb>
     <t-breadcrumb-item
-      v-for="(item, index) in route.matched.filter((item) => !!item.meta?.title)"
+      v-for="(item, index) in route.matched.filter((item, index, self) => !!item.meta?.title && self.findIndex(i => i.path === item.path) === index)"
       :key="index + item.path"
       class="!text-2xl"
     >

@@ -2,13 +2,208 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Vitesse Lite</title>
+  <title>云师在线</title>
+  <link rel="icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+    }
+
+    .loader-main {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background-color: whitesmoke;
+      z-index: 9999999;
+    }
+
+    .loader {
+      width: 50px;
+      height: 50px;
+      margin: 20% auto 40px;
+      position: relative;
+      z-index: 999999;
+      background-color: whitesmoke;
+    }
+
+    .loader:before {
+      content: "";
+      width: 50px;
+      height: 7px;
+      border-radius: 50%;
+      background: #000;
+      opacity: 0.1;
+      position: absolute;
+      top: 59px;
+      left: 0;
+      animation: shadow 0.5s linear infinite;
+    }
+
+    .loader:after {
+      content: "";
+      width: 50px;
+      height: 50px;
+      border-radius: 3px;
+      background-color: #FF5E59FF;
+      position: absolute;
+      top: 0;
+      left: 0;
+      animation: loading 0.5s linear infinite;
+    }
+
+    @-webkit-keyframes loading {
+      17% {
+        border-bottom-right-radius: 3px;
+      }
+
+      25% {
+        transform: translateY(9px) rotate(22.5deg);
+      }
+
+      50% {
+        transform: translateY(18px) scale(1, 0.9) rotate(45deg);
+        border-bottom-right-radius: 40px;
+      }
+
+      75% {
+        transform: translateY(9px) rotate(67.5deg);
+      }
+
+      100% {
+        transform: translateY(0) rotate(90deg);
+      }
+    }
+
+    @keyframes loading {
+      17% {
+        border-bottom-right-radius: 3px;
+      }
+
+      25% {
+        transform: translateY(9px) rotate(22.5deg);
+      }
+
+      50% {
+        transform: translateY(18px) scale(1, 0.9) rotate(45deg);
+        border-bottom-right-radius: 40px;
+      }
+
+      75% {
+        transform: translateY(9px) rotate(67.5deg);
+      }
+
+      100% {
+        transform: translateY(0) rotate(90deg);
+      }
+    }
+
+    @-webkit-keyframes shadow {
+      0%,
+      100% {
+        transform: scale(1, 1);
+      }
+
+      50% {
+        transform: scale(1.2, 1);
+      }
+    }
+
+    @keyframes shadow {
+      0%,
+      100% {
+        transform: scale(1, 1);
+      }
+
+      50% {
+        transform: scale(1.2, 1);
+      }
+    }
+
+    #browser-upgrade {
+      position: absolute;
+      z-index: 10001;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      display: none;
+      user-select: none;
+      color: #736477;
+      background-color: snow;
+    }
+
+    #browser-upgrade .title {
+      margin: 40px 0;
+      text-align: center;
+      font-size: 24px;
+    }
+
+    #browser-upgrade .browsers {
+      text-align: center;
+    }
+
+    #browser-upgrade .browsers .browser {
+      display: inline-block;
+      margin: 0 20px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    #browser-upgrade .browsers .browser .browser-icon {
+      display: block;
+      width: 50px;
+      height: 50px;
+      margin: 0 auto;
+      border: none;
+    }
+
+    #browser-upgrade .browsers .browser .browser-name {
+      text-align: center;
+      margin-top: 10px;
+      padding-bottom: 2px;
+      color: #736477;
+      border-bottom: 1px solid transparent;
+    }
+
+    #browser-upgrade .browsers .browser:hover .browser-name {
+      border-bottom: 1px solid #736477;
+    }
+
+  </style>
 </head>
 <body>
-  <div id="app"></div>
+  <div id="app">
+    <div class="loader-main">
+      <div class="loader"></div>
+      <div style="text-align: center;
+    margin-top: 20px;
+    font-size: 18px;"
+      >网站加载中。。。
+      </div>
+    </div>
+    <div id="browser-upgrade">
+      <div class="title">为了您的体验，推荐使用以下浏览器</div>
+      <div class="browsers">
+        <a href="https://www.microsoft.com/edge" target="_blank" class="browser">
+          <img class="browser-icon" src="/browser_upgrade/edge.png" />
+          <div class="browser-name">Mircosoft Edge</div>
+        </a>
+        <a href="https://www.google.cn/chrome/" target="_blank" class="browser">
+          <img class="browser-icon" src="/browser_upgrade/chrome.png" />
+          <div class="browser-name">Google Chrome</div>
+        </a>
+      </div>
+    </div>
+  </div>
   <noscript>
     <div>Please enable JavaScript to use this application.</div>
   </noscript>
+  <script>
+    if (!!window.ActiveXObject || 'ActiveXObject' in window) {
+      document.getElementById('browser-upgrade').style.display = 'block'
+    }
+  </script>
   <script type="module" src="/src/main.ts"></script>
 </body>
 </html>

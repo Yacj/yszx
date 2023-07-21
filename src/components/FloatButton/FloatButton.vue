@@ -102,10 +102,10 @@ function handleToggleTheme(event: MouseEvent) {
           <img :src="getImageUrl('footer-code.png')" alt="" class="w-30 h-33">
         </template>
       </t-sticky-item>
-      <t-sticky-item label="切换主题">
+      <t-sticky-item :label="appStore.colorScheme === 'dark' ? '明亮主题' : '暗黑主题'">
         <template #icon>
-          <SvgIcon name="tabler:sun" type="iconify" :size="25" />
-          <!--          <SvgIcon name="tabler:moon" type="iconify" :size="25"/> -->
+          <SvgIcon v-if="appStore.colorScheme === 'dark'" name="tabler:sun" type="iconify" :size="25" />
+          <SvgIcon v-else name="tabler:moon" type="iconify" :size="25" />
         </template>
       </t-sticky-item>
     </t-sticky-tool>

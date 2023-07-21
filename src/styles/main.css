@@ -3,6 +3,12 @@
 :root{
   --footer-bg: #32333b
 }
+:root,:root[theme-mode="light"]{
+  --td-bg-color-page: #f5f7fa;
+}
+:root[them-mode="dark"]{
+  --td-bg-color-page: #1e1e1e;
+}
 html,
 body,
 #app {
@@ -35,7 +41,8 @@ a:hover{
 }
 
 #nprogress .bar {
-  @apply bg-blue-700 bg-opacity-75;
+  @apply bg-opacity-75;
+  background: var(--td-brand-color) !important;
   background:repeating-linear-gradient(90deg, var(--td-brand-color) 0, var(--td-brand-color) 50%, var(--td-brand-color) );
   position: fixed;
   z-index: 1031;

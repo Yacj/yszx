@@ -2,7 +2,7 @@ import 'nprogress/nprogress.css'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import NProgress from 'nprogress'
-import {Message, MessagePlugin} from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { setPageTitle } from '@/utils'
 import { useUserStore } from '@/store/modules/user'
 
@@ -21,6 +21,14 @@ let routes: RouteRecordRaw[] = [
     component: () => import('@/pages/403.vue'),
     meta: {
       title: '暂无权限',
+    },
+  },
+  {
+    path: '/test',
+    name: 'Test',
+    component: () => import('@/pages/test.vue'),
+    meta: {
+      title: '测试',
     },
   },
 ]

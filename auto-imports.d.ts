@@ -151,6 +151,7 @@ declare global {
   const useDevicesList: typeof import('@vueuse/core')['useDevicesList']
   const useDisplayMedia: typeof import('@vueuse/core')['useDisplayMedia']
   const useDocumentVisibility: typeof import('@vueuse/core')['useDocumentVisibility']
+  const useDownloadFile: typeof import('./src/composables/useDownloadFile')['useDownloadFile']
   const useDraggable: typeof import('@vueuse/core')['useDraggable']
   const useDropZone: typeof import('@vueuse/core')['useDropZone']
   const useElementBounding: typeof import('@vueuse/core')['useElementBounding']

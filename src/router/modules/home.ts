@@ -24,10 +24,25 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'list',
         name: 'HomeList',
-        component: () => import('@/pages/home/list.vue'),
         meta: {
           title: '列表页',
         },
+        children: [
+          {
+            path: '',
+            name: 'HomeListIndex',
+            component: () => import('@/pages/home/list.vue'),
+            meta: {},
+          },
+          {
+            path: 'detail',
+            name: 'HomeListDetail',
+            component: () => import('@/pages/home/detail.vue'),
+            meta: {
+              title: '详情页',
+            },
+          },
+        ],
       },
       {
         path: 'detail',

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { SearchIcon } from 'tdesign-icons-vue-next'
-import { DialogPlugin, MessagePlugin } from 'tdesign-vue-next'
-import { useUserStore } from '@/store/modules/user'
+import {SearchIcon} from 'tdesign-icons-vue-next'
+import {DialogPlugin, MessagePlugin} from 'tdesign-vue-next'
+import {useUserStore} from '@/store/modules/user'
 
 const searchVal = ref('')
 const menuList = [
@@ -79,18 +79,20 @@ const menuList = [
 ]
 const menuId = ref(menuList[0].id)
 const userStore = useUserStore()
-const { token } = userStore
+const {token} = userStore
 const router = useRouter()
 const route = useRoute()
 
 handleSetMenuId()
 handleSetRouteMatchedTitle()
+
 function handleSetMenuId() {
-  const { query } = route
+  const {query} = route
   if (query.name) {
     menuId.value = Number(menuList.find(item => item.name === query.name)?.id)
   }
 }
+
 function handleSetRouteMatchedTitle() {
   document.title = <string>route.query.name || '首页'
   route.matched.map((item) => {
@@ -101,9 +103,10 @@ function handleSetRouteMatchedTitle() {
     return item
   })
 }
+
 function handleNav(path: string, id: number) {
   router.push(path)
-  if(id === 0){
+  if (id === 0) {
     menuId.value = id
   }
 }
@@ -121,21 +124,24 @@ function handleLogout() {
   })
 }
 
+
 onBeforeRouteUpdate(async (to, from) => {
-  if(to.path === '/home'){
+  if (to.path === '/home') {
     menuId.value = 1
-  }else{
+  } else {
     menuId.value = Number(menuList.find(item => item.id === +to.query.id)?.id)
   }
   to.meta.title = to.query.name || '首页'
   to.matched.map((item) => {
     if (item.path === to.path) {
+      console.log(to)
       item.meta.title = to.query.name || '首页'
       return item
     }
     return item
   })
 })
+
 function handleNavSearch() {
   console.log('12')
 }
@@ -160,10 +166,10 @@ function handleNavSearch() {
       </t-submenu>
     </template>
     <t-input-adornment>
-      <t-input v-model="searchVal" placeholder="请输入关键词搜索" class="ml-12 !w-60" @enter="handleNavSearch" />
+      <t-input v-model="searchVal" placeholder="请输入关键词搜索" class="ml-12 !w-60" @enter="handleNavSearch"/>
       <template #append>
         <t-button type="submit" @click="handleNavSearch">
-          <SearchIcon :style="{ cursor: 'pointer' }" />
+          <SearchIcon :style="{ cursor: 'pointer' }"/>
         </t-button>
       </template>
     </t-input-adornment>
@@ -173,7 +179,7 @@ function handleNavSearch() {
         <router-link to="/login">
           登录
         </router-link>
-        <t-divider layout="vertical" />
+        <t-divider layout="vertical"/>
         <router-link to="login">
           注册
         </router-link>
@@ -183,24 +189,24 @@ function handleNavSearch() {
           <template #dropdown>
             <t-dropdown-menu>
               <t-dropdown-item class="user-dropdown-container-item mb-2" @click="handleNav('/user',0)">
-                <t-icon name="user-circle" />
+                <t-icon name="user-circle"/>
                 个人中心
               </t-dropdown-item>
               <t-dropdown-item class="user-dropdown-container-item" @click="handleLogout">
-                <t-icon name="poweroff" />
+                <t-icon name="poweroff"/>
                 退出登录
               </t-dropdown-item>
             </t-dropdown-menu>
           </template>
           <t-button class="header-user-btn" theme="default" variant="text">
             <template #icon>
-              <t-icon class="header-user-avatar" name="user-circle" />
+              <t-icon class="header-user-avatar" name="user-circle"/>
             </template>
             <div class="header-user-account">
               {{ token }}
             </div>
             <template #suffix>
-              <t-icon name="chevron-down" />
+              <t-icon name="chevron-down"/>
             </template>
           </t-button>
         </t-dropdown>

@@ -40,6 +40,7 @@ declare module 'vue' {
     TInputAdornment: typeof import('tdesign-vue-next')['InputAdornment']
     TLayout: typeof import('tdesign-vue-next')['Layout']
     TMenuItem: typeof import('tdesign-vue-next')['MenuItem']
+    TPagination: typeof import('tdesign-vue-next')['Pagination']
     TSelect: typeof import('tdesign-vue-next')['Select']
     TSpace: typeof import('tdesign-vue-next')['Space']
     TStickyItem: typeof import('tdesign-vue-next')['StickyItem']
@@ -49,5 +50,6 @@ declare module 'vue' {
     TSwiperItem: typeof import('tdesign-vue-next')['SwiperItem']
     TTabPanel: typeof import('tdesign-vue-next')['TabPanel']
     TTabs: typeof import('tdesign-vue-next')['Tabs']
+    TUpload: typeof import('tdesign-vue-next')['Upload']
   }
 }
