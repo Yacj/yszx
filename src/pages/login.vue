@@ -128,8 +128,9 @@ function onReset() {
               >
                 <t-form-item name="agencyId">
                   <t-select
-                    v-model="formData.agencyId" clearable p
-                    laceholder="请选择机构"
+                    v-model="formData.agencyId"
+                    clearable
+                    placeholder="请选择机构"
                     size="large"
                     :options="selectData"
                     :keys="{
@@ -169,7 +170,7 @@ function onReset() {
                   </t-input-adornment>
                 </t-form-item>
                 <t-form-item>
-                  <t-button theme="primary" type="submit" block :disabled="isDisabled">
+                  <t-button theme="primary" type="submit" block :disabled="isDisabled" size="large">
                     登录
                   </t-button>
                 </t-form-item>

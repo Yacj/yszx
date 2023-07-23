@@ -16,6 +16,7 @@ declare module 'vue' {
     Result: typeof import('./src/components/Result/Result.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SkeletonView: typeof import('./src/components/SkeletonView/SkeletonView.vue')['default']
     SvgIcon: typeof import('./src/components/SvgIcon/SvgIcon.vue')['default']
     TBackTop: typeof import('tdesign-vue-next')['BackTop']
     TBreadcrumb: typeof import('tdesign-vue-next')['Breadcrumb']

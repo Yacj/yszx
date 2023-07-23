@@ -1,4 +1,14 @@
 /**
+ * @description 判断是否是数组
+ * @param val - 要检查的值
+ * @returns {boolean} - true/false
+ * @example
+ * isArray([]) // true
+ */
+export function isArray(val: unknown): boolean {
+  return Array.isArray(val)
+}
+/**
  * @description 判断是否是空数组
  * @param arr - 要检查的数组
  * @return {boolean} - true/false
