@@ -16,7 +16,6 @@ declare module 'vue' {
     Result: typeof import('./src/components/Result/Result.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    SkeletonView: typeof import('./src/components/SkeletonView/SkeletonView.vue')['default']
     SvgIcon: typeof import('./src/components/SvgIcon/SvgIcon.vue')['default']
     TBackTop: typeof import('tdesign-vue-next')['BackTop']
     TBreadcrumb: typeof import('tdesign-vue-next')['Breadcrumb']
@@ -30,8 +29,6 @@ declare module 'vue' {
     TDropdownItem: typeof import('tdesign-vue-next')['DropdownItem']
     TDropdownMenu: typeof import('tdesign-vue-next')['DropdownMenu']
     TFooter: typeof import('tdesign-vue-next')['Footer']
-    TForm: typeof import('tdesign-vue-next')['Form']
-    TFormItem: typeof import('tdesign-vue-next')['FormItem']
     THeader: typeof import('tdesign-vue-next')['Header']
     THeadMenu: typeof import('tdesign-vue-next')['HeadMenu']
     TIcon: typeof import('tdesign-vue-next')['Icon']
@@ -42,7 +39,6 @@ declare module 'vue' {
     TLayout: typeof import('tdesign-vue-next')['Layout']
     TMenuItem: typeof import('tdesign-vue-next')['MenuItem']
     TPagination: typeof import('tdesign-vue-next')['Pagination']
-    TSelect: typeof import('tdesign-vue-next')['Select']
     TSpace: typeof import('tdesign-vue-next')['Space']
     TStickyItem: typeof import('tdesign-vue-next')['StickyItem']
     TStickyTool: typeof import('tdesign-vue-next')['StickyTool']
@@ -51,6 +47,5 @@ declare module 'vue' {
     TSwiperItem: typeof import('tdesign-vue-next')['SwiperItem']
     TTabPanel: typeof import('tdesign-vue-next')['TabPanel']
     TTabs: typeof import('tdesign-vue-next')['Tabs']
-    TUpload: typeof import('tdesign-vue-next')['Upload']
   }
 }

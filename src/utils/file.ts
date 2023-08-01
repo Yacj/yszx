@@ -31,7 +31,6 @@ export function getFileBase64(file: File, cb: (base64: ArrayBuffer | string) => 
   reader.onerror = function (): void {
     console.error('Read file fail.')
   }
-  console.log(file)
   reader.readAsDataURL(file)
 }
 
