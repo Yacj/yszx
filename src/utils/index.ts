@@ -7,7 +7,6 @@ export function getImageUrl(name: string) {
   return `${path}/${name}`
 }
 
-
 /**
  * @description 生成uuid
  * @return {string} uuid

@@ -134,7 +134,6 @@ onBeforeRouteUpdate(async (to, from) => {
   to.meta.title = to.query.name || '首页'
   to.matched.map((item) => {
     if (item.path === to.path) {
-      console.log(to)
       item.meta.title = to.query.name || '首页'
       return item
     }

@@ -1,20 +1,21 @@
 <script setup lang="ts">
+import type { UploadFile } from 'tdesign-vue-next'
 import { isObjectEmpty } from '@/utils/is'
 
 const files = ref([{
   name: 'avatar1.jpg',
-  url: 'https://tdesign.gtimg.com/site/avatar.jpg'
+  url: 'https://tdesign.gtimg.com/site/avatar.jpg',
 }, {
   name: 'avatar2.jpg',
-  url: 'https://avatars.githubusercontent.com/u/11605702?v=4'
+  url: 'https://avatars.githubusercontent.com/u/11605702?v=4',
 }])
 const uploadRef = ref(null)
-function requestUpload(file) {
+function requestUpload(file: UploadFile) {
   console.log(file)
   return true
 }
 
-function requestMethod(file) {
+function requestMethod(file: UploadFile) {
   console.log(file)
 }
 function testUpload() {
@@ -38,7 +39,7 @@ console.log(disabled.value)
       accept="image/*"
       multiple
     />
-    <t-button :disabled="disabled" @click="testUpload" size="large">
+    <t-button :disabled="disabled" size="large" @click="testUpload">
       上传
     </t-button>
   </div>

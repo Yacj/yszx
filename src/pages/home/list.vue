@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import {fileDownload} from "@/utils/file";
 import { DownloadIcon, HeartFilledIcon, HeartIcon } from 'tdesign-icons-vue-next'
+import type { PageInfo } from 'tdesign-vue-next'
 import { MessagePlugin } from 'tdesign-vue-next'
+import { fileDownload } from '@/utils/file'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 
 const list = ref([
@@ -370,10 +371,7 @@ function handleClickCollect(isCollect: boolean, index: number) {
   MessagePlugin.success(isCollect ? '取消收藏成功' : '收藏成功')
   list.value[index].isCollect = !isCollect
 }
-function pageChange({
-  current,
-  pageSize,
-}) {
+function pageChange({ current, pageSize }: PageInfo) {
   pagination.value = {
     current,
     pageSize,

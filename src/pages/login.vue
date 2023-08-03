@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { DesktopIcon, ForkIcon, LockOnIcon, SecuredIcon } from 'tdesign-icons-vue-next'
+import type { SubmitContext } from 'tdesign-vue-next'
 import { MessagePlugin } from 'tdesign-vue-next'
+import { awaitTo } from '@/utils'
 import BaseFooter from '@/components/BaseFooter/BaseFooter.vue'
 import FloatButton from '@/components/FloatButton/FloatButton.vue'
 import Captcha from '@/components/Captcha/Captcha.vue'
@@ -76,15 +78,15 @@ const selectData = ref(
   ],
 )
 const router = useRouter()
-async function onSubmit({ validateResult, firstError }) {
+async function onSubmit({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
-    await userStore.login(formData)
-    try {
+    const [err, res] = await awaitTo(userStore.login(formData))
+    if (err) {
+      MessagePlugin.error('登录失败')
+    }
+    else {
       MessagePlugin.success('登录成功')
       router.push({ path: '/home' })
-    }
-    catch (e) {
-      MessagePlugin.error('登录失败')
     }
   }
   else {
@@ -133,6 +135,7 @@ function onReset() {
                     placeholder="请选择机构"
                     size="large"
                     :options="selectData"
+                    filterable
                     :keys="{
                       label: 'name',
                       value: 'id',
