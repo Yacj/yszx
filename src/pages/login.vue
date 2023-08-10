@@ -26,6 +26,7 @@ const rules = {
   ],
   agencyId: [
     { required: true, message: '请选择机构', trigger: 'blur' },
+    {required: true, message: '请选择机构', trigger: 'change'}
   ],
   captcha: [
     { required: true, message: '请输入验证码', trigger: 'blur' },

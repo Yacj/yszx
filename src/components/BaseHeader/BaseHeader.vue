@@ -77,14 +77,20 @@ const menuList = [
     children: [],
   },
 ]
-const menuId = ref(menuList[0].id)
+
 const userStore = useUserStore()
 const {token} = userStore
 const router = useRouter()
 const route = useRoute()
+const menuId = ref<Number>(0)
 
-handleSetMenuId()
-handleSetRouteMatchedTitle()
+if (route.path === '/home') {
+  menuId.value = 1
+} else {
+  menuId.value = Number(menuList.find(item => item.id === Number(route.query.id))?.id)
+}
+// handleSetMenuId()
+// handleSetRouteMatchedTitle()
 
 function handleSetMenuId() {
   const {query} = route
@@ -106,9 +112,7 @@ function handleSetRouteMatchedTitle() {
 
 function handleNav(path: string, id: number) {
   router.push(path)
-  if (id === 0) {
-    menuId.value = id
-  }
+  menuId.value = id
 }
 
 function handleLogout() {
@@ -124,22 +128,25 @@ function handleLogout() {
   })
 }
 
-
-onBeforeRouteUpdate(async (to, from) => {
-  if (to.path === '/home') {
-    menuId.value = 1
-  } else {
-    menuId.value = Number(menuList.find(item => item.id === +to.query.id)?.id)
-  }
-  to.meta.title = to.query.name || '首页'
-  to.matched.map((item) => {
-    if (item.path === to.path) {
-      item.meta.title = to.query.name || '首页'
-      return item
-    }
-    return item
-  })
+watch(() => route.path, () => {
+  console.log('route.path', route)
+  menuId.value = Number(menuList.find(item => item.path === route.path)?.id)
 })
+// onBeforeRouteUpdate(async (to, from) => {
+//   if (to.path === '/home') {
+//     menuId.value = 1
+//   } else {
+//     menuId.value = Number(menuList.find(item => item.id === +to.query.id)?.id)
+//   }
+//   to.meta.title = to.query.name || '首页'
+//   to.matched.map((item) => {
+//     if (item.path === to.path) {
+//       item.meta.title = to.query.name || '首页'
+//       return item
+//     }
+//     return item
+//   })
+// })
 
 function handleNavSearch() {
   console.log('12')
@@ -153,8 +160,8 @@ function handleNavSearch() {
     </template>
     <template v-for="item in menuList" :key="item.id">
       <t-menu-item
-        v-if="item.children.length === 0" :value="item.id"
-        @click="handleNav(`${item.path === '/home' ? `${item.path}` : `${item.path}?name=${item.name}&id=${item.id}`}`, item.id)"
+          v-if="item.children.length === 0" :value="item.id"
+          @click="handleNav(`${item.path === '/home' ? `${item.path}` : `${item.path}?name=${item.name}&id=${item.id}`}`, item.id)"
       >
         {{ item.name }}
       </t-menu-item>
@@ -165,7 +172,8 @@ function handleNavSearch() {
       </t-submenu>
     </template>
     <t-input-adornment>
-      <t-input v-model="searchVal" placeholder="请输入关键词搜索" class="ml-12 !w-60" @enter="handleNavSearch"/>
+      <t-input v-model="searchVal" placeholder="请输入关键词搜索" class="ml-12 !w-60" @enter="handleNavSearch"
+               size="medium"/>
       <template #append>
         <t-button type="submit" @click="handleNavSearch">
           <SearchIcon :style="{ cursor: 'pointer' }"/>
@@ -187,7 +195,7 @@ function handleNavSearch() {
         <t-dropdown :min-column-width="120" trigger="click">
           <template #dropdown>
             <t-dropdown-menu>
-              <t-dropdown-item class="user-dropdown-container-item mb-2" @click="handleNav('/user',0)">
+              <t-dropdown-item class="user-dropdown-container-item mb-2" @click="handleNav('/user/recent',0)">
                 <t-icon name="user-circle"/>
                 个人中心
               </t-dropdown-item>
@@ -215,6 +223,10 @@ function handleNavSearch() {
 </template>
 
 <style scoped lang="scss">
+:global(.t-menu__popup-wrapper) {
+  width: 100px;
+}
+
 :deep(.t-head-menu__inner) {
   height: 75px;
   padding: 0 var(--td-comp-margin-xxxxl);
