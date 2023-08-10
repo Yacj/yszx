@@ -1,24 +1,47 @@
 <script setup lang="ts">
-import {DownloadIcon, FullscreenIcon} from 'tdesign-icons-vue-next'
+import { DownloadIcon, FullscreenIcon } from 'tdesign-icons-vue-next'
+import { fileTypeEnum } from '@/utils/enums'
 
 const fileRef = ref<HTMLElement | null>(null)
-const fileTypeList: [] = ['word', 'pdf', 'img', 'video', 'html']
 const { toggle } = useFullscreen(fileRef)
+//*
+// 定义一个enum类型
+// 比如 word:['docx','doc']
+// 返回 word
+// */
+function getFileType(type: string) {
+  const typeName = type.split('.')[1]
+  return Object.keys(fileTypeEnum).find(key => fileTypeEnum[key].includes(typeName))
+}
+const typeName = 'test.jpg'
+console.log(getFileType('.doc'))
 </script>
 
 <template>
-  <div class="content-detail max-w-screen-xl mx-auto mt-8">
-    <Breadcrumb />
+  <div class="content-detail container mx-auto mt-8">
     <div class="flex mt-6 mb-3 preview">
       <t-card :bordered="false" title="资源预览" class="mr-3 card-title">
         <div
-          class="h-180 w-240"
+          class="h-180 w-295 overflow-y-scroll relative"
         >
           <embed
+            v-if="getFileType(typeName) === 'pdf' "
             ref="fileRef"
             src="https://wlapi.jqweike.cn/pdfRead/web/viewer.html?file=http://wlapi.jqweike.cn/\wlxt_Data\WAK\GZ\FL19\RJGZ020101\01\wlxtRJGZSX20211024000049.pdf"
             class="wh-full"
           >
+          <div v-if="getFileType(typeName) === 'img'" ref="fileRef" class="img">
+            <t-space direction=vertical>
+              <t-image
+                src="https://tdesign.gtimg.com/demo/demo-image-1.png"
+                fit="cover"
+              />
+              <t-image
+                src="https://tdesign.gtimg.com/demo/demo-image-1.png"
+                fit="cover"
+              />
+            </t-space>
+          </div>
         </div>
         <template #actions>
           <div class="space-x-3">
@@ -36,7 +59,7 @@ const { toggle } = useFullscreen(fileRef)
             </t-button>
             <t-button variant="outline">
               <template #icon>
-                <DownloadIcon  />
+                <DownloadIcon />
               </template>
               点击下载
             </t-button>

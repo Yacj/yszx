@@ -1,18 +1,18 @@
 <script setup lang="ts">
 interface Props {
-  identifyCode: string
-  fontSizeMin: number
-  fontSizeMax: number
-  backgroundColorMin: number
-  backgroundColorMax: number
-  colorMin: number
-  colorMax: number
-  lineColorMin: number
-  lineColorMax: number
-  dotColorMin: number
-  dotColorMax: number
-  contentWidth: number
-  contentHeight: number
+  identifyCode?: string
+  fontSizeMin?: number
+  fontSizeMax?: number
+  backgroundColorMin?: number
+  backgroundColorMax?: number
+  colorMin?: number
+  colorMax?: number
+  lineColorMin?: number
+  lineColorMax?: number
+  dotColorMin?: number
+  dotColorMax?: number
+  contentWidth?: number
+  contentHeight?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {

@@ -7,10 +7,10 @@ import ResultMaintenanceIcon from '@/assets/icons/assets-result-maintenance.svg'
 import ResultWifiIcon from '@/assets/icons/assets-result-wifi.svg'
 
 interface Props {
-  bgUrl: string
-  title: string
-  tip: string
-  type: string
+  bgUrl?: string
+  title?: string
+  tip?: string
+  type?: string
 }
 const props = withDefaults(defineProps<Props>(), {
   bgUrl: '',

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 interface Props {
   content: string
-  width: number
-  duration: number
+  width?: number
+  duration?: number
 }
 const props = withDefaults(defineProps<Props>(), {
   content: '',

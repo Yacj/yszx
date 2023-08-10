@@ -3,7 +3,6 @@ import { DownloadIcon, HeartFilledIcon, HeartIcon } from 'tdesign-icons-vue-next
 import type { PageInfo } from 'tdesign-vue-next'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { fileDownload } from '@/utils/file'
-import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 
 const list = ref([
   {
@@ -451,12 +450,22 @@ function handleDownload() {
         </t-card>
       </div>
     </div>
-    <t-pagination class="mt-6" :total="total" :page-size="pagination.pageSize" :current="pagination.current" @change="pageChange" />
+    <t-card :bordered="false" class="mt-5">
+      <t-pagination
+        class="mt-6"
+        show-jumper
+        show-first-and-last-page-btn
+        :total-content="false"
+        :total="total"
+        :page-size="pagination.pageSize"
+        :current="pagination.current"
+        @change="pageChange"
+      />
+    </t-card>
   </div>
 </template>
 
 <style scoped lang="scss">
-
 .collect-active{
   color: var(--brand-main);
 }

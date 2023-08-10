@@ -64,7 +64,12 @@ router.beforeEach((to, from, next) => {
 })
 
 router.afterEach((to) => {
-  setPageTitle(to.meta.title ?? '')
+  if (to.path === '/home/list') {
+    setPageTitle(to.query.name || '列表页')
+  }
+  else {
+    setPageTitle(to.meta.title ?? '')
+  }
   NProgress.done()
 })
 

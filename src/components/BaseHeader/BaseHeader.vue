@@ -2,6 +2,7 @@
 import {SearchIcon} from 'tdesign-icons-vue-next'
 import {DialogPlugin, MessagePlugin} from 'tdesign-vue-next'
 import {useUserStore} from '@/store/modules/user'
+import {UserCircleIcon, PoweroffIcon, ChevronDownIcon} from 'tdesign-icons-vue-next'
 
 const searchVal = ref('')
 const menuList = [
@@ -87,7 +88,7 @@ const menuId = ref<Number>(0)
 if (route.path === '/home') {
   menuId.value = 1
 } else {
-  menuId.value = Number(menuList.find(item => item.id === Number(route.query.id))?.id)
+  menuId.value = getMenuId()
 }
 // handleSetMenuId()
 // handleSetRouteMatchedTitle()
@@ -129,8 +130,7 @@ function handleLogout() {
 }
 
 watch(() => route.path, () => {
-  console.log('route.path', route)
-  menuId.value = Number(menuList.find(item => item.path === route.path)?.id)
+  menuId.value = route.path === '/home' ? 1 : getMenuId()
 })
 // onBeforeRouteUpdate(async (to, from) => {
 //   if (to.path === '/home') {
@@ -151,6 +151,10 @@ watch(() => route.path, () => {
 function handleNavSearch() {
   console.log('12')
 }
+
+function getMenuId() {
+  return Number(menuList.find(item => item.id === Number(route.query.id))?.id)
+}
 </script>
 
 <template>
@@ -160,8 +164,8 @@ function handleNavSearch() {
     </template>
     <template v-for="item in menuList" :key="item.id">
       <t-menu-item
-          v-if="item.children.length === 0" :value="item.id"
-          @click="handleNav(`${item.path === '/home' ? `${item.path}` : `${item.path}?name=${item.name}&id=${item.id}`}`, item.id)"
+        v-if="item.children.length === 0" :value="item.id"
+        @click="handleNav(`${item.path === '/home' ? `${item.path}` : `${item.path}?name=${item.name}&id=${item.id}`}`, item.id)"
       >
         {{ item.name }}
       </t-menu-item>
@@ -196,24 +200,23 @@ function handleNavSearch() {
           <template #dropdown>
             <t-dropdown-menu>
               <t-dropdown-item class="user-dropdown-container-item mb-2" @click="handleNav('/user/recent',0)">
-                <t-icon name="user-circle"/>
+                <UserCircleIcon/>
                 个人中心
               </t-dropdown-item>
               <t-dropdown-item class="user-dropdown-container-item" @click="handleLogout">
-                <t-icon name="poweroff"/>
+                <PoweroffIcon/>
                 退出登录
               </t-dropdown-item>
             </t-dropdown-menu>
           </template>
-          <t-button class="header-user-btn" theme="default" variant="text">
-            <template #icon>
-              <t-icon class="header-user-avatar" name="user-circle"/>
-            </template>
+          <t-button class="header-user-btn" theme="default" variant="text" size="large">
             <div class="header-user-account">
+              <t-avatar size="medium"> W </t-avatar>
+
               {{ token }}
             </div>
             <template #suffix>
-              <t-icon name="chevron-down"/>
+              <ChevronDownIcon/>
             </template>
           </t-button>
         </t-dropdown>
