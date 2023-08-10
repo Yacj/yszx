@@ -135,7 +135,7 @@ export const reg = {
   /**
    * 校验英文名 每一个单词首字母都是大写
    */
-  ename: /^[A-Z][a-z]*(\s[A-Z][a-z]*)*$/,
+  eName: /^[A-Z][a-z]*(\s[A-Z][a-z]*)*$/,
 
   /**
    * 校验IP地址

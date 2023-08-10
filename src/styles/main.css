@@ -36,16 +36,20 @@ a:hover {
 .main {
   transition: all 0.3s ease-in-out;
 }
+
 .max-w-screen-1430{
   max-width: 1430px;
 }
+
 .t-dialog {
   padding: 20px 24px !important;
 }
+
 .card-title .t-card__title{
   font: var(--td-font-title-large);
   font-weight: 400;
 }
+
 #nprogress {
   pointer-events: none;
 }
