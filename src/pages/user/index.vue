@@ -5,36 +5,87 @@ function requestUpload(file) {
   return false
 }
 
-function requestMethod(file) {
-  console.log(file)
-  return new Promise((resolve) => {
-    resolve({
-      status: 'success',
-      response: {
-        files: [
-          { name: 'avatar1.jpg', url: 'https://tdesign.gtimg.com/site/avatar.jpg' },
-          { name: 'avatar2.jpg', url: 'https://avatars.githubusercontent.com/u/11605702?v=4' },
-        ],
-      },
-    });
-  });
+const route = useRoute()
+const userMenuList = ref([
+  {
+    name: '最近浏览',
+    path: '/user/recent',
+    id: 1,
+  },
+  {
+    name: '我的收藏',
+    path: '/user/collection',
+    id: 2,
+  },
+  {
+    name: '我的考试',
+    path: '/user/exam',
+    id: 3,
+  },
+  {
+    name: '个人信息',
+    path: '/user/info',
+    id: 4,
+  },
+  {
+    name: '安全设置',
+    path: '/user/safe',
+    id: 5,
+  },
+])
+const userMenuId = ref(userMenuList.value.find(item => item.path === route.path)?.id)
+const router = useRouter()
+function handleMenuClick(path: any, id) {
+  router.push(path)
+  userMenuId.value = id
 }
 </script>
 
 <template>
-  <div class="container mx-auto">
-    <t-upload
-      v-model="files"
-      placeholder="支持批量上传图片文件"
-      theme="image"
-      :before-upload="requestUpload"
-      accept="image/*"
-      multiple
-      :auto-upload="false"
-    />
+  <div class="max-w-screen-xl mx-auto my-5">
+    <t-breadcrumb>
+      <t-breadcrumb-item to="/">
+        首页
+      </t-breadcrumb-item>
+      <t-breadcrumb-item>个人中心</t-breadcrumb-item>
+      <t-breadcrumb-item>
+        {{ userMenuList.find(item => item.id === userMenuId)?.name }}
+      </t-breadcrumb-item>
+    </t-breadcrumb>
+    <t-row :gutter="[24, 24]" class="mt-5">
+      <t-col :flex="1" class="user-menu">
+        <t-card :bordered="false">
+          <div class="user-menu-header mt-3 flex-center flex-col">
+            <t-avatar size="100px">
+              W
+            </t-avatar>
+            <div class="user-menu-header-info mt-2">
+              <div class="text-xl">
+                王老师
+              </div>
+            </div>
+          </div>
+          <t-menu :value="userMenuId">
+            <t-menu-item v-for="item in userMenuList" :key="item.id" :value="item.id" @click="handleMenuClick(item.path, item.id)">
+              {{ item.name }}
+            </t-menu-item>
+          </t-menu>
+        </t-card>
+      </t-col>
+      <t-col :flex="6">
+        <router-view />
+      </t-col>
+    </t-row>
   </div>
 </template>
 
-<style scoped>
-
+<style scoped lang="scss">
+:deep(.user-menu){
+  .t-card__body{
+    padding: 5px 0;
+  }
+  .t-menu__item{
+    font-size: 15px;
+  }
+}
 </style>

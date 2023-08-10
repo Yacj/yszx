@@ -6,11 +6,17 @@ import ResultIeIcon from '@/assets/icons/assets-result-ie.svg'
 import ResultMaintenanceIcon from '@/assets/icons/assets-result-maintenance.svg'
 import ResultWifiIcon from '@/assets/icons/assets-result-wifi.svg'
 
-const props = defineProps({
-  bgUrl: String,
-  title: String,
-  tip: String,
-  type: String,
+interface Props {
+  bgUrl: string
+  title: string
+  tip: string
+  type: string
+}
+const props = withDefaults(defineProps<Props>(), {
+  bgUrl: '',
+  title: '',
+  tip: '',
+  type: '403',
 })
 
 const dynamicComponent = computed(() => {
@@ -91,6 +97,7 @@ const dynamicComponent = computed(() => {
     margin-top: var(--td-comp-margin-l);
     color: var(--td-text-color-primary);
     font: var(--td-font-title-large);
+    letter-spacing: 1px;
   }
 
   &-tip {

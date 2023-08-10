@@ -1,57 +1,34 @@
 <script setup lang="ts">
-const props = defineProps({
-  identifyCode: {
-    type: String,
-    default: '1234',
-  },
-  fontSizeMin: {
-    type: Number,
-    default: 20,
-  },
-  fontSizeMax: {
-    type: Number,
-    default: 40,
-  },
-  backgroundColorMin: {
-    type: Number,
-    default: 180,
-  },
-  backgroundColorMax: {
-    type: Number,
-    default: 240,
-  },
-  colorMin: {
-    type: Number,
-    default: 50,
-  },
-  colorMax: {
-    type: Number,
-    default: 160,
-  },
-  lineColorMin: {
-    type: Number,
-    default: 40,
-  },
-  lineColorMax: {
-    type: Number,
-    default: 180,
-  },
-  dotColorMin: {
-    type: Number,
-    default: 0,
-  },
-  dotColorMax: {
-    type: Number,
-    default: 255,
-  },
-  contentWidth: {
-    type: Number,
-    default: 101,
-  },
-  contentHeight: {
-    type: Number,
-    default: 43,
-  },
+interface Props {
+  identifyCode: string
+  fontSizeMin: number
+  fontSizeMax: number
+  backgroundColorMin: number
+  backgroundColorMax: number
+  colorMin: number
+  colorMax: number
+  lineColorMin: number
+  lineColorMax: number
+  dotColorMin: number
+  dotColorMax: number
+  contentWidth: number
+  contentHeight: number
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  identifyCode: '1234',
+  fontSizeMin: 20,
+  fontSizeMax: 30,
+  backgroundColorMin: 180,
+  backgroundColorMax: 240,
+  colorMin: 50,
+  colorMax: 160,
+  lineColorMin: 40,
+  lineColorMax: 180,
+  dotColorMin: 0,
+  dotColorMax: 255,
+  contentWidth: 100,
+  contentHeight: 40,
 })
 
 // 生成一个随机数

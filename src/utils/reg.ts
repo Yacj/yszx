@@ -165,11 +165,11 @@ export const reg = {
 
 /**
  * @description: 校验
- * @param key
- * @param value
- * @return {*}
+ * @param key - reg中的key
+ * @param value - 需要校验的值
+ * @return {*} - boolean
  * @example:
- * validate('chinese10', '张三')
+ *  validate('nickname', '张三')
  */
 export function validate(key: keyof typeof reg, value: string): boolean {
   return new RegExp(reg[`${key}`]).test(value)

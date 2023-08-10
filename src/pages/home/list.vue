@@ -367,6 +367,14 @@ const pagination = ref({
   current: 1,
   pageSize: 12,
 })
+onMounted(() => {
+  nextTick(() => {
+    const scrollToTop = (element: any): void => {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+    scrollToTop(document.querySelector('.home-list'))
+  })
+})
 function handleClickCollect(isCollect: boolean, index: number) {
   MessagePlugin.success(isCollect ? '取消收藏成功' : '收藏成功')
   list.value[index].isCollect = !isCollect
@@ -384,8 +392,7 @@ function handleDownload() {
 </script>
 
 <template>
-  <div class="home-list container mx-auto my-7">
-    <Breadcrumb />
+  <div class="home-list max-w-screen-1430 mx-auto my-7">
     <div class="list mt-6 space-y-3">
       <t-card :bordered="false">
         <div class="space-x-6 flex-y-center text-sm">
@@ -449,6 +456,7 @@ function handleDownload() {
 </template>
 
 <style scoped lang="scss">
+
 .collect-active{
   color: var(--brand-main);
 }

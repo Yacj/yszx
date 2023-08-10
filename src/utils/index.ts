@@ -49,7 +49,7 @@ export function arrayLast<T>(array: T[]): T | undefined {
 }
 
 /**
- * @description 将promise的错误转换为数组
+ * @description 捕捉promise错误
  * @param {Promise<T>} promise - promise对象
  * @param {object} errorExt - 额外的错误信息
  * @return {Promise<[U, undefined] | [null, T]>}
@@ -61,7 +61,7 @@ export function arrayLast<T>(array: T[]): T | undefined {
  *  }
  *  console.log(res)
  */
-export function awaitTo<T, U = Error>(
+export async function awaitTo<T, U = Error>(
   promise: Promise<T>,
   errorExt?: object,
 ): Promise<[U, undefined] | [null, T]> {

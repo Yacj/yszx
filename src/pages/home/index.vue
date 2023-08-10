@@ -29,7 +29,7 @@ const value = ref(1)
 </script>
 
 <template>
-  <div class="home space-y-5 mt-5 mb-5">
+  <div class="home space-y-8 mt-5 mb-5">
     <div class="swiper container mx-auto">
       <t-swiper :duration="300" :interval="2000">
         <t-swiper-item v-for="item in 6" :key="item">
@@ -55,20 +55,17 @@ const value = ref(1)
       </div>
     </div>
     <div class="hot w-full">
-      <t-card :bordered="false">
-        <h4 class="text-2xl font-bold dark:text-white text-center mt-3 hot-title">
-          热门分类
-        </h4>
-
-        <ul class="grid gap-1  grid-cols-1 sm:grid-cols-3 2xl:gap-5 max-w-screen-lg mx-auto mt-9">
-          <li v-for="item in hostList" :key="item.id" class="text-center relative  cursor-pointer transition duration-300 ease-in-out hover:scale-104 mx-auto">
-            <img src="../../assets/img/hot-bg.jpg" class="rounded-md w-[325px] h-[222px]" alt="">
-            <span class="absolute bg-gray-900 bg-opacity-30 flex justify-center w-[325px]  h-[222px] items-center text-white rounded-md inset-0 text-2xl">
-              {{ item.name }}
-            </span>
-          </li>
-        </ul>
-      </t-card>
+      <h4 class="text-2xl font-bold dark:text-white text-center mt-3 hot-title">
+        热门分类
+      </h4>
+      <ul class="grid gap-1  grid-cols-1 sm:grid-cols-3 2xl:gap-5 max-w-screen-lg mx-auto mt-9">
+        <li v-for="item in hostList" :key="item.id" class="text-center relative  cursor-pointer transition duration-300 ease-in-out hover:scale-104 mx-auto">
+          <img src="../../assets/img/hot-bg.jpg" class="rounded-md w-[325px] h-[222px]" alt="">
+          <span class="absolute bg-gray-900 bg-opacity-30 flex justify-center w-[325px]  h-[222px] items-center text-white rounded-md inset-0 text-2xl">
+            {{ item.name }}
+          </span>
+        </li>
+      </ul>
     </div>
     <div class="ranking container mx-auto">
       <div class="flex-y-center justify-between">
@@ -124,46 +121,44 @@ const value = ref(1)
         </t-card>
       </div>
     </div>
-    <t-card class="home-card" :bordered="false">
-      <div class="hot-class container mx-auto">
-        <div class="flex-y-center justify-between">
-          <div class="title-left flex-center">
-            <h3 class="text-2xl font-bold dark:text-white title-before">
-              热门课程
-            </h3>
-            <t-tabs v-model="value" class="ml-10" size="large">
-              <t-tab-panel :value="1" label="学前音乐" />
-              <t-tab-panel :value="2" label="小学英语" />
-              <t-tab-panel :value="3" label="初中语文" />
-            </t-tabs>
-          </div>
-          <div class="other">
-            <span>
-              查看全部 >
-            </span>
-          </div>
+    <div class="hot-class container mx-auto">
+      <div class="flex-y-center justify-between">
+        <div class="title-left flex-center">
+          <h3 class="text-2xl font-bold dark:text-white title-before">
+            热门课程
+          </h3>
+          <t-tabs v-model="value" class="ml-10 !bg-transparent" size="large">
+            <t-tab-panel :value="1" label="学前音乐" />
+            <t-tab-panel :value="2" label="小学英语" />
+            <t-tab-panel :value="3" label="初中语文" />
+          </t-tabs>
         </div>
-        <div class="hot-class-list flex mt-3">
-          <div class="w-[230px]">
-            <img src="../../assets/img/img-cover.png" alt="">
-          </div>
-          <div class="flex-1 ml-5">
-            <ul class="grid gap-1  grid-cols-1 sm:grid-cols-5 2xl:gap-6">
-              <t-card class="home-full-card" :bordered="false">
-                <template #cover>
-                  <img src="../../assets/img/list-cover.png" alt="" class="h-[152px]">
-                </template>
-                <router-link to="/home/detail">
-                  <div class="desc text-center text-base font-400">
-                    2021年教师资格证面试备考指导
-                  </div>
-                </router-link>
-              </t-card>
-            </ul>
-          </div>
+        <div class="other">
+          <span>
+            查看全部 >
+          </span>
         </div>
       </div>
-    </t-card>
+      <div class="hot-class-list flex mt-3">
+        <div class="w-[230px]">
+          <img src="../../assets/img/img-cover.png" alt="">
+        </div>
+        <div class="flex-1 ml-5">
+          <ul class="grid gap-1  grid-cols-1 sm:grid-cols-5 2xl:gap-6">
+            <t-card class="home-full-card" :bordered="false">
+              <template #cover>
+                <img src="../../assets/img/list-cover.png" alt="" class="h-[152px]">
+              </template>
+              <router-link to="/home/detail">
+                <div class="desc text-center text-base font-400">
+                  2021年教师资格证面试备考指导
+                </div>
+              </router-link>
+            </t-card>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -220,13 +215,13 @@ const value = ref(1)
   border-radius: 0 !important;
 }
 .home-full-card{
-  box-shadow: 0 6px 10px 0 rgba(95,101,105,.15);
+  //box-shadow: 0 6px 10px 0 rgba(95,101,105,.15);
   transition: all .2s;
   cursor: pointer;
   &:hover{
-    transform: translateY(-2px);
-    //box-shadow: 0 12px 20px 0 rgba(95,101,105,.15);
-    box-shadow: 0 6px 10px 0 rgba(95,101,105,.3);
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+    transform: translateY(-5px);
   }
 }
 </style>
