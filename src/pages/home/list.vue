@@ -366,6 +366,24 @@ const pagination = ref({
   current: 1,
   pageSize: 12,
 })
+const pageSizeOptions = [
+  {
+    label: '12条/页',
+    value: 12,
+  },
+  {
+    label: '36条/页',
+    value: 36,
+  },
+  {
+    label: '60条/页',
+    value: 60,
+  },
+  {
+    label: '120条/页',
+    value: 120,
+  },
+]
 onMounted(() => {
   nextTick(() => {
     const scrollToTop = (element: any): void => {
@@ -450,10 +468,9 @@ function handleDownload() {
         </t-card>
       </div>
     </div>
-    <t-card :bordered="false" class="mt-5">
+    <div class="mt-8 wh-full">
       <t-pagination
-        class="mt-6"
-        show-jumper
+        :page-size-options="pageSizeOptions"
         show-first-and-last-page-btn
         :total-content="false"
         :total="total"
@@ -461,7 +478,7 @@ function handleDownload() {
         :current="pagination.current"
         @change="pageChange"
       />
-    </t-card>
+    </div>
   </div>
 </template>
 

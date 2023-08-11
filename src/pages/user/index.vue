@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import SvgIcon from '@/components/SvgIcon/SvgIcon.vue'
+
 const files = ref([])
 function requestUpload(file) {
   console.log(file)
@@ -11,31 +13,36 @@ const userMenuList = ref([
     name: '最近浏览',
     path: '/user/recent',
     id: 1,
+    icon: 'mdi:recent',
   },
   {
     name: '我的收藏',
     path: '/user/collection',
     id: 2,
+    icon: 'heroicons-outline:collection',
   },
   {
     name: '我的考试',
     path: '/user/exam',
     id: 3,
+    icon: 'ph:exam',
   },
   {
     name: '个人信息',
     path: '/user/info',
     id: 4,
+    icon: 'ic:outline-info',
   },
   {
     name: '安全设置',
     path: '/user/safe',
     id: 5,
+    icon: 'mingcute:safe-alert-line',
   },
 ])
 const userMenuId = ref(userMenuList.value.find(item => item.path === route.path)?.id)
 const router = useRouter()
-function handleMenuClick(path: any, id) {
+function handleMenuClick(path: any, id: number) {
   router.push(path)
   userMenuId.value = id
 }
@@ -67,6 +74,9 @@ function handleMenuClick(path: any, id) {
           </div>
           <t-menu :value="userMenuId">
             <t-menu-item v-for="item in userMenuList" :key="item.id" :value="item.id" @click="handleMenuClick(item.path, item.id)">
+              <template #icon>
+                <SvgIcon :name="item.icon" type="iconify" :size="20" class="mr-3" />
+              </template>
               {{ item.name }}
             </t-menu-item>
           </t-menu>

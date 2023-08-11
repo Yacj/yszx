@@ -53,10 +53,9 @@ router.beforeEach((to, from, next) => {
   NProgress.start()
   const userStore = useUserStore()
   const token = userStore.token
-  if (!token && to.path === '/user') {
+  if (!token && to.meta.needLogin) {
     MessagePlugin.error('请先登录')
-    router.push('/login')
-    next()
+    next(`/login?redirect=${to.fullPath}`)
   }
   else {
     next()

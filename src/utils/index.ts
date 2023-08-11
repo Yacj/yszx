@@ -2,9 +2,38 @@ export function setPageTitle(titleText: string | unknown) {
   window.document.title = `${titleText ? ` ${titleText} - ` : ''}${import.meta.env.VITE_APP_TITLE}`
 }
 
-export function getImageUrl(name: string) {
-  const path = new URL('@/assets/img/', import.meta.url)
-  return `${path}/${name}`
+/**
+ * @description 获取url参数
+ * @param url - url地址
+ * @return {Record<string, unknown>} url参数对象
+ * @example
+ * getQueryObject('http://localhost:3000/?name=123') // { name: '123' }
+ */
+export function getQueryObject(url?: string): Record<string, unknown> {
+  url = url == null ? window.location.href : url
+  const search = url.substring(url.lastIndexOf('?') + 1)
+  const obj: Record<string, unknown> = {}
+  const reg = /([^?&=]+)=([^?&=]*)/g
+  search.replace(reg, (rs, $1, $2): string => {
+    const name = decodeURIComponent($1)
+    let val = decodeURIComponent($2)
+    val = String(val)
+    obj[name] = val
+    return rs
+  })
+  return obj
+}
+/**
+ * @description 获取assets下的图片
+ * @param name - 图片名称 要带后缀
+ * @return {string} 图片路径
+ * @example
+ * getAssetsImg('logo.png') // /assets/img/logo.png
+ */
+export function getAssetsImg(name: string) {
+  const modules: any = import.meta.glob('../assets/img/*', { eager: true })
+  const path = `../assets/img/${name}`
+  return modules[path]?.default
 }
 
 /**
@@ -74,4 +103,42 @@ export async function awaitTo<T, U = Error>(
       }
       return [err, undefined]
     })
+}
+
+/**
+ * @description 判断密码强度
+ * @param password - 密码
+ * @return {0 | 1 | 2} 0: 弱密码，1: 中等密码，2: 强密码
+ * @example
+ * evaluatePasswordStrength('123456') // 0
+ */
+export function evaluatePasswordStrength(password: string): 0 | 1 | 2 {
+  const minLength = 8
+  const minCharacterVariety = 3 // 最小字符种类，如大小写字母、数字、特殊字符
+
+  // 判断密码长度
+  if (password.length < minLength) {
+    return 0 // 弱密码
+  }
+
+  // 判断字符种类
+  let characterVariety = 0
+  if (/[a-z]/.test(password)) {
+    characterVariety++
+  }
+  if (/[A-Z]/.test(password)) {
+    characterVariety++
+  }
+  if (/\d/.test(password)) {
+    characterVariety++
+  }
+  if (/[\W_]/.test(password)) {
+    characterVariety++
+  }
+
+  if (characterVariety < minCharacterVariety) {
+    return 1 // 中等密码
+  }
+
+  return 2 // 强密码
 }

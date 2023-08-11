@@ -210,10 +210,11 @@ function getMenuId() {
             </t-dropdown-menu>
           </template>
           <t-button class="header-user-btn" theme="default" variant="text" size="large">
-            <div class="header-user-account">
+            <div class="header-user-account flex">
               <t-avatar size="medium"> W </t-avatar>
-
-              {{ token }}
+              <div class="relative top-[5px] ml-2">
+                {{ token }}
+              </div>
             </div>
             <template #suffix>
               <ChevronDownIcon/>

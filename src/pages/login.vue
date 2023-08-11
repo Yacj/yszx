@@ -2,7 +2,7 @@
 import { DesktopIcon, ForkIcon, LockOnIcon, SecuredIcon } from 'tdesign-icons-vue-next'
 import type { SubmitContext } from 'tdesign-vue-next'
 import { MessagePlugin } from 'tdesign-vue-next'
-import { awaitTo } from '@/utils'
+import { awaitTo, getQueryObject } from '@/utils'
 import BaseFooter from '@/components/BaseFooter/BaseFooter.vue'
 import FloatButton from '@/components/FloatButton/FloatButton.vue'
 import Captcha from '@/components/Captcha/Captcha.vue'
@@ -26,7 +26,7 @@ const rules = {
   ],
   agencyId: [
     { required: true, message: '请选择机构', trigger: 'blur' },
-    {required: true, message: '请选择机构', trigger: 'change'}
+    { required: true, message: '请选择机构', trigger: 'change' },
   ],
   captcha: [
     { required: true, message: '请输入验证码', trigger: 'blur' },
@@ -79,6 +79,7 @@ const selectData = ref(
   ],
 )
 const router = useRouter()
+const redirect = getQueryObject().redirect as string
 async function onSubmit({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     const [err, res] = await awaitTo(userStore.login(formData))
@@ -87,7 +88,7 @@ async function onSubmit({ validateResult, firstError }: SubmitContext) {
     }
     else {
       MessagePlugin.success('登录成功')
-      router.push({ path: '/home' })
+      router.push({ path: redirect || '/home' })
     }
   }
   else {

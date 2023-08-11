@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { HomeIcon, QrcodeIcon } from 'tdesign-icons-vue-next'
 import type { TdStickyItemProps } from 'tdesign-vue-next'
-import { getImageUrl } from '@/utils'
+import {getAssetsImg} from '@/utils'
 import SvgIcon from '@/components/SvgIcon/SvgIcon.vue'
 import { useAppStore } from '@/store/modules/app'
 
@@ -99,7 +99,7 @@ function handleToggleTheme(event: MouseEvent) {
           <QrcodeIcon />
         </template>
         <template #popup>
-          <img :src="getImageUrl('footer-code.png')" alt="" class="w-30 h-33">
+          <img :src="getAssetsImg ('footer-code.png')" alt="" class="w-30 h-33">
         </template>
       </t-sticky-item>
       <t-sticky-item :label="appStore.colorScheme === 'dark' ? '明亮主题' : '暗黑主题'">

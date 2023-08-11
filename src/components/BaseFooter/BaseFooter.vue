@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SvgIcon from '@/components/SvgIcon/SvgIcon.vue'
-import { getImageUrl } from '@/utils'
+import { getAssetsImg } from '@/utils'
 
 function handleRenderMask() {
   return h('div', {
@@ -54,30 +54,30 @@ function handleRenderMask() {
           </ul>
         </div>
         <div class="grid grid-cols-2 gap-8 sm:grid-cols-3 pl-15">
-          <t-image-viewer :images="[getImageUrl('footer-license.png')]" :closeOnOverlay="true">
+          <t-image-viewer :images="[getAssetsImg ('footer-license.png')]" :close-on-overlay="true">
             <template #trigger="{ open }">
               <t-image
-                :src="getImageUrl('footer-license.png')" class="h-33 w-35"
+                :src="getAssetsImg ('footer-license.png')" class="h-33 w-35"
                 :overlay-content="handleRenderMask"
                 overlay-trigger="hover"
                 @click="open"
               />
             </template>
           </t-image-viewer>
-          <t-image-viewer :images="[getImageUrl('license2.jpg')]">
+          <t-image-viewer :images="[getAssetsImg ('license2.jpg')]">
             <template #trigger="{ open }">
               <t-image
-                :src="getImageUrl('license2.jpg')" class="h-33 w-35"
+                :src="getAssetsImg ('license2.jpg')" class="h-33 w-35"
                 :overlay-content="handleRenderMask"
                 overlay-trigger="hover"
                 @click="open"
               />
             </template>
           </t-image-viewer>
-          <t-image-viewer :images="[getImageUrl('footer-code.png')]">
+          <t-image-viewer :images="[getAssetsImg ('footer-code.png')]">
             <template #trigger="{ open }">
               <t-image
-                :src="getImageUrl('footer-code.png')" class="h-33 w-35"
+                :src="getAssetsImg ('footer-code.png')" class="h-33 w-35"
                 :overlay-content="handleRenderMask"
                 overlay-trigger="hover"
                 @click="open"

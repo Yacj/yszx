@@ -4,11 +4,7 @@ import { fileTypeEnum } from '@/utils/enums'
 
 const fileRef = ref<HTMLElement | null>(null)
 const { toggle } = useFullscreen(fileRef)
-//*
-// 定义一个enum类型
-// 比如 word:['docx','doc']
-// 返回 word
-// */
+
 function getFileType(type: string) {
   const typeName = type.split('.')[1]
   return Object.keys(fileTypeEnum).find(key => fileTypeEnum[key].includes(typeName))
@@ -22,7 +18,7 @@ console.log(getFileType('.doc'))
     <div class="flex mt-6 mb-3 preview">
       <t-card :bordered="false" title="资源预览" class="mr-3 card-title">
         <div
-          class="h-180 w-295 overflow-y-scroll relative"
+          class="h-200 w-295 overflow-y-scroll relative"
         >
           <embed
             v-if="getFileType(typeName) === 'pdf' "
@@ -31,7 +27,7 @@ console.log(getFileType('.doc'))
             class="wh-full"
           >
           <div v-if="getFileType(typeName) === 'img'" ref="fileRef" class="img">
-            <t-space direction=vertical>
+            <t-space direction="vertical">
               <t-image
                 src="https://tdesign.gtimg.com/demo/demo-image-1.png"
                 fit="cover"
