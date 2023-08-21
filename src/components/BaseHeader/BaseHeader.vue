@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import {SearchIcon} from 'tdesign-icons-vue-next'
-import {DialogPlugin, MessagePlugin} from 'tdesign-vue-next'
-import {useUserStore} from '@/store/modules/user'
-import {UserCircleIcon, PoweroffIcon, ChevronDownIcon} from 'tdesign-icons-vue-next'
+import { ChevronDownIcon, PoweroffIcon, SearchIcon, UserCircleIcon } from 'tdesign-icons-vue-next'
+import { DialogPlugin, MessagePlugin } from 'tdesign-vue-next'
 
+import { useUserStore } from '@/store/modules/user'
+
+const title = import.meta.env.VITE_APP_TITLE
 const searchVal = ref('')
 const menuList = [
   {
@@ -80,36 +81,34 @@ const menuList = [
 ]
 
 const userStore = useUserStore()
-const {token} = userStore
+const { token } = userStore
 const router = useRouter()
 const route = useRoute()
-const menuId = ref<Number>(0)
+const menuId = ref<number>(0)
 
 if (route.path === '/home') {
   menuId.value = 1
-} else {
+}
+else {
   menuId.value = getMenuId()
 }
-// handleSetMenuId()
-// handleSetRouteMatchedTitle()
-
-function handleSetMenuId() {
-  const {query} = route
-  if (query.name) {
-    menuId.value = Number(menuList.find(item => item.name === query.name)?.id)
-  }
-}
-
-function handleSetRouteMatchedTitle() {
-  document.title = <string>route.query.name || '首页'
-  route.matched.map((item) => {
-    if (item.path === route.path) {
-      item.meta.title = route.query.name || '首页'
-      return item
-    }
-    return item
-  })
-}
+// function handleSetMenuId() {
+//   const {query} = route
+//   if (query.name) {
+//     menuId.value = Number(menuList.find(item => item.name === query.name)?.id)
+//   }
+// }
+//
+// function handleSetRouteMatchedTitle() {
+//   document.title = <string>route.query.name || '首页'
+//   route.matched.map((item) => {
+//     if (item.path === route.path) {
+//       item.meta.title = route.query.name || '首页'
+//       return item
+//     }
+//     return item
+//   })
+// }
 
 function handleNav(path: string, id: number) {
   router.push(path)
@@ -160,7 +159,9 @@ function getMenuId() {
 <template>
   <t-head-menu :value="menuId" expand-type="popup">
     <template #logo>
-      <img height="28" src="https://tdesign.gtimg.com/site/baseLogo-light.png" alt="logo" class="h-8 mr-3">
+      <h1 class="text-3xl font-bold tracking-wide">
+        {{ title }}
+      </h1>
     </template>
     <template v-for="item in menuList" :key="item.id">
       <t-menu-item
@@ -176,11 +177,13 @@ function getMenuId() {
       </t-submenu>
     </template>
     <t-input-adornment>
-      <t-input v-model="searchVal" placeholder="请输入关键词搜索" class="ml-12 !w-60" @enter="handleNavSearch"
-               size="medium"/>
+      <t-input
+        v-model="searchVal" placeholder="请输入关键词搜索" class="ml-12 !w-60" size="medium"
+        @enter="handleNavSearch"
+      />
       <template #append>
         <t-button type="submit" @click="handleNavSearch">
-          <SearchIcon :style="{ cursor: 'pointer' }"/>
+          <SearchIcon :style="{ cursor: 'pointer' }" />
         </t-button>
       </template>
     </t-input-adornment>
@@ -190,7 +193,7 @@ function getMenuId() {
         <router-link to="/login">
           登录
         </router-link>
-        <t-divider layout="vertical"/>
+        <t-divider layout="vertical" />
         <router-link to="login">
           注册
         </router-link>
@@ -199,25 +202,27 @@ function getMenuId() {
         <t-dropdown :min-column-width="120" trigger="click">
           <template #dropdown>
             <t-dropdown-menu>
-              <t-dropdown-item class="user-dropdown-container-item mb-2" @click="handleNav('/user/recent',0)">
-                <UserCircleIcon/>
+              <t-dropdown-item class="user-dropdown-container-item mb-2" @click="handleNav('/user/recent', 0)">
+                <UserCircleIcon />
                 个人中心
               </t-dropdown-item>
               <t-dropdown-item class="user-dropdown-container-item" @click="handleLogout">
-                <PoweroffIcon/>
+                <PoweroffIcon />
                 退出登录
               </t-dropdown-item>
             </t-dropdown-menu>
           </template>
           <t-button class="header-user-btn" theme="default" variant="text" size="large">
             <div class="header-user-account flex">
-              <t-avatar size="medium"> W </t-avatar>
+              <t-avatar size="medium">
+                W
+              </t-avatar>
               <div class="relative top-[5px] ml-2">
                 {{ token }}
               </div>
             </div>
             <template #suffix>
-              <ChevronDownIcon/>
+              <ChevronDownIcon />
             </template>
           </t-button>
         </t-dropdown>

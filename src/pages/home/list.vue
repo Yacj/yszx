@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { DownloadIcon, HeartFilledIcon, HeartIcon } from 'tdesign-icons-vue-next'
-import type { PageInfo } from 'tdesign-vue-next'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { fileDownload } from '@/utils/file'
+import { usePagination } from '@/hooks/usePagination'
 
 const list = ref([
   {
@@ -361,29 +361,34 @@ const list = ref([
     count: 3,
   },
 ])
-const total = list.value.length
-const pagination = ref({
-  current: 1,
-  pageSize: 12,
-})
-const pageSizeOptions = [
-  {
-    label: '12条/页',
-    value: 12,
-  },
-  {
-    label: '36条/页',
-    value: 36,
-  },
-  {
-    label: '60条/页',
-    value: 60,
-  },
-  {
-    label: '120条/页',
-    value: 120,
-  },
-]
+// const total = list.value.length
+// const pagination = ref({
+//   current: 1,
+//   pageSize: 12,
+// })
+// const pageSizeOptions = [
+//   {
+//     label: '12条/页',
+//     value: 12,
+//   },
+//   {
+//     label: '36条/页',
+//     value: 36,
+//   },
+//   {
+//     label: '60条/页',
+//     value: 60,
+//   },
+//   {
+//     label: '120条/页',
+//     value: 120,
+//   },
+// ]
+const {
+  pagination,
+  pageSizeOptions,
+  handlePageChange,
+} = usePagination()
 onMounted(() => {
   nextTick(() => {
     const scrollToTop = (element: any): void => {
@@ -392,16 +397,19 @@ onMounted(() => {
     scrollToTop(document.querySelector('.home-list'))
   })
 })
+
 function handleClickCollect(isCollect: boolean, index: number) {
   MessagePlugin.success(isCollect ? '取消收藏成功' : '收藏成功')
   list.value[index].isCollect = !isCollect
 }
-function pageChange({ current, pageSize }: PageInfo) {
-  pagination.value = {
-    current,
-    pageSize,
-  }
-}
+
+// function pageChange({ current, pageSize }: PageInfo) {
+//   pagination.value = {
+//     current,
+//     pageSize,
+//   }
+// }
+
 function handleDownload() {
   fileDownload('http://wlapi.jqweike.cn/wlxt_Data/WKK/GZ/FL0601/RJGZ010108/0101/03/wlxtRJGZYW0000003.mp4')
   MessagePlugin.success('下载成功')
@@ -413,15 +421,15 @@ function handleDownload() {
     <div class="list mt-6 space-y-3">
       <t-card :bordered="false">
         <div class="space-x-6 flex-y-center text-sm">
-          <div>
+          <div class="cursor-pointer filter-text filter-active">
             综合
           </div>
           <t-divider layout="vertical" />
-          <div>
+          <div class="cursor-pointer filter-text">
             点击
           </div>
           <t-divider layout="vertical" />
-          <div>
+          <div class="cursor-pointer filter-text">
             最新
           </div>
         </div>
@@ -431,11 +439,11 @@ function handleDownload() {
           <template #cover>
             <img :src="item.image" alt="" class="h-[190px]">
           </template>
-          <div class="text-base h-10 cursor-pointer">
-            <router-link to="/home/list/detail">
+          <router-link to="/home/list/detail" :aria-label="item.title" target="_blank">
+            <div class="text-base h-11 cursor-pointer text-ellipsis overflow-hidden">
               {{ item.title }}
-            </router-link>
-          </div>
+            </div>
+          </router-link>
           <template #footer>
             <div class="grid grid-cols-2 gap-5">
               <div class="flex-y-center cursor-pointer">
@@ -445,7 +453,10 @@ function handleDownload() {
                     class="text-2xl collect-icon collect-active"
                     @click="handleClickCollect(item.isCollect, index)"
                   />
-                  <HeartIcon v-else key="unlike" class="text-2xl collect-icon" @click="handleClickCollect(item.isCollect, index)" />
+                  <HeartIcon
+                    v-else key="unlike" class="text-2xl collect-icon"
+                    @click="handleClickCollect(item.isCollect, index)"
+                  />
                 </transition>
                 <span class="ml-1 text-base">
                   收藏
@@ -473,19 +484,26 @@ function handleDownload() {
         :page-size-options="pageSizeOptions"
         show-first-and-last-page-btn
         :total-content="false"
-        :total="total"
+        :total="pagination.total"
         :page-size="pagination.pageSize"
-        :current="pagination.current"
-        @change="pageChange"
+        :current="pagination.currentPage"
+        @change="handlePageChange"
       />
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.collect-active{
+.filter-text{
+  transition: color .2s;
+  &:hover{
+    color: var(--brand-main);
+  }
+}
+.collect-active,.filter-active {
   color: var(--brand-main);
 }
+
 /** 动画进行时的class **/
 .zoom-enter-active, .zoom-leave-active {
   transition: all .15s cubic-bezier(0.42, 0, 0.34, 1.55);
@@ -500,14 +518,16 @@ function handleDownload() {
 .zoom-enter-to, .zoom-leave {
   transform: scale(1);
 }
-.list-card{
-  transition: transform .2s,box-shadow .2s;
-  box-shadow: 0 4px 8px 0 rgba(95,101,105,.05);
+
+.list-card {
+  transition: transform .2s, box-shadow .2s;
+  box-shadow: 0 4px 8px 0 rgba(95, 101, 105, .05);
   cursor: pointer;
-  &:hover{
+
+  &:hover {
     transform: translateY(-2px);
     //transform: scale(1.02);
-    box-shadow: 0 4px 8px 0 rgba(95,101,105,.1);
+    box-shadow: 0 4px 8px 0 rgba(95, 101, 105, .1);
   }
 }
 </style>

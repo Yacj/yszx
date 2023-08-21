@@ -1,22 +1,13 @@
 @import "scroll.css";
 @import "theme.css";
-
-:root, :root[theme-mode="light"] {
-  --td-bg-color-page: #f5f7fa;
-  --footer-bg: #32333b
-}
-
-:root[them-mode="dark"] {
-  --td-bg-color-page: #1e1e1e;
-  --footer-bg: #1e1e1e
-}
+@import "variables.css";
 
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
-input:-webkit-autofill:focus
+input:-webkit-autofill:focus,
 input:-webkit-autofill,
 textarea:-webkit-autofill,
-textarea:-webkit-autofill:hover
+textarea:-webkit-autofill:hover,
 textarea:-webkit-autofill:focus,
 select:-webkit-autofill,
 select:-webkit-autofill:hover,
@@ -108,17 +99,17 @@ a:hover {
 }
 
 /* transition fade-slide */
-.fade-slide-leave-active,
-.fade-slide-enter-active {
-  transition: all 0.3s;
-}
+/*.fade-slide-leave-active,*/
+/*.fade-slide-enter-active {*/
+/*  transition: all 0.3s;*/
+/*}*/
 
-.fade-slide-enter-from {
-  opacity: 0;
-  transform: translateX(-30px);
-}
+/*.fade-slide-enter-from {*/
+/*  opacity: 0;*/
+/*  transform: translateX(-30px);*/
+/*}*/
 
-.fade-slide-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
-}
+/*.fade-slide-leave-to {*/
+/*  opacity: 0;*/
+/*  transform: translateX(30px);*/
+/*}*/

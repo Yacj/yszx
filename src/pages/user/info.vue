@@ -49,45 +49,47 @@ const rules = {
 </script>
 
 <template>
-  <t-card class="card-title" title="信息设置" :bordered="false">
-    <t-row :gutter="[24, 24]">
-      <t-col :flex="1">
-        <t-form ref="form" :data="formData" :rules="rules">
-          <t-form-item label="用户名" help="这是用户名字段帮助说明" name="account">
-            <t-input v-model="formData.account" size="large"/>
-          </t-form-item>
+  <div>
+    <t-card class="card-title" title="信息设置" :bordered="false">
+      <t-row :gutter="[24, 24]">
+        <t-col :flex="1">
+          <t-form ref="form" :data="formData" :rules="rules">
+            <t-form-item label="用户名" help="这是用户名字段帮助说明" name="account">
+              <t-input v-model="formData.account"/>
+            </t-form-item>
 
-          <t-form-item label="个人简介" help="一句话介绍自己" name="description">
-            <t-input v-model="formData.description" />
-          </t-form-item>
+            <t-form-item label="个人简介" help="一句话介绍自己" name="description">
+              <t-input v-model="formData.description" />
+            </t-form-item>
 
-          <t-form-item label="密码" name="password">
-            <t-input v-model="formData.password" type="password" />
-          </t-form-item>
+            <t-form-item label="密码" name="password">
+              <t-input v-model="formData.password" type="password" />
+            </t-form-item>
 
-          <t-form-item label="年龄" name="age">
-            <t-input-number v-model="formData.age" />
-          </t-form-item>
+            <t-form-item label="年龄" name="age">
+              <t-input-number v-model="formData.age" />
+            </t-form-item>
 
-          <t-form-item label="性别" name="gender">
-            <t-radio-group v-model="formData.gender">
-              <t-radio value="male">
-                男
-              </t-radio>
-              <t-radio value="femal">
-                女
-              </t-radio>
-            </t-radio-group>
-          </t-form-item>
-        </t-form>
-      </t-col>
-      <t-col :flex="1" class="flex-center">
-        <t-avatar size="100px">
-          W
-        </t-avatar>
-      </t-col>
-    </t-row>
-  </t-card>
+            <t-form-item label="性别" name="gender">
+              <t-radio-group v-model="formData.gender">
+                <t-radio value="male">
+                  男
+                </t-radio>
+                <t-radio value="femal">
+                  女
+                </t-radio>
+              </t-radio-group>
+            </t-form-item>
+          </t-form>
+        </t-col>
+        <t-col :flex="1" class="flex-center">
+          <t-avatar size="100px">
+            W
+          </t-avatar>
+        </t-col>
+      </t-row>
+    </t-card>
+  </div>
 </template>
 
 <style scoped lang="scss">

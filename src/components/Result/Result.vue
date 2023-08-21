@@ -11,6 +11,7 @@ interface Props {
   title?: string
   tip?: string
   type?: string
+  height?: string | number
 }
 const props = withDefaults(defineProps<Props>(), {
   bgUrl: '',
@@ -37,10 +38,21 @@ const dynamicComponent = computed(() => {
       return Result403Icon
   }
 })
+const resultHeight = computed(() => {
+  const height = props.height
+  switch (typeof height) {
+    case 'number':
+      return `${height}px`
+    case 'string':
+      return height
+    default:
+      return '75vh;'
+  }
+})
 </script>
 
 <template>
-  <div class="result-container">
+  <div class="result-container" :style="`height:${resultHeight}`">
     <div class="result-bg-img">
       <img :src="dynamicComponent" alt="result-bg-img">
     </div>
@@ -80,7 +92,6 @@ const dynamicComponent = computed(() => {
 
   &-container {
     min-height: 400px;
-    height: 75vh;
     display: flex;
     flex-direction: column;
     align-items: center;

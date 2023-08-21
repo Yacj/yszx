@@ -67,7 +67,7 @@ const value = ref(1)
         </li>
       </ul>
     </div>
-    <div class="ranking container mx-auto">
+    <div class="ranking container mx-auto p-6 md:p-0">
       <div class="flex-y-center justify-between">
         <h3 class="text-2xl font-bold dark:text-white  mt-3 title-before">
           资源排行
@@ -76,7 +76,7 @@ const value = ref(1)
           查看全部>
         </div>
       </div>
-      <div class="mt-5 grid grid-cols-5 gap-6">
+      <div class="mt-5 grid grid-cols-1 md:grid-cols-5 gap-6">
         <t-card hover-shadow :bordered="false">
           <router-link to="/home/detail">
             <div class="cover">

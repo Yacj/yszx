@@ -1,4 +1,5 @@
 import path from 'node:path'
+import process from 'node:process'
 import Unocss from 'unocss/vite'
 import type { PluginOption } from 'vite'
 import Pages from 'vite-plugin-pages'
@@ -23,7 +24,7 @@ export default function createVitePlugins(viteEnv: object, isBuild = false) {
       ],
       dts: true,
       dirs: [
-        './src/composables',
+        './src/hooks',
       ],
       vueTemplate: true,
       resolvers: [

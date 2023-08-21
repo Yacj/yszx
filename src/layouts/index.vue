@@ -7,7 +7,7 @@ import FloatButton from '@/components/FloatButton/FloatButton.vue'
 <template>
   <t-layout>
     <t-header class="z-5">
-      <BaseHeader />
+      <BaseHeader class="hidden md:block"/>
     </t-header>
     <t-layout class="layout">
       <t-layout>

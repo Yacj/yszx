@@ -1,12 +1,6 @@
 <script setup lang="ts">
 import SvgIcon from '@/components/SvgIcon/SvgIcon.vue'
 
-const files = ref([])
-function requestUpload(file) {
-  console.log(file)
-  return false
-}
-
 const route = useRoute()
 const userMenuList = ref([
   {
@@ -83,7 +77,9 @@ function handleMenuClick(path: any, id: number) {
         </t-card>
       </t-col>
       <t-col :flex="6">
-        <router-view />
+        <router-view v-slot="{ Component }">
+            <component :is="Component" />
+        </router-view>
       </t-col>
     </t-row>
   </div>
@@ -98,4 +94,5 @@ function handleMenuClick(path: any, id: number) {
     font-size: 15px;
   }
 }
+
 </style>
