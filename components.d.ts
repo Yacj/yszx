@@ -58,6 +58,7 @@ declare module 'vue' {
     TRadioGroup: typeof import('tdesign-vue-next')['RadioGroup']
     TRow: typeof import('tdesign-vue-next')['Row']
     TSelect: typeof import('tdesign-vue-next')['Select']
+    TSkeleton: typeof import('tdesign-vue-next')['Skeleton']
     TSpace: typeof import('tdesign-vue-next')['Space']
     TStickyItem: typeof import('tdesign-vue-next')['StickyItem']
     TStickyTool: typeof import('tdesign-vue-next')['StickyTool']
