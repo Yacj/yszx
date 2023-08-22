@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import { DesktopIcon, ForkIcon, LockOnIcon, SecuredIcon } from 'tdesign-icons-vue-next'
 import type { SubmitContext } from 'tdesign-vue-next'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { awaitTo, getQueryObject } from '@/utils'
 import { useUserStore } from '@/store/modules/user'
-import BaseFooter from "@/components/BaseFooter/BaseFooter.vue";
-import FloatButton from "@/components/FloatButton/FloatButton.vue";
+import BaseFooter from '@/components/BaseFooter/BaseFooter.vue'
+import FloatButton from '@/components/FloatButton/FloatButton.vue'
+import Captcha from '@/components/Captcha/Captcha.vue'
+
 
 const title = import.meta.env.VITE_APP_TITLE
 const userStore = useUserStore()
@@ -80,7 +83,7 @@ const router = useRouter()
 const redirect = getQueryObject().redirect as string
 async function onSubmit({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
-    const [err, res] = await awaitTo(userStore.login(formData))
+    const [err] = await awaitTo(userStore.login(formData))
     if (err) {
       MessagePlugin.error('登录失败')
     }
@@ -206,8 +209,8 @@ function onReset() {
             用户登录
           </div>
           <t-form
-            class="mt-8"
             ref="form"
+            class="mt-8"
             :data="formData"
             :rules="rules"
             :label-width="0"
@@ -227,7 +230,7 @@ function onReset() {
                   value: 'id',
                 }"
               >
-                <template #prefix-icon>
+                <template #prefixIcon>
                   <ForkIcon />
                 </template>
               </t-select>
@@ -267,8 +270,8 @@ function onReset() {
         </t-card>
       </div>
     </div>
-    <FloatButton/>
-    <BaseFooter/>
+    <FloatButton />
+    <BaseFooter />
   </div>
 </template>
 

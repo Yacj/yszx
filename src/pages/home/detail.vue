@@ -18,7 +18,7 @@ console.log(getFileType('.doc'))
     <div class="flex mt-6 mb-3 preview">
       <t-card :bordered="false" title="资源预览" class="mr-3 card-title">
         <div
-          class="h-200 w-295 overflow-y-scroll relative"
+          class="h-250 w-295 overflow-y-scroll relative"
         >
           <embed
             v-if="getFileType(typeName) === 'pdf' "

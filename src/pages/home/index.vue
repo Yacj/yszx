@@ -29,9 +29,9 @@ const value = ref(1)
 
 const skeletonRowCol = computed(() => {
   return [
-    [1, 1, 1].map(() => ({ type: 'rect', content: 'image', width: '33%', height: '180px' })),
-    [1, 1, 1].map(() => ({ type: 'rect', content: 'text', width: '33%', height: '50px' })),
-    [1, 1, 1].map(() => ({ type: 'rect', content: 'text', width: '33%', height: '50px' })),
+    [1, 1, 1].map(() => ({ type: 'rect', content: '', width: '33%', height: '180px' })),
+    [1, 1, 1].map(() => ({ type: 'rect', content: '', width: '33%', height: '50px' })),
+    [1, 1, 1].map(() => ({ type: 'rect', content: '', width: '33%', height: '50px' })),
   ]
 })
 const loading = ref(true)

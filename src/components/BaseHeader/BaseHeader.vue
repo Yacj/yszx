@@ -190,7 +190,7 @@ function getMenuId() {
 
     <template #operations>
       <t-space v-if="token === ''" break-line :size="2">
-        <router-link to="/login">
+        <router-link :to="`/login?redirect=${route.path}`">
           登录
         </router-link>
         <t-divider layout="vertical" />

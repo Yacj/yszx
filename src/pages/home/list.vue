@@ -3,6 +3,8 @@ import { DownloadIcon, HeartFilledIcon, HeartIcon } from 'tdesign-icons-vue-next
 import { MessagePlugin } from 'tdesign-vue-next'
 import { fileDownload } from '@/utils/file'
 import { usePagination } from '@/hooks/usePagination'
+import { useUserStore } from '@/store/modules/user'
+
 
 const list = ref([
   {
@@ -361,6 +363,8 @@ const list = ref([
     count: 3,
   },
 ])
+const userStore = useUserStore()
+const token = computed(() => userStore.token)
 // const total = list.value.length
 // const pagination = ref({
 //   current: 1,
@@ -399,8 +403,13 @@ onMounted(() => {
 })
 
 function handleClickCollect(isCollect: boolean, index: number) {
-  MessagePlugin.success(isCollect ? '取消收藏成功' : '收藏成功')
-  list.value[index].isCollect = !isCollect
+  if (token.value) {
+    MessagePlugin.success(isCollect ? '取消收藏成功' : '收藏成功')
+    list.value[index].isCollect = !isCollect
+  }
+  else {
+    MessagePlugin.warning('请先登录')
+  }
 }
 
 // function pageChange({ current, pageSize }: PageInfo) {
