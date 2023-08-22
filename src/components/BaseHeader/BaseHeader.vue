@@ -1,118 +1,70 @@
 <script setup lang="ts">
-import { ChevronDownIcon, PoweroffIcon, SearchIcon, UserCircleIcon } from 'tdesign-icons-vue-next'
+import { ChevronDownIcon, PoweroffIcon, UserCircleIcon } from 'tdesign-icons-vue-next'
 import { DialogPlugin, MessagePlugin } from 'tdesign-vue-next'
 
 import { useUserStore } from '@/store/modules/user'
+import { categoryService } from '@/api/modules/category'
 
 const title = import.meta.env.VITE_APP_TITLE
 const searchVal = ref('')
-const menuList = [
-  {
-    name: '首页',
-    path: '/home',
-    id: 1,
-    children: [],
-  },
-  {
-    name: '教学案例',
-    path: '/case',
-    id: 2,
-    children: [
-      {
-        name: '学前',
-        path: '/case/preschool',
-        id: 21,
-      },
-      {
-        name: '小学',
-        path: '/case/primary',
-        id: 22,
-      },
-      {
-        name: '初中',
-        path: '/case/middle',
-        id: 23,
-      },
-      {
-        name: '高中',
-        path: '/case/high',
-        id: 24,
-      },
-    ],
-  },
-  {
-    name: '教学题库',
-    // path: '/question',
-    path: '/home/list',
-    id: 3,
-    children: [],
-  },
-  {
-    name: '教学指导',
-    // path: '/guide',
-    path: '/home/list',
-    id: 4,
-    children: [],
-  },
-  {
-    name: '信息素养',
-    path: '/info',
-    id: 5,
-    children: [],
-  },
-  {
-    name: '教资认证',
-    path: '/certification',
-    id: 6,
-    children: [],
-  },
-  {
-    name: '教学模板',
-    path: '/template',
-    id: 7,
-    children: [],
-  },
-  {
-    name: '课本教材',
-    path: '/textbook',
-    id: 8,
-    children: [],
-  },
-]
+const menuList = ref([])
 
 const userStore = useUserStore()
-const { token } = userStore
+const token = computed(() => userStore.token)
+const userInfo = computed(() => userStore.userInfo)
+const orgId = computed(() => userStore.orgID)
 const router = useRouter()
 const route = useRoute()
-const menuId = ref<number>(0)
+const menuId = ref<number>(2)
 
-if (route.path === '/home') {
-  menuId.value = 1
+onMounted(() => {
+  getCateGoryList()
+})
+
+function getCateGoryList() {
+  categoryService.get({
+    orgID: orgId.value,
+    hasRow: false,
+  }).then((res) => {
+    const data = res.data
+    data.map((item: any) => {
+      item.path = `/home/list?name=${item.name}&id=${item.cid}&code=${item.code}`
+      if (item.row.length > 0) {
+        item.row.map((row: any) => {
+          row.path = `/home/list?name=${row.name}&id=${row.cid}&code=${item.code}`
+          return row
+        })
+      }
+      return item
+    })
+    data.unshift({
+      name: '首页',
+      path: '/home',
+      cid: 0,
+      row: [],
+      level: 0,
+      code: '',
+    })
+    menuList.value = data
+    if (route.path === '/home') {
+      menuId.value = 0
+    }
+    else {
+      menuId.value = getMenuId() || -1
+    }
+  }).catch((err) => {
+    console.log(err)
+  })
 }
-else {
-  menuId.value = getMenuId()
-}
-// function handleSetMenuId() {
-//   const {query} = route
-//   if (query.name) {
-//     menuId.value = Number(menuList.find(item => item.name === query.name)?.id)
-//   }
-// }
-//
-// function handleSetRouteMatchedTitle() {
-//   document.title = <string>route.query.name || '首页'
-//   route.matched.map((item) => {
-//     if (item.path === route.path) {
-//       item.meta.title = route.query.name || '首页'
-//       return item
-//     }
-//     return item
-//   })
-// }
 
 function handleNav(path: string, id: number) {
   router.push(path)
-  menuId.value = id
+  if (path === '/home') {
+    menuId.value = 0
+  }
+  else {
+    menuId.value = id
+  }
 }
 
 function handleLogout() {
@@ -129,30 +81,30 @@ function handleLogout() {
 }
 
 watch(() => route.path, () => {
-  menuId.value = route.path === '/home' ? 1 : getMenuId()
+  menuId.value = route.path === '/home' ? 0 : getMenuId()
 })
-// onBeforeRouteUpdate(async (to, from) => {
-//   if (to.path === '/home') {
-//     menuId.value = 1
-//   } else {
-//     menuId.value = Number(menuList.find(item => item.id === +to.query.id)?.id)
-//   }
-//   to.meta.title = to.query.name || '首页'
-//   to.matched.map((item) => {
-//     if (item.path === to.path) {
-//       item.meta.title = to.query.name || '首页'
-//       return item
-//     }
-//     return item
-//   })
-// })
 
 function handleNavSearch() {
   console.log('12')
 }
 
 function getMenuId() {
-  return Number(menuList.find(item => item.id === Number(route.query.id))?.id)
+  let findId = 0
+  menuList.value.forEach((item) => {
+    if (item.row.length > 0) {
+      item.row.forEach((row: any) => {
+        if (row.cid === Number(route.query.id)) {
+          findId = Number(row.cid)
+        }
+      })
+    }
+    else {
+      if (item.cid === Number(route.query.id)) {
+        findId = Number(item.cid)
+      }
+    }
+  })
+  return findId
 }
 </script>
 
@@ -163,46 +115,49 @@ function getMenuId() {
         {{ title }}
       </h1>
     </template>
-    <template v-for="item in menuList" :key="item.id">
+    <template v-for="item in menuList" :key="item.cid">
       <t-menu-item
-        v-if="item.children.length === 0" :value="item.id"
-        @click="handleNav(`${item.path === '/home' ? `${item.path}` : `${item.path}?name=${item.name}&id=${item.id}`}`, item.id)"
+        v-if="item.row.length === 0" :value="item.cid"
+        @click="handleNav(item.path, item.cid)"
       >
         {{ item.name }}
       </t-menu-item>
-      <t-submenu v-else :value="item.id" :title="item.name">
-        <t-menu-item v-for="child in item.children" :key="child.id" :value="child.path" :to="child.path">
+      <t-submenu v-else :value="item.cid" :title="item.name">
+        <t-menu-item v-for="child in item.row" :key="child.cid" :value="child.cid" @click="handleNav(child.path, child.cid)">
           {{ child.name }}
         </t-menu-item>
       </t-submenu>
     </template>
-    <t-input-adornment>
-      <t-input
-        v-model="searchVal" placeholder="请输入关键词搜索" class="ml-12 !w-60" size="medium"
-        @enter="handleNavSearch"
-      />
-      <template #append>
-        <t-button type="submit" @click="handleNavSearch">
-          <SearchIcon :style="{ cursor: 'pointer' }" />
-        </t-button>
-      </template>
-    </t-input-adornment>
+    <!--    <t-input-adornment> -->
+    <!--      <t-input -->
+    <!--        v-model="searchVal" placeholder="请输入关键词搜索" class="ml-12 !w-60" size="medium" -->
+    <!--        @enter="handleNavSearch" -->
+    <!--      /> -->
+    <!--      <template #append> -->
+    <!--        <t-button type="submit" @click="handleNavSearch"> -->
+    <!--          <SearchIcon :style="{ cursor: 'pointer' }" /> -->
+    <!--        </t-button> -->
+    <!--      </template> -->
+    <!--    </t-input-adornment> -->
 
     <template #operations>
       <t-space v-if="token === ''" break-line :size="2">
-        <router-link :to="`/login?redirect=${route.path}`">
+        <!--        <router-link :to="`/login?redirect=${route.path}`"> -->
+        <!--          登录 -->
+        <!--        </router-link> -->
+        <router-link to="/login">
           登录
         </router-link>
-        <t-divider layout="vertical" />
-        <router-link to="login">
-          注册
-        </router-link>
+        <!--        <t-divider layout="vertical" /> -->
+        <!--        <router-link to="login"> -->
+        <!--          注册 -->
+        <!--        </router-link> -->
       </t-space>
       <div v-else class="flex-center">
         <t-dropdown :min-column-width="120" trigger="click">
           <template #dropdown>
             <t-dropdown-menu>
-              <t-dropdown-item class="user-dropdown-container-item mb-2" @click="handleNav('/user/recent', 0)">
+              <t-dropdown-item class="user-dropdown-container-item mb-2" @click="handleNav('/user/recent', -1)">
                 <UserCircleIcon />
                 个人中心
               </t-dropdown-item>
@@ -215,10 +170,10 @@ function getMenuId() {
           <t-button class="header-user-btn" theme="default" variant="text" size="large">
             <div class="header-user-account flex">
               <t-avatar size="medium">
-                W
+                {{ userInfo.realName[0] }}
               </t-avatar>
               <div class="relative top-[5px] ml-2">
-                {{ token }}
+                {{ userInfo.realName }}
               </div>
             </div>
             <template #suffix>
@@ -232,10 +187,6 @@ function getMenuId() {
 </template>
 
 <style scoped lang="scss">
-:global(.t-menu__popup-wrapper) {
-  width: 100px;
-}
-
 :deep(.t-head-menu__inner) {
   height: 75px;
   padding: 0 var(--td-comp-margin-xxxxl);

@@ -7,7 +7,7 @@ import { useUserStore } from '@/store/modules/user'
 import BaseFooter from '@/components/BaseFooter/BaseFooter.vue'
 import FloatButton from '@/components/FloatButton/FloatButton.vue'
 import Captcha from '@/components/Captcha/Captcha.vue'
-
+import { userService } from '@/api/modules/user'
 
 const title = import.meta.env.VITE_APP_TITLE
 const userStore = useUserStore()
@@ -16,7 +16,10 @@ const formData = reactive({
   password: '',
   agencyId: '',
   captcha: '',
+  verify_hash: '',
+  isAjax: true,
 })
+const captChaCode = ref('')
 const form = ref(null)
 const rules = {
   username: [
@@ -37,57 +40,36 @@ const isDisabled = computed(() => {
   return !formData.username || !formData.password || !formData.agencyId || !formData.captcha
 })
 
-const selectData = ref(
-  [
-    {
-      id: '4227',
-      name: '湖北科技学院核技术与化学生物学院',
-      ips: [
-        {
-          startIp: '192.168.0.0',
-          endIp: '192.168.255.255',
-        },
-        {
-          startIp: '10.0.0.0',
-          endIp: '10.255.255.255',
-        },
-      ],
-    },
-    {
-      id: '4226',
-      name: '海南广播电视大学',
-      ips: [
-        {
-          startIp: '59.50.85.194',
-          endIp: '59.50.85.222',
-        },
-      ],
-    },
-    {
-      id: '4225',
-      name: '西安文理学院体育学院',
-      ips: [
-        {
-          startIp: '192.168.0.0',
-          endIp: '192.168.255.255',
-        },
-        {
-          startIp: '10.0.0.0',
-          endIp: '10.255.255.255',
-        },
-      ],
-    },
-  ],
-)
+const selectData = ref([])
 const router = useRouter()
 const redirect = getQueryObject().redirect as string
+
+onMounted(() => {
+  getAgencyList()
+  getPicCodeData()
+})
+
+function getAgencyList() {
+  userService.getAgency({
+    PageSize: 99999,
+  }).then((res) => {
+    selectData.value = res.data
+  })
+}
+function getPicCodeData() {
+  userService.getPicCode().then((res) => {
+    const {
+      code,
+      verify_hash,
+    } = res.data
+    captChaCode.value = code
+    formData.verify_hash = verify_hash
+  })
+}
 async function onSubmit({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     const [err] = await awaitTo(userStore.login(formData))
-    if (err) {
-      MessagePlugin.error('登录失败')
-    }
-    else {
+    if (!err) {
       MessagePlugin.success('登录成功')
       router.push({ path: redirect || '/home' })
     }
@@ -225,6 +207,7 @@ function onReset() {
                 size="large"
                 :options="selectData"
                 filterable
+                :scroll="{ type: 'virtual' }"
                 :keys="{
                   label: 'name',
                   value: 'id',
@@ -252,7 +235,7 @@ function onReset() {
             <t-form-item name="captcha">
               <t-input-adornment class="!w-full">
                 <template #append>
-                  <Captcha :content-height="40" />
+                  <Captcha :content-height="40" :identify-code="captChaCode" :font-size-max="46" @click="getPicCodeData"/>
                 </template>
                 <t-input v-model="formData.captcha" clearable placeholder="请输入验证码" size="large">
                   <template #prefix-icon>

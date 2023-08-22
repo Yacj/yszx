@@ -1,406 +1,145 @@
 <script setup lang="ts">
-import { DownloadIcon, HeartFilledIcon, HeartIcon } from 'tdesign-icons-vue-next'
+// import { DownloadIcon, HeartFilledIcon, HeartIcon } from 'tdesign-icons-vue-next'
+import type { PageInfo } from 'tdesign-vue-next'
 import { MessagePlugin } from 'tdesign-vue-next'
+import type { LocationQueryValue } from 'vue-router'
 import { fileDownload } from '@/utils/file'
-import { usePagination } from '@/hooks/usePagination'
 import { useUserStore } from '@/store/modules/user'
+import { categoryService } from '@/api/modules/category'
+import baseUrl from '@/utils/url'
+import Result from '@/components/Result/Result.vue'
 
-
-const list = ref([
-  {
-    browse_count: '5054',
-    image: 'http://cremb-zsff.oss-cn-beijing.aliyuncs.com/c7b85202104291509213625.jpg',
-    title: 'CRMEB知识付费系统安装教程完整版【共十节】',
-    type: 3,
-    sort: 100,
-    sales: 23022,
-    is_light: 0,
-    light_type: 0,
-    is_mer_visible: 0,
-    money: '0.00',
-    member_money: '0.00',
-    subject_id: 88,
-    pay_type: 0,
-    label: [
-      '安装教程',
-    ],
-    id: 139,
-    fake_sales: 0,
-    add_time: '2021-04-29 16:16:46',
-    count: 11,
-    isCollect: false,
-  },
-  {
-    browse_count: '2994',
-    image: 'http://cremb-zsff.oss-cn-beijing.aliyuncs.com/4a002202102051439139927.jpg',
-    title: '用编程语言探索科学奥秘，数据科学与机器学习详细攻略',
-    type: 4,
-    sort: 8,
-    sales: 17367,
-    is_light: 0,
-    light_type: 0,
-    is_mer_visible: 0,
-    money: '0.00',
-    member_money: '0.00',
-    subject_id: 72,
-    pay_type: 2,
-    label: [
-      '满分数学',
-    ],
-    id: 92,
-    fake_sales: 0,
-    add_time: '2020-06-11 12:24:28',
-    count: 19,
-    isCollect: true,
-  },
-  {
-    browse_count: '1357',
-    image: 'http://cremb-zsff.oss-cn-beijing.aliyuncs.com/da482202102051439146544.jpg',
-    title: '初入职场老师教你10个常见的面试问题，助你节节高升',
-    type: 3,
-    sort: 2,
-    sales: 8668,
-    is_light: 0,
-    light_type: 0,
-    is_mer_visible: 0,
-    money: '200.00',
-    member_money: '100.00',
-    subject_id: 72,
-    pay_type: 1,
-    label: [
-      '解题技巧',
-    ],
-    id: 99,
-    fake_sales: 4,
-    add_time: '2020-09-18 14:40:48',
-    count: 11,
-  },
-  {
-    browse_count: '30',
-    image: 'http://032356151.oss-cn-hangzhou.aliyuncs.com/6a035202306190011424904.png',
-    title: '2222222222222',
-    type: 4,
-    sort: 0,
-    sales: 87,
-    is_light: 0,
-    light_type: 0,
-    is_mer_visible: 0,
-    money: '0.00',
-    member_money: '0.00',
-    subject_id: 88,
-    pay_type: 0,
-    label: [
-      '222222',
-    ],
-    id: 214,
-    fake_sales: 0,
-    add_time: '2023-06-19 00:14:01',
-    count: 0,
-  },
-  {
-    browse_count: '106',
-    image: 'http://cremb-zsff.oss-cn-beijing.aliyuncs.com/07d35202301101723293378.jpg',
-    title: '直播测试间',
-    type: 4,
-    sort: 0,
-    sales: 338,
-    is_light: 0,
-    light_type: 0,
-    is_mer_visible: 0,
-    money: '0.00',
-    member_money: '0.00',
-    subject_id: 62,
-    pay_type: 0,
-    label: [
-      '直播',
-    ],
-    id: 198,
-    fake_sales: 0,
-    add_time: '2023-03-14 17:33:56',
-    count: 0,
-  },
-  {
-    browse_count: '106',
-    image: 'http://cremb-zsff.oss-cn-beijing.aliyuncs.com/5921f202209301612385859.jpg',
-    title: '直播测试',
-    type: 4,
-    sort: 0,
-    sales: 341,
-    is_light: 0,
-    light_type: 0,
-    is_mer_visible: 0,
-    money: '0.00',
-    member_money: '0.00',
-    subject_id: 88,
-    pay_type: 0,
-    label: [
-      '直播测试',
-    ],
-    id: 181,
-    fake_sales: 0,
-    add_time: '2022-10-18 14:42:07',
-    count: 0,
-  },
-  {
-    browse_count: '175',
-    image: 'http://cremb-zsff.oss-cn-beijing.aliyuncs.com/23f91202209090945393141.jpg',
-    title: '测试直播效果(演习)',
-    type: 4,
-    sort: 0,
-    sales: 577,
-    is_light: 0,
-    light_type: 0,
-    is_mer_visible: 0,
-    money: '0.00',
-    member_money: '0.00',
-    subject_id: 88,
-    pay_type: 0,
-    label: [
-      '演戏直播',
-    ],
-    id: 176,
-    fake_sales: 0,
-    add_time: '2022-09-09 09:50:52',
-    count: 0,
-  },
-  {
-    browse_count: '175',
-    image: 'http://cremb-zsff.oss-cn-beijing.aliyuncs.com/659f2202110261655225754.png',
-    title: '专题专题测试',
-    type: 5,
-    sort: 0,
-    sales: 569,
-    is_light: 0,
-    light_type: 0,
-    is_mer_visible: 0,
-    money: '12.00',
-    member_money: '10.00',
-    subject_id: 95,
-    pay_type: 1,
-    label: [
-      '专题专题测试',
-    ],
-    id: 172,
-    fake_sales: 0,
-    add_time: '2022-08-04 14:51:40',
-    count: 11,
-  },
-  {
-    browse_count: '806',
-    image: 'http://cremb-zsff.oss-cn-beijing.aliyuncs.com/b46d1202111030931474013.jpg',
-    title: '知识付费直播测试',
-    type: 4,
-    sort: 0,
-    sales: 3219,
-    is_light: 0,
-    light_type: 0,
-    is_mer_visible: 0,
-    money: '0.00',
-    member_money: '0.00',
-    subject_id: 88,
-    pay_type: 2,
-    label: [
-      '知识付费测试',
-    ],
-    id: 154,
-    fake_sales: 0,
-    add_time: '2021-11-04 09:36:48',
-    count: 0,
-  },
-  {
-    browse_count: '150',
-    image: 'http://cremb-zsff.oss-cn-beijing.aliyuncs.com/c743f202107271810073674.png',
-    title: '图文轻专题',
-    type: 1,
-    sort: 0,
-    sales: 419,
-    is_light: 1,
-    light_type: 1,
-    is_mer_visible: 0,
-    money: '0.01',
-    member_money: '0.01',
-    subject_id: 88,
-    pay_type: 1,
-    label: [
-      '图文',
-    ],
-    id: 147,
-    fake_sales: 0,
-    add_time: '2021-07-29 17:42:49',
-    count: 0,
-  },
-  {
-    browse_count: '376',
-    image: 'http://cremb-zsff.oss-cn-beijing.aliyuncs.com/f9a0e202105251209381600.jpg',
-    title: '轻松一节课',
-    type: 3,
-    sort: 0,
-    sales: 879,
-    is_light: 1,
-    light_type: 3,
-    is_mer_visible: 0,
-    money: '0.01',
-    member_money: '0.01',
-    subject_id: 88,
-    pay_type: 1,
-    label: [
-      '轻松',
-    ],
-    id: 144,
-    fake_sales: 0,
-    add_time: '2021-07-27 15:27:24',
-    count: 0,
-  },
-  {
-    browse_count: '427',
-    image: 'http://cremb-zsff.oss-cn-beijing.aliyuncs.com/18080202103301616003225.jpg',
-    title: '要培养出富有创造力的学生',
-    type: 2,
-    sort: 0,
-    sales: 1009,
-    is_light: 0,
-    light_type: 0,
-    is_mer_visible: 0,
-    money: '0.00',
-    member_money: '0.00',
-    subject_id: 72,
-    pay_type: 0,
-    label: [
-      '创造能力',
-    ],
-    id: 136,
-    fake_sales: 0,
-    add_time: '2021-03-30 16:22:29',
-    count: 1,
-  },
-  {
-    browse_count: '256',
-    image: 'http://cremb-zsff.oss-cn-beijing.aliyuncs.com/883d0202103301610344021.jpg',
-    title: '面向未来的教育方式',
-    type: 2,
-    sort: 0,
-    sales: 674,
-    is_light: 0,
-    light_type: 0,
-    is_mer_visible: 0,
-    money: '0.02',
-    member_money: '0.01',
-    subject_id: 79,
-    pay_type: 1,
-    label: [
-      '未来教育',
-    ],
-    id: 135,
-    fake_sales: 0,
-    add_time: '2021-03-30 16:21:02',
-    count: 10,
-  },
-  {
-    browse_count: '1229',
-    image: 'http://cremb-zsff.oss-cn-beijing.aliyuncs.com/0024b202102051450053773.jpg',
-    title: '写作提升突破',
-    type: 1,
-    sort: 0,
-    sales: 3868,
-    is_light: 0,
-    light_type: 0,
-    is_mer_visible: 0,
-    money: '0.00',
-    member_money: '0.00',
-    subject_id: 86,
-    pay_type: 0,
-    label: [
-      '小学语文',
-      '文章归纳',
-    ],
-    id: 134,
-    fake_sales: 0,
-    add_time: '2021-03-30 15:49:19',
-    count: 3,
-  },
-  {
-    browse_count: '703',
-    image: 'http://cremb-zsff.oss-cn-beijing.aliyuncs.com/e424520210330154635980.jpg',
-    title: '不忘初心，逐梦前行2020年众邦科技年会',
-    type: 3,
-    sort: 0,
-    sales: 1882,
-    is_light: 0,
-    light_type: 0,
-    is_mer_visible: 0,
-    money: '3998.00',
-    member_money: '0.00',
-    subject_id: 78,
-    pay_type: 1,
-    label: [
-      '众邦年会',
-    ],
-    id: 133,
-    fake_sales: 0,
-    add_time: '2021-03-30 15:47:45',
-    count: 1,
-  },
-  {
-    browse_count: '903',
-    image: 'http://cremb-zsff.oss-cn-beijing.aliyuncs.com/b3f4c202102051439113750.jpg',
-    title: '轻松掌握多国语言，托福雅思助你完成出国留学梦',
-    type: 3,
-    sort: 0,
-    sales: 2759,
-    is_light: 0,
-    light_type: 0,
-    is_mer_visible: 0,
-    money: '28880.00',
-    member_money: '8.00',
-    subject_id: 63,
-    pay_type: 1,
-    label: [
-      '女神七宝茶',
-    ],
-    id: 129,
-    fake_sales: 0,
-    add_time: '2021-03-02 18:22:08',
-    count: 3,
-  },
-])
+const list = ref([])
 const userStore = useUserStore()
 const token = computed(() => userStore.token)
-// const total = list.value.length
-// const pagination = ref({
-//   current: 1,
-//   pageSize: 12,
-// })
-// const pageSizeOptions = [
-//   {
-//     label: '12条/页',
-//     value: 12,
-//   },
-//   {
-//     label: '36条/页',
-//     value: 36,
-//   },
-//   {
-//     label: '60条/页',
-//     value: 60,
-//   },
-//   {
-//     label: '120条/页',
-//     value: 120,
-//   },
-// ]
+const route = useRoute()
+const orgId = computed(() => userStore.orgID)
 const {
-  pagination,
-  pageSizeOptions,
-  handlePageChange,
-} = usePagination()
+  query: { id: RouteId },
+} = route
+
+// 分类
+const categoryList = ref([])
+const categoryId = ref(0)
+
+const cateList = ref([])
+const Code = ref<string | LocationQueryValue>('')
+const total = list.value.length
+const pagination = ref({
+  current: 1,
+  pageSize: 12,
+})
+const pageSizeOptions = [
+  {
+    label: '12条/页',
+    value: 12,
+  },
+  {
+    label: '36条/页',
+    value: 36,
+  },
+  {
+    label: '60条/页',
+    value: 60,
+  },
+  {
+    label: '120条/页',
+    value: 120,
+  },
+]
+
+watch(
+  () => route.query,
+  (value) => {
+    const {
+      id,
+      code,
+    } = value
+    if (id) {
+      categoryId.value = Number(id)
+    }
+    if (code) {
+      Code.value = code
+      getResByCateList()
+    }
+    if (!value.id && !value.code) {
+      console.log('12')
+      getCategoryList()
+    }
+  },
+  { immediate: true, deep: true },
+)
+
 onMounted(() => {
   nextTick(() => {
     const scrollToTop = (element: any): void => {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
-    scrollToTop(document.querySelector('.home-list'))
+    scrollToTop(document.querySelector('.filter'))
+    getCategoryList()
   })
 })
+function getCategoryList() {
+  categoryService.get({
+    orgID: orgId.value,
+    hasRow: true,
+  }).then((res) => {
+    categoryList.value = res.data
+    categoryId.value = Number(RouteId) || res.data[0].cid
+  })
+}
+function handleCategoryClick(id: number, code: string) {
+  categoryId.value = id
+  Code.value = code
+  cateList.value = []
+  getResByCateList()
+}
+function handleCategoryRowClick(code: string) {
+  Code.value = code
+  getResByCateList()
+}
+function getResByCateList() {
+  categoryService.resByCate({
+    Code: Code.value,
+    PageIndex: pagination.value.current,
+    PageSize: pagination.value.pageSize,
+  }).then((res) => {
+    const {
+      categoryGroups,
+      resRow,
+    } = res.data
+    const CateList = cateList.value
+    if (CateList.length === 0) {
+      cateList.value = categoryGroups
+    }
+    else {
+      categoryGroups.forEach((item) => {
+        const index = CateList.findIndex(row => row.level === item.level)
+        if (index !== -1) {
+          CateList[index] = item
+        }
+        else {
+          CateList.push(item)
+        }
+      })
+    }
+    list.value = resRow
+    // Code.value = res.code
+    // pagination.value.total = res.total
+  })
+}
+
+function pageChange({ current, pageSize }: PageInfo) {
+  pagination.value = {
+    current,
+    pageSize,
+  }
+}
+
+function handleDownload() {
+  fileDownload('http://wlapi.jqweike.cn/wlxt_Data/WKK/GZ/FL0601/RJGZ010108/0101/03/wlxtRJGZYW0000003.mp4')
+  MessagePlugin.success('下载成功')
+}
 
 function handleClickCollect(isCollect: boolean, index: number) {
   if (token.value) {
@@ -411,98 +150,163 @@ function handleClickCollect(isCollect: boolean, index: number) {
     MessagePlugin.warning('请先登录')
   }
 }
-
-// function pageChange({ current, pageSize }: PageInfo) {
-//   pagination.value = {
-//     current,
-//     pageSize,
-//   }
-// }
-
-function handleDownload() {
-  fileDownload('http://wlapi.jqweike.cn/wlxt_Data/WKK/GZ/FL0601/RJGZ010108/0101/03/wlxtRJGZYW0000003.mp4')
-  MessagePlugin.success('下载成功')
-}
 </script>
 
 <template>
   <div class="home-list max-w-screen-1430 mx-auto my-7">
-    <div class="list mt-6 space-y-3">
+    <div class="filter">
       <t-card :bordered="false">
-        <div class="space-x-6 flex-y-center text-sm">
-          <div class="cursor-pointer filter-text filter-active">
-            综合
-          </div>
-          <t-divider layout="vertical" />
-          <div class="cursor-pointer filter-text">
-            点击
-          </div>
-          <t-divider layout="vertical" />
-          <div class="cursor-pointer filter-text">
-            最新
-          </div>
-        </div>
+        <ul class="space-y-2 mb-5">
+          <li class="flex-y-center border-dashed border-b-1">
+            <div class="filter-title">
+              <span>分类：</span>
+            </div>
+            <div class="ml-5 flex-1">
+              <t-button
+                v-for="item in categoryList"
+                :key="item.cid"
+                :variant="item.cid === categoryId ? 'base' : 'text'"
+                :theme="item.cid === categoryId ? 'primary' : 'default'"
+                class="m-1"
+                @click="handleCategoryClick(item.cid, item.code)"
+              >
+                {{ item.name }}
+              </t-button>
+            </div>
+          </li>
+          <li v-for="(item, index) in cateList" :key="index + 1" class="flex-y-center cate-list border-dashed border-b-1">
+            <div class="filter-title">
+              <span>{{ item.name }}：</span>
+            </div>
+            <div class="ml-5 flex-1">
+              <t-button
+                v-for="row in item.row"
+                :key="row.cid"
+                :variant="row.code === Code ? 'base' : 'text'"
+                :theme="row.code === Code ? 'primary' : 'default'"
+                class="m-1"
+                @click="handleCategoryRowClick(row.code)"
+              >
+                {{ row.name }}
+              </t-button>
+            </div>
+          </li>
+        </ul>
+        <!--        <div class="filter-item"> -->
+        <!--          <div class="filter-item-title"> -->
+        <!--            <span class="text-lg">分类</span> -->
+        <!--          </div> -->
+        <!--          <div class="filter-item-list"> -->
+        <!--            <ul> -->
+        <!--              <li> -->
+        <!--                <div class="cursor-pointer filter-text filter-active"> -->
+        <!--                  全部 -->
+        <!--                </div> -->
+        <!--              </li> -->
+        <!--            </ul> -->
+        <!--          </div> -->
+        <!--        </div> -->
       </t-card>
+    </div>
+    <div v-if="list.length > 0" class="list mt-6 space-y-3">
+      <!--      <t-card :bordered="false"> -->
+      <!--        <div class="space-x-6 flex-y-center text-sm"> -->
+      <!--          <div class="cursor-pointer filter-text filter-active"> -->
+      <!--            综合 -->
+      <!--          </div> -->
+      <!--          <t-divider layout="vertical" /> -->
+      <!--          <div class="cursor-pointer filter-text"> -->
+      <!--            点击 -->
+      <!--          </div> -->
+      <!--          <t-divider layout="vertical" /> -->
+      <!--          <div class="cursor-pointer filter-text"> -->
+      <!--            最新 -->
+      <!--          </div> -->
+      <!--        </div> -->
+      <!--      </t-card> -->
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <t-card v-for="(item, index) in list" :key="item.id" :bordered="false" class="list-card">
           <template #cover>
-            <img :src="item.image" alt="" class="h-[190px]">
+            <t-image :src="baseUrl.file + item.logo" alt="" class="h-[190px]" />
           </template>
-          <router-link to="/home/list/detail" :aria-label="item.title" target="_blank">
+          <router-link
+            :to="{
+              name: 'HomeListDetail',
+              query: {
+                ResCode: item.resCode,
+                ResType: item.type,
+              },
+            }"
+            :aria-label="item.title"
+            target="_blank"
+          >
             <div class="text-base h-11 cursor-pointer text-ellipsis overflow-hidden">
-              {{ item.title }}
+              {{ item.name }}
             </div>
           </router-link>
-          <template #footer>
-            <div class="grid grid-cols-2 gap-5">
-              <div class="flex-y-center cursor-pointer">
-                <transition :name="item.isCollect ? 'zoom' : '' " mode="out-in">
-                  <HeartFilledIcon
-                    v-if="item.isCollect" key="like"
-                    class="text-2xl collect-icon collect-active"
-                    @click="handleClickCollect(item.isCollect, index)"
-                  />
-                  <HeartIcon
-                    v-else key="unlike" class="text-2xl collect-icon"
-                    @click="handleClickCollect(item.isCollect, index)"
-                  />
-                </transition>
-                <span class="ml-1 text-base">
-                  收藏
-                </span>
-              </div>
-              <div class="flex-center ml-auto" @click="handleDownload">
-                <DownloadIcon class="text-xl" />
-                <span class="ml-1 text-base">
-                  下载
-                </span>
-              </div>
-              <!--              <div class="flex-center"> -->
-              <!--                <ShareIcon class="" /> -->
-              <!--                <span class=" ml-2"> -->
-              <!--                  分享 -->
-              <!--                </span> -->
-              <!--              </div> -->
-            </div>
-          </template>
+          <!--          <template #footer> -->
+          <!--            <div class="grid grid-cols-2 gap-5"> -->
+          <!--              <div class="flex-y-center cursor-pointer"> -->
+          <!--                <transition :name="item.isCollect ? 'zoom' : '' " mode="out-in"> -->
+          <!--                  <HeartFilledIcon -->
+          <!--                    v-if="item.isCollect" key="like" -->
+          <!--                    class="text-2xl collect-icon collect-active" -->
+          <!--                    @click="handleClickCollect(item.isCollect, index)" -->
+          <!--                  /> -->
+          <!--                  <HeartIcon -->
+          <!--                    v-else key="unlike" class="text-2xl collect-icon" -->
+          <!--                    @click="handleClickCollect(item.isCollect, index)" -->
+          <!--                  /> -->
+          <!--                </transition> -->
+          <!--                <span class="ml-1 text-base"> -->
+          <!--                  收藏 -->
+          <!--                </span> -->
+          <!--              </div> -->
+          <!--              <div class="flex-center ml-auto" @click="handleDownload"> -->
+          <!--                <DownloadIcon class="text-xl" /> -->
+          <!--                <span class="ml-1 text-base"> -->
+          <!--                  下载 -->
+          <!--                </span> -->
+          <!--              </div> -->
+          <!--              &lt;!&ndash;              <div class="flex-center"> &ndash;&gt; -->
+          <!--              &lt;!&ndash;                <ShareIcon class="" /> &ndash;&gt; -->
+          <!--              &lt;!&ndash;                <span class=" ml-2"> &ndash;&gt; -->
+          <!--              &lt;!&ndash;                  分享 &ndash;&gt; -->
+          <!--              &lt;!&ndash;                </span> &ndash;&gt; -->
+          <!--              &lt;!&ndash;              </div> &ndash;&gt; -->
+          <!--            </div> -->
+          <!--          </template> -->
         </t-card>
       </div>
     </div>
-    <div class="mt-8 wh-full">
-      <t-pagination
-        :page-size-options="pageSizeOptions"
-        show-first-and-last-page-btn
-        :total-content="false"
-        :total="pagination.total"
-        :page-size="pagination.pageSize"
-        :current="pagination.currentPage"
-        @change="handlePageChange"
-      />
-    </div>
+    <Result v-else type="404" height="120" title="暂无数据" />
+    <!--    <div class="mt-8 wh-full"> -->
+    <!--      <t-pagination -->
+    <!--        :page-size-options="pageSizeOptions" -->
+    <!--        show-first-and-last-page-btn -->
+    <!--        :total-content="false" -->
+    <!--        :total="total" -->
+    <!--        :page-size="pagination.pageSize" -->
+    <!--        :current="pagination.current" -->
+    <!--        @change="pageChange" -->
+    <!--      /> -->
+    <!--    </div> -->
   </div>
 </template>
 
 <style scoped lang="scss">
+:deep(.filter){
+  .t-card__body{
+    padding: 10px 20px 0 17px;
+  }
+}
+.filter{
+  .filter-title{
+    font-size: 15px;
+    line-height: 50px;
+    color: var(--td-gray-color-7);
+  }
+}
 .filter-text{
   transition: color .2s;
   &:hover{
@@ -538,5 +342,8 @@ function handleDownload() {
     //transform: scale(1.02);
     box-shadow: 0 4px 8px 0 rgba(95, 101, 105, .1);
   }
+}
+.cate-list:last-child{
+  border-bottom: none;
 }
 </style>

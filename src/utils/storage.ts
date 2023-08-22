@@ -8,7 +8,7 @@ interface globalConfig {
 
 const config: globalConfig = {
   type: 'localStorage',
-  prefix: 'antd-vue-admin',
+  prefix: 'yszx',
   expire: defaultExpire,
 }
 function removeStorageFromKey(key: string) {

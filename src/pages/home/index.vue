@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import Result from '@/components/Result/Result.vue'
+
 const hostList = ref([
   {
     name: '教学案例',
@@ -91,48 +93,49 @@ setTimeout(() => {
             </div>
           </div>
           <div class="mt-5 grid grid-cols-1 md:grid-cols-5 gap-6">
-            <t-card hover-shadow :bordered="false">
-              <router-link to="/home/detail">
-                <div class="cover">
-                  <img src="../../assets/img/list-cover.png" alt="">
-                </div>
-                <div class="desc text-center text-base mt-3 font-400">
-                  2021年教师资格证面试备考指导
-                </div>
-              </router-link>
-            </t-card>
-            <t-card hover-shadow :bordered="false">
-              <div class="cover">
-                <img src="../../assets/img/list-cover.png" alt="">
-              </div>
-              <div class="desc text-center text-base mt-3 font-400">
-                2021年教师资格证面试备考指导
-              </div>
-            </t-card>
-            <t-card hover-shadow :bordered="false">
-              <div class="cover">
-                <img src="../../assets/img/list-cover.png" alt="">
-              </div>
-              <div class="desc text-center text-base mt-3 font-400">
-                2021年教师资格证面试备考指导
-              </div>
-            </t-card>
-            <t-card hover-shadow :bordered="false">
-              <div class="cover">
-                <img src="../../assets/img/list-cover.png" alt="">
-              </div>
-              <div class="desc text-center text-base mt-3 font-400">
-                2021年教师资格证面试备考指导
-              </div>
-            </t-card>
-            <t-card hover-shadow :bordered="false">
-              <div class="cover">
-                <img src="../../assets/img/list-cover.png" alt="">
-              </div>
-              <div class="desc text-center text-base mt-3 font-400">
-                2021年教师资格证面试备考指导
-              </div>
-            </t-card>
+            <Result :height="120" title="暂无数据"/>
+            <!--            <t-card hover-shadow :bordered="false"> -->
+            <!--              <router-link to="/home/detail"> -->
+            <!--                <div class="cover"> -->
+            <!--                  <img src="../../assets/img/list-cover.png" alt=""> -->
+            <!--                </div> -->
+            <!--                <div class="desc text-center text-base mt-3 font-400"> -->
+            <!--                  2021年教师资格证面试备考指导 -->
+            <!--                </div> -->
+            <!--              </router-link> -->
+            <!--            </t-card> -->
+            <!--            <t-card hover-shadow :bordered="false"> -->
+            <!--              <div class="cover"> -->
+            <!--                <img src="../../assets/img/list-cover.png" alt=""> -->
+            <!--              </div> -->
+            <!--              <div class="desc text-center text-base mt-3 font-400"> -->
+            <!--                2021年教师资格证面试备考指导 -->
+            <!--              </div> -->
+            <!--            </t-card> -->
+            <!--            <t-card hover-shadow :bordered="false"> -->
+            <!--              <div class="cover"> -->
+            <!--                <img src="../../assets/img/list-cover.png" alt=""> -->
+            <!--              </div> -->
+            <!--              <div class="desc text-center text-base mt-3 font-400"> -->
+            <!--                2021年教师资格证面试备考指导 -->
+            <!--              </div> -->
+            <!--            </t-card> -->
+            <!--            <t-card hover-shadow :bordered="false"> -->
+            <!--              <div class="cover"> -->
+            <!--                <img src="../../assets/img/list-cover.png" alt=""> -->
+            <!--              </div> -->
+            <!--              <div class="desc text-center text-base mt-3 font-400"> -->
+            <!--                2021年教师资格证面试备考指导 -->
+            <!--              </div> -->
+            <!--            </t-card> -->
+            <!--            <t-card hover-shadow :bordered="false"> -->
+            <!--              <div class="cover"> -->
+            <!--                <img src="../../assets/img/list-cover.png" alt=""> -->
+            <!--              </div> -->
+            <!--              <div class="desc text-center text-base mt-3 font-400"> -->
+            <!--                2021年教师资格证面试备考指导 -->
+            <!--              </div> -->
+            <!--            </t-card> -->
           </div>
         </div>
         <div class="hot-class container mx-auto">
@@ -158,18 +161,19 @@ setTimeout(() => {
               <img src="../../assets/img/img-cover.png" alt="">
             </div>
             <div class="flex-1 ml-5">
-              <ul class="grid gap-1  grid-cols-1 sm:grid-cols-5 2xl:gap-6">
-                <t-card class="home-full-card" :bordered="false">
-                  <template #cover>
-                    <img src="../../assets/img/list-cover.png" alt="" class="h-[152px]">
-                  </template>
-                  <router-link to="/home/detail">
-                    <div class="desc text-center text-base font-400">
-                      2021年教师资格证面试备考指导
-                    </div>
-                  </router-link>
-                </t-card>
-              </ul>
+                <Result :height="120" title="暂无数据"/>
+<!--              <ul class="grid gap-1  grid-cols-1 sm:grid-cols-5 2xl:gap-6">-->
+<!--                <t-card class="home-full-card" :bordered="false">-->
+<!--                  <template #cover>-->
+<!--                    <img src="../../assets/img/list-cover.png" alt="" class="h-[152px]">-->
+<!--                  </template>-->
+<!--                  <router-link to="/home/detail">-->
+<!--                    <div class="desc text-center text-base font-400">-->
+<!--                      2021年教师资格证面试备考指导-->
+<!--                    </div>-->
+<!--                  </router-link>-->
+<!--                </t-card>-->
+<!--              </ul>-->
             </div>
           </div>
         </div>

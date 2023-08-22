@@ -1,5 +1,6 @@
 import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 import axios from 'axios'
+import { MessagePlugin } from 'tdesign-vue-next'
 
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   hideLoading?: boolean
@@ -28,12 +29,15 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   (response: AxiosResponse) => {
-    const { data } = response
-    const { code } = data
+    const code = response.status
     if (typeof code !== 'undefined' && code !== 200) {
       return Promise.reject(new Error('Error'))
     }
-    return Promise.resolve(data)
+    if (response.data.status !== 'Success') {
+      MessagePlugin.error(response.data.data)
+      return Promise.reject(new Error(response.data.data))
+    }
+    return Promise.resolve(response)
   },
   (error) => {
     const message = error.message || '请求错误'
@@ -58,6 +62,7 @@ request.get = <T = any>(url: string, params?: object): Promise<T> =>
   })
 
 request.post = <T = any>(url: string, params?: object): Promise<T> =>
+
   request({
     method: 'post',
     url,
