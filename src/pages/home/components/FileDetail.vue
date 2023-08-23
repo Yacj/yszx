@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { DownloadIcon, FullscreenIcon } from 'tdesign-icons-vue-next'
+import { FullscreenIcon } from 'tdesign-icons-vue-next'
 import { fileTypeEnum } from '@/utils/enums'
 import { resourceService } from '@/api/modules/resource'
-import baseUrl from "@/utils/url";
+import baseUrl from '@/utils/url'
 
 const props = defineProps({
   resCode: {
@@ -33,33 +33,37 @@ function getFileType(type: string) {
 
 <template>
   <div class="flex mt-6 mb-3 preview">
-    <t-card :bordered="false" title="资源预览" class="mr-3 card-title">
+    <t-card :bordered="false" title="资源预览" class="!mr-3 card-title">
       <div
         class="h-250 w-295 overflow-y-scroll relative"
       >
         <embed
           v-if="getFileType(typeName) === 'pdf' "
           ref="fileRef"
-          src="https://wlapi.jqweike.cn/pdfRead/web/viewer.html?file=http://wlapi.jqweike.cn/\wlxt_Data\WAK\GZ\FL19\RJGZ020101\01\wlxtRJGZSX20211024000049.pdf"
+          :src="`https://wlapi.jqweike.cn/pdfRead/web/viewer.html?file=${baseUrl.file + fileData.path}`"
           class="wh-full"
         >
         <div v-if="getFileType(typeName) === 'img'" ref="fileRef" class="img">
           <t-space direction="vertical">
             <t-image
-              src="https://tdesign.gtimg.com/demo/demo-image-1.png"
-              fit="cover"
-            />
-            <t-image
-              src="https://tdesign.gtimg.com/demo/demo-image-1.png"
+              :src="baseUrl.file + fileData.path"
               fit="cover"
             />
           </t-space>
         </div>
         <div v-if="getFileType(typeName) === 'word'" class="h-250 w-295 overflow-y-scroll relative">
           <embed
+            ref="fileRef"
             :src="`https://view.officeapps.live.com/op/view.aspx?src=${baseUrl.file + fileData.path}`"
             class="wh-full"
           >
+        </div>
+        <div v-if="getFileType(typeName) === 'html'">
+          <iframe
+            ref="fileRef"
+            :src="baseUrl.file + fileData.path"
+            class="wh-full"
+          />
         </div>
       </div>
       <template #actions>
@@ -73,15 +77,15 @@ function getFileType(type: string) {
             </template>
             全屏
           </t-button>
-<!--          <t-button variant="outline">-->
-<!--            点击收藏-->
-<!--          </t-button>-->
-<!--          <t-button variant="outline">-->
-<!--            <template #icon>-->
-<!--              <DownloadIcon />-->
-<!--            </template>-->
-<!--            点击下载-->
-<!--          </t-button>-->
+          <!--          <t-button variant="outline"> -->
+          <!--            点击收藏 -->
+          <!--          </t-button> -->
+          <!--          <t-button variant="outline"> -->
+          <!--            <template #icon> -->
+          <!--              <DownloadIcon /> -->
+          <!--            </template> -->
+          <!--            点击下载 -->
+          <!--          </t-button> -->
         </div>
       </template>
     </t-card>

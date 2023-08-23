@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // import { DownloadIcon, HeartFilledIcon, HeartIcon } from 'tdesign-icons-vue-next'
-import type { PageInfo } from 'tdesign-vue-next'
 import { MessagePlugin } from 'tdesign-vue-next'
 import type { LocationQueryValue } from 'vue-router'
 import { fileDownload } from '@/utils/file'
@@ -24,30 +23,14 @@ const categoryId = ref(0)
 
 const cateList = ref([])
 const Code = ref<string | LocationQueryValue>('')
-const total = list.value.length
+
+const total = ref(0)
 const pagination = ref({
   current: 1,
   pageSize: 12,
 })
-const pageSizeOptions = [
-  {
-    label: '12条/页',
-    value: 12,
-  },
-  {
-    label: '36条/页',
-    value: 36,
-  },
-  {
-    label: '60条/页',
-    value: 60,
-  },
-  {
-    label: '120条/页',
-    value: 120,
-  },
-]
 
+const loadMoreShow = ref(false)
 watch(
   () => route.query,
   (value) => {
@@ -62,10 +45,6 @@ watch(
       Code.value = code
       getResByCateList()
     }
-    if (!value.id && !value.code) {
-      console.log('12')
-      getCategoryList()
-    }
   },
   { immediate: true, deep: true },
 )
@@ -79,6 +58,7 @@ onMounted(() => {
     getCategoryList()
   })
 })
+
 function getCategoryList() {
   categoryService.get({
     orgID: orgId.value,
@@ -88,16 +68,25 @@ function getCategoryList() {
     categoryId.value = Number(RouteId) || res.data[0].cid
   })
 }
+
 function handleCategoryClick(id: number, code: string) {
   categoryId.value = id
   Code.value = code
   cateList.value = []
+  list.value = []
+  pagination.value = {
+    current: 1,
+    pageSize: 12,
+  }
   getResByCateList()
 }
+
 function handleCategoryRowClick(code: string) {
   Code.value = code
+  list.value = []
   getResByCateList()
 }
+
 function getResByCateList() {
   categoryService.resByCate({
     Code: Code.value,
@@ -107,13 +96,14 @@ function getResByCateList() {
     const {
       categoryGroups,
       resRow,
+      total: ResTotal,
     } = res.data
     const CateList = cateList.value
     if (CateList.length === 0) {
       cateList.value = categoryGroups
     }
     else {
-      categoryGroups.forEach((item) => {
+      categoryGroups.forEach((item: any) => {
         const index = CateList.findIndex(row => row.level === item.level)
         if (index !== -1) {
           CateList[index] = item
@@ -123,19 +113,16 @@ function getResByCateList() {
         }
       })
     }
-    list.value = resRow
-    // Code.value = res.code
-    // pagination.value.total = res.total
+    total.value = ResTotal
+    loadMoreShow.value = pagination.value.current * pagination.value.pageSize < total.value
+    if (pagination.value.current === 1) {
+      list.value = resRow
+    }
+    else {
+      list.value = list.value.concat(resRow)
+    }
   })
 }
-
-function pageChange({ current, pageSize }: PageInfo) {
-  pagination.value = {
-    current,
-    pageSize,
-  }
-}
-
 function handleDownload() {
   fileDownload('http://wlapi.jqweike.cn/wlxt_Data/WKK/GZ/FL0601/RJGZ010108/0101/03/wlxtRJGZYW0000003.mp4')
   MessagePlugin.success('下载成功')
@@ -150,6 +137,15 @@ function handleClickCollect(isCollect: boolean, index: number) {
     MessagePlugin.warning('请先登录')
   }
 }
+
+function handleLoadMoreClick() {
+  pagination.value.current += 1
+  getResByCateList()
+}
+
+function handleNavTo(resCode: string, type: string) {
+  window.open(`/#/home/detail?ResCode=${resCode}&ResType=${type}`, '_blank')
+}
 </script>
 
 <template>
@@ -157,7 +153,7 @@ function handleClickCollect(isCollect: boolean, index: number) {
     <div class="filter">
       <t-card :bordered="false">
         <ul class="space-y-2 mb-5">
-          <li class="flex-y-center border-dashed border-b-1">
+          <li class="flex-y-center border-dashed border-b-1 pb-1">
             <div class="filter-title">
               <span>分类：</span>
             </div>
@@ -174,7 +170,10 @@ function handleClickCollect(isCollect: boolean, index: number) {
               </t-button>
             </div>
           </li>
-          <li v-for="(item, index) in cateList" :key="index + 1" class="flex-y-center cate-list border-dashed border-b-1">
+          <li
+            v-for="(item, index) in cateList" :key="index + 1"
+            class="flex-y-center cate-list border-dashed border-b-1 pb-1"
+          >
             <div class="filter-title">
               <span>{{ item.name }}：</span>
             </div>
@@ -192,23 +191,9 @@ function handleClickCollect(isCollect: boolean, index: number) {
             </div>
           </li>
         </ul>
-        <!--        <div class="filter-item"> -->
-        <!--          <div class="filter-item-title"> -->
-        <!--            <span class="text-lg">分类</span> -->
-        <!--          </div> -->
-        <!--          <div class="filter-item-list"> -->
-        <!--            <ul> -->
-        <!--              <li> -->
-        <!--                <div class="cursor-pointer filter-text filter-active"> -->
-        <!--                  全部 -->
-        <!--                </div> -->
-        <!--              </li> -->
-        <!--            </ul> -->
-        <!--          </div> -->
-        <!--        </div> -->
       </t-card>
     </div>
-    <div v-if="list.length > 0" class="list mt-6 space-y-3">
+    <div v-if="list.length > 0" class="list mt-6 ">
       <!--      <t-card :bordered="false"> -->
       <!--        <div class="space-x-6 flex-y-center text-sm"> -->
       <!--          <div class="cursor-pointer filter-text filter-active"> -->
@@ -227,7 +212,7 @@ function handleClickCollect(isCollect: boolean, index: number) {
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <t-card v-for="(item, index) in list" :key="item.id" :bordered="false" class="list-card">
           <template #cover>
-            <t-image :src="baseUrl.file + item.logo" alt="" class="h-[190px]" />
+            <t-image :src="baseUrl.file + item.logo" alt="" class="h-[190px]" @click="handleNavTo(item.resCode, item.type)" />
           </template>
           <router-link
             :to="{
@@ -278,42 +263,45 @@ function handleClickCollect(isCollect: boolean, index: number) {
           <!--          </template> -->
         </t-card>
       </div>
+      <div class="loading-more flex-center mt-8">
+        <t-button
+          v-if="loadMoreShow"
+          variant="outline"
+          class="w-30"
+          @click="handleLoadMoreClick"
+        >
+          加载更多
+        </t-button>
+      </div>
     </div>
     <Result v-else type="404" height="120" title="暂无数据" />
-    <!--    <div class="mt-8 wh-full"> -->
-    <!--      <t-pagination -->
-    <!--        :page-size-options="pageSizeOptions" -->
-    <!--        show-first-and-last-page-btn -->
-    <!--        :total-content="false" -->
-    <!--        :total="total" -->
-    <!--        :page-size="pagination.pageSize" -->
-    <!--        :current="pagination.current" -->
-    <!--        @change="pageChange" -->
-    <!--      /> -->
-    <!--    </div> -->
   </div>
 </template>
 
 <style scoped lang="scss">
-:deep(.filter){
-  .t-card__body{
+:deep(.filter) {
+  .t-card__body {
     padding: 10px 20px 0 17px;
   }
 }
-.filter{
-  .filter-title{
+
+.filter {
+  .filter-title {
     font-size: 15px;
     line-height: 50px;
     color: var(--td-gray-color-7);
   }
 }
-.filter-text{
+
+.filter-text {
   transition: color .2s;
-  &:hover{
+
+  &:hover {
     color: var(--brand-main);
   }
 }
-.collect-active,.filter-active {
+
+.collect-active, .filter-active {
   color: var(--brand-main);
 }
 
@@ -343,7 +331,8 @@ function handleClickCollect(isCollect: boolean, index: number) {
     box-shadow: 0 4px 8px 0 rgba(95, 101, 105, .1);
   }
 }
-.cate-list:last-child{
+
+.cate-list:last-child {
   border-bottom: none;
 }
 </style>

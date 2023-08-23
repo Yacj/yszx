@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { HomeIcon, QrcodeIcon } from 'tdesign-icons-vue-next'
 import type { TdStickyItemProps } from 'tdesign-vue-next'
-import {getAssetsImg} from '@/utils'
+import { getAssetsImg } from '@/utils'
 import SvgIcon from '@/components/SvgIcon/SvgIcon.vue'
 import { useAppStore } from '@/store/modules/app'
 
@@ -84,15 +84,17 @@ function handleToggleTheme(event: MouseEvent) {
     <t-sticky-tool
       :offset="[-60, 130]"
       :width="70"
+      class="!z-[999]"
       @click="handleClick"
     >
-      <t-sticky-item label="返回首页">
+      <t-sticky-item label="返回首页" class="!z-50">
         <template #icon>
           <HomeIcon />
         </template>
       </t-sticky-item>
       <t-sticky-item
         label="微信扫码"
+        class="!z-50"
         :popup-props="{ overlayInnerStyle: { padding: '4px', height: '128px' } }"
       >
         <template #icon>
@@ -102,7 +104,10 @@ function handleToggleTheme(event: MouseEvent) {
           <img :src="getAssetsImg ('footer-code.png')" alt="" class="w-30 h-33">
         </template>
       </t-sticky-item>
-      <t-sticky-item :label="appStore.colorScheme === 'dark' ? '明亮主题' : '暗黑主题'">
+      <t-sticky-item
+        :label="appStore.colorScheme === 'dark' ? '明亮主题' : '暗黑主题'"
+        class="!z-50"
+      >
         <template #icon>
           <SvgIcon v-if="appStore.colorScheme === 'dark'" name="tabler:sun" type="iconify" :size="25" />
           <SvgIcon v-else name="tabler:moon" type="iconify" :size="25" />

@@ -111,9 +111,11 @@ function getMenuId() {
 <template>
   <t-head-menu :value="menuId" expand-type="popup">
     <template #logo>
-      <h1 class="text-3xl font-bold tracking-wide">
-        {{ title }}
-      </h1>
+      <router-link to="/home">
+        <h1 class="text-3xl font-bold tracking-wide">
+          {{ title }}
+        </h1>
+      </router-link>
     </template>
     <template v-for="item in menuList" :key="item.cid">
       <t-menu-item

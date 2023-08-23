@@ -179,9 +179,11 @@ function onReset() {
   <!--  </div> -->
   <div class="login-page">
     <div class="login-header pt-8 pb-0 px-10">
-      <h2 class="text-3xl font-bold tracking-1">
-        {{ title }}
-      </h2>
+      <router-link to="/">
+        <h2 class="text-3xl font-bold tracking-1">
+          {{ title }}
+        </h2>
+      </router-link>
     </div>
     <div class="login-container flex-center box-border h-[calc(100vh_-_123px)] max-w-[1300px] min-h-[650px] mx-auto my-0">
       <div class="login-container-left flex-1 h-full max-h-[700PX] relative" />
@@ -192,7 +194,7 @@ function onReset() {
           </div>
           <t-form
             ref="form"
-            class="mt-8"
+            class="!mt-8"
             :data="formData"
             :rules="rules"
             :label-width="0"
@@ -235,7 +237,7 @@ function onReset() {
             <t-form-item name="captcha">
               <t-input-adornment class="!w-full">
                 <template #append>
-                  <Captcha :content-height="40" :identify-code="captChaCode" :font-size-max="46" @click="getPicCodeData"/>
+                  <Captcha :code="captChaCode" @click="getPicCodeData" />
                 </template>
                 <t-input v-model="formData.captcha" clearable placeholder="请输入验证码" size="large">
                   <template #prefix-icon>
@@ -272,6 +274,9 @@ function onReset() {
       }
     }
   }
+}
+:deep(.t-input.t-size-l){
+    height: 47px !important;
 }
 .dark{
   .login-page{

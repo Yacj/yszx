@@ -7,4 +7,9 @@ export const resourceService = {
   }) => {
     return request.get('/api/Resource/get_details', params)
   },
+  getByChapterID: (params: {
+    ChapterID: string
+  }) => {
+    return request.get('/api/Resource/Resouce/getByChapterID', params)
+  },
 }

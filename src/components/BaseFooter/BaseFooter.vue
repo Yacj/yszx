@@ -32,21 +32,21 @@ function handleRenderMask() {
             </li>
             <li class="flex-y-center">
               <SvgIcon name="mdi:web" class="mr-2" :size="21" type="iconify" />
-              公司官网：www.wlxt.cn
+              公司官网：edu.yunql.cn
             </li>
             <li class="flex-y-center">
               <SvgIcon name="mdi:company" class="mr-2" :size="21" type="iconify" />
-              公司地址：北京市海淀区农大南路88号1号一层1-108
+              公司地址：北京市昌平区回龙观西大街9号院8号楼
             </li>
           </ul>
         </div>
         <div class="pl-15">
           <ul class="space-y-8">
             <li>
-              未来学堂-教育资源库及案例系统V3.0
+              云师在线-教师专业发展职业提升平台V1.0
             </li>
             <li>
-              ©2018~2023科恰喏斯 版权所有京ICP备19005664号-3
+              ©2018~2023 北京云桥链科  版权所有京ICP备2022015399号
             </li>
             <li>
               京公安备 11010802039143

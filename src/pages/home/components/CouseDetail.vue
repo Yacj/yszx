@@ -12,21 +12,55 @@ const videoSrc = ref('')
 const resourceData = ref({})
 const chapterList = ref([])
 const videoId = ref('')
-resourceService.get_details({
-  ResCode: props.resCode,
-  ResType: 'Couse',
-}).then((res) => {
-  const {
-    chapter,
-    resource,
-  } = res.data
-  chapterList.value = chapter
-  videoId.value = chapter[0].id
-  videoSrc.value = baseUrl.file + resource.videoPath
-  resourceData.value = resource
+const ChapterID = ref('')
+const expanded = ref([])
+
+onMounted(() => {
+  getResDetail()
 })
+
+function getResDetail() {
+  resourceService.get_details({
+    ResCode: props.resCode,
+    ResType: 'Couse',
+  }).then((res) => {
+    const {
+      chapter,
+      resource,
+    } = res.data
+    chapterList.value = chapter
+    if (chapter) {
+      if (chapter[0].sub.length === 0) {
+        ChapterID.value = chapter[0].id
+      }
+      else {
+        ChapterID.value = chapter[0].sub[0].id
+      }
+      chapter.forEach((item) => {
+        if (item.sub.length > 0) {
+          expanded.value.push(item.id)
+        }
+      })
+    }
+    resourceData.value = resource
+    getChapterVideoData()
+  })
+}
+
 function handleClick(id: number) {
-  videoId.value = id
+  ChapterID.value = id
+  getChapterVideoData()
+}
+
+function getChapterVideoData(){
+  resourceService.getByChapterID({
+    ChapterID: ChapterID.value,
+  }).then((res) => {
+    const {
+      videoPath,
+    } = res.data
+    videoSrc.value = baseUrl.file + videoPath
+  })
 }
 </script>
 
@@ -34,7 +68,7 @@ function handleClick(id: number) {
   <div class="course-detail flex wh-full mb-5">
     <div class="course-detail-left w-300 mr-5">
       <t-card :bordered="false" class="course-detail-play">
-        <video :src="videoSrc" controls />
+        <video :src="videoSrc" controls class="w-full"/>
       </t-card>
       <t-card :bordered="false">
         <t-tabs :default-value="1">
@@ -47,33 +81,54 @@ function handleClick(id: number) {
         </t-tabs>
       </t-card>
     </div>
-    <div class="course-detail-right flex-1">
+    <div class="course-detail-right flex-1 h-180 overflow-y-scroll relative">
       <t-card title="章节目录" :bordered="false" header-bordered>
-        <ul class="space-y-3">
-          <li
-            v-for="item in chapterList" :key="item.id"
-          >
-            <t-button
-              block
-              :variant="item.id === videoId ? 'base' : 'text'"
+        <t-menu
+          v-model:expanded="expanded"
+          :value="ChapterID"
+          class="!wh-full"
+        >
+          <template v-for="item in chapterList" :key="item.id">
+            <t-menu-item
+              v-if="item.sub.length === 0"
+              :value="item.id"
               @click="handleClick(item.id)"
             >
               {{ item.name }}
-            </t-button>
-          </li>
-        </ul>
+            </t-menu-item>
+            <t-submenu
+              v-else
+              :value="item.id"
+              :title="item.name"
+            >
+              <template v-for="row in item.sub" :key="row.id">
+                <t-menu-item
+                  :value="row.id"
+                  @click="handleClick(row.id)"
+                >
+                  {{ row.name }}
+                </t-menu-item>
+              </template>
+            </t-submenu>
+          </template>
+        </t-menu>
       </t-card>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.course-detail-right{
-
+:deep(.course-detail-left){
+  .t-card__body{
+    padding: 0;
+  }
 }
 :deep(.course-detail-right){
   .t-button{
     justify-content: normal;
+  }
+  .t-card__body{
+    padding: 0;
   }
 }
 </style>

@@ -9,7 +9,6 @@ const {
     ResType,
   },
 } = route
-console.log(ResCode, ResType)
 </script>
 
 <template>
