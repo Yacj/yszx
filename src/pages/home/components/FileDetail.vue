@@ -65,6 +65,14 @@ function getFileType(type: string) {
             class="wh-full"
           />
         </div>
+        <div v-if="getFileType(typeName) === 'video'">
+          <video
+            ref="fileRef"
+            :src="baseUrl.file + fileData.path"
+            controls
+            class="wh-full"
+          />
+        </div>
       </div>
       <template #actions>
         <div class="space-x-3">

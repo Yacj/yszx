@@ -11,7 +11,6 @@ const props = defineProps({
 const videoSrc = ref('')
 const resourceData = ref({})
 const chapterList = ref([])
-const videoId = ref('')
 const ChapterID = ref('')
 const expanded = ref([])
 
@@ -52,7 +51,7 @@ function handleClick(id: number) {
   getChapterVideoData()
 }
 
-function getChapterVideoData(){
+function getChapterVideoData() {
   resourceService.getByChapterID({
     ChapterID: ChapterID.value,
   }).then((res) => {
@@ -68,12 +67,12 @@ function getChapterVideoData(){
   <div class="course-detail flex wh-full mb-5">
     <div class="course-detail-left w-300 mr-5">
       <t-card :bordered="false" class="course-detail-play">
-        <video :src="videoSrc" controls class="w-full"/>
+        <video :src="videoSrc" controls class="w-full" />
       </t-card>
       <t-card :bordered="false">
         <t-tabs :default-value="1">
           <t-tab-panel :value="1" label="介绍">
-            <p style="margin: 20px">
+            <p class="m-8">
               {{ resourceData.content }}
               {{ resourceData.keyword }}
             </p>

@@ -210,7 +210,7 @@ function handleNavTo(resCode: string, type: string) {
       <!--        </div> -->
       <!--      </t-card> -->
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <t-card v-for="(item, index) in list" :key="item.id" :bordered="false" class="list-card">
+        <t-card v-for="item in list" :key="item.id" :bordered="false" class="list-card">
           <template #cover>
             <t-image :src="baseUrl.file + item.logo" alt="" class="h-[190px]" @click="handleNavTo(item.resCode, item.type)" />
           </template>

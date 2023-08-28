@@ -35,7 +35,6 @@ export const useUserStore = defineStore({
       }
     },
     async getUserInfo(token: string) {
-      console.log(token)
       userService.getUserInfo({ token }).then((res: any) => {
         const data = deepClone(res.data)
         delete data.userToken
@@ -49,7 +48,6 @@ export const useUserStore = defineStore({
         this.token = token
         storageUtil.setItem('token', token)
 
-        console.log(this.token)
         this.failure_times = Math.floor(new Date().getTime() / 1000) + 60 * 60 * 24 * 365
         storageUtil.setItem('failure_times', this.failure_times)
       })

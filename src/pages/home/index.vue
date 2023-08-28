@@ -186,7 +186,7 @@ const loading = ref(false)
           </div>
           <div class="hot-class-list flex mt-3">
             <div class="w-[230px]">
-              <img src="../../assets/img/img-cover.png" alt="">
+              <img src="../../assets/img/img-cover-1.png" alt="" class="rounded">
             </div>
             <div class="flex-1 ml-5">
               <!--              <Result :height="120" title="暂无数据" /> -->
@@ -222,7 +222,7 @@ const loading = ref(false)
           </div>
           <div class="hot-class-list flex mt-3">
             <div class="w-[230px]">
-              <img src="../../assets/img/img-cover.png" alt="">
+              <img src="../../assets/img/img-cover.png" alt="" class="rounded">
             </div>
             <div class="flex-1 ml-5">
               <!--              <Result :height="120" title="暂无数据" /> -->
