@@ -1,5 +1,5 @@
 export const fileTypeEnum: Record<string, string[]> = {
-  img: ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'],
+  img: ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'rar'],
   pdf: ['pdf'],
   word: ['doc', 'docx'],
   html: ['html', 'htm'],

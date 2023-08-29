@@ -74,7 +74,9 @@ a:hover {
   width: 100%;
   height: 2px;
 }
-
+#nprogress .peg{
+  box-shadow: 0 0 10px var(--td-brand-color), 0 0 5px var(--td-brand-color);
+}
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;

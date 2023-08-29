@@ -22,7 +22,7 @@ const categoryList = ref([])
 const categoryId = ref(0)
 
 const cateList = ref([])
-const Code = ref<string | LocationQueryValue>('')
+const Code = ref<string | LocationQueryValue[] | null>('')
 
 const total = ref(0)
 const pagination = ref({
@@ -84,6 +84,10 @@ function handleCategoryClick(id: number, code: string) {
 function handleCategoryRowClick(code: string) {
   Code.value = code
   list.value = []
+  pagination.value = {
+    current: 1,
+    pageSize: 12,
+  }
   getResByCateList()
 }
 

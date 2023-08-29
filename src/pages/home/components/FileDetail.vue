@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { FullscreenIcon } from 'tdesign-icons-vue-next'
+import { DownloadIcon, FullscreenIcon } from 'tdesign-icons-vue-next'
 import { fileTypeEnum } from '@/utils/enums'
 import { resourceService } from '@/api/modules/resource'
 import baseUrl from '@/utils/url'
+import {fileDownload} from "@/utils/file";
+import {Message, MessagePlugin} from "tdesign-vue-next";
 
 const props = defineProps({
   resCode: {
@@ -18,7 +20,6 @@ resourceService.get_details({
   ResCode: props.resCode,
   ResType: 'File',
 }).then((res) => {
-  console.log(res)
   const {
     format,
   } = res.data
@@ -28,6 +29,22 @@ resourceService.get_details({
 function getFileType(type: string) {
   const typeName = type.split('.')[1]
   return Object.keys(fileTypeEnum).find(key => fileTypeEnum[key].includes(typeName))
+}
+function handleFileDown() {
+  fileDownload(baseUrl.file + fileData.value.path)
+  MessagePlugin.success('文件下载成功')
+}
+function handleRenderMask() {
+  return h('div', {
+    style: {
+      background: 'rgba(0,0,0,.4)',
+      color: '#fff',
+      height: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  }, '预览查看大图')
 }
 </script>
 
@@ -44,11 +61,23 @@ function getFileType(type: string) {
           class="wh-full"
         >
         <div v-if="getFileType(typeName) === 'img'" ref="fileRef" class="img">
-          <t-space direction="vertical">
-            <t-image
-              :src="baseUrl.file + fileData.path"
-              fit="cover"
-            />
+          <t-space direction="vertical" class="w-full">
+            <t-image-viewer
+              v-for="item in fileData.temRow"
+              :key="item.id"
+              :images="[baseUrl.file + item.resPath]"
+              :close-on-overlay="true"
+            >
+              <template #trigger="{ open }">
+                <t-image
+                  :src="baseUrl.file + item.resPath"
+                  fit="cover"
+                  :overlay-content="handleRenderMask"
+                  overlay-trigger="hover"
+                  @click="open"
+                />
+              </template>
+            </t-image-viewer>
           </t-space>
         </div>
         <div v-if="getFileType(typeName) === 'word'" class="h-250 w-295 overflow-y-scroll relative">
@@ -88,12 +117,12 @@ function getFileType(type: string) {
           <!--          <t-button variant="outline"> -->
           <!--            点击收藏 -->
           <!--          </t-button> -->
-          <!--          <t-button variant="outline"> -->
-          <!--            <template #icon> -->
-          <!--              <DownloadIcon /> -->
-          <!--            </template> -->
-          <!--            点击下载 -->
-          <!--          </t-button> -->
+          <t-button @click="handleFileDown">
+            <template #icon>
+              <DownloadIcon />
+            </template>
+            文件下载
+          </t-button>
         </div>
       </template>
     </t-card>
