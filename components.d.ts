@@ -53,6 +53,7 @@ declare module 'vue' {
     TRadioGroup: typeof import('tdesign-vue-next')['RadioGroup']
     TRow: typeof import('tdesign-vue-next')['Row']
     TSelect: typeof import('tdesign-vue-next')['Select']
+    TSelectInput: typeof import('tdesign-vue-next')['SelectInput']
     TSkeleton: typeof import('tdesign-vue-next')['Skeleton']
     TSpace: typeof import('tdesign-vue-next')['Space']
     TStickyItem: typeof import('tdesign-vue-next')['StickyItem']
@@ -64,5 +65,6 @@ declare module 'vue' {
     TTabs: typeof import('tdesign-vue-next')['Tabs']
     TTooltip: typeof import('tdesign-vue-next')['Tooltip']
     TUpload: typeof import('tdesign-vue-next')['Upload']
+    VideoPlayer: typeof import('./src/components/VideoPlayer/VideoPlayer.vue')['default']
   }
 }

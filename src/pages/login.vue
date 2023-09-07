@@ -43,6 +43,7 @@ const isDisabled = computed(() => {
 const selectData = ref([])
 const router = useRouter()
 const redirect = getQueryObject().redirect as string
+const selectLoading = ref(false)
 
 onMounted(() => {
   getAgencyList()
@@ -50,10 +51,12 @@ onMounted(() => {
 })
 
 function getAgencyList() {
+  selectLoading.value = true
   userService.getAgency({
     PageSize: 99999,
   }).then((res) => {
     selectData.value = res.data
+    selectLoading.value = false
   })
 }
 function getPicCodeData() {
@@ -84,99 +87,6 @@ function onReset() {
 </script>
 
 <template>
-  <!--  <div class="login flex flex-col"> -->
-  <!--    <nav class="bg-white border-gray-200 dark:bg-gray-900"> -->
-  <!--      <div class="max-w-screen-2xl flex flex-wrap items-center justify-between mx-auto p-4"> -->
-  <!--        <a href="https://flowbite.com/" class="flex items-center"> -->
-  <!--          <span class="self-center text-3xl font-semibold whitespace-nowrap dark:text-white"> -->
-  <!--            {{ title }} -->
-  <!--          </span> -->
-  <!--        </a> -->
-  <!--      </div> -->
-  <!--    </nav> -->
-  <!--    <div class="login-container py-25 px-6 mx-auto bg-[rgb(55_65_81/0.6)]"> -->
-  <!--      <section class="mb-32  text-gray-800 text-center lg:text-left px-6"> -->
-  <!--        <div class="grid lg:grid-cols-2 gap-12 flex items-center"> -->
-  <!--          <div class="mt-12 lg:mt-0"> -->
-  <!--            &lt;!&ndash;            <h1 class="text-5xl font-bold tracking-tight leading-tight mb-12"> &ndash;&gt; -->
-  <!--            &lt;!&ndash;              教师专业发展指导 &ndash;&gt; -->
-  <!--            &lt;!&ndash;            </h1> &ndash;&gt; -->
-  <!--            &lt;!&ndash;            <p class="text-gray-600"> &ndash;&gt; -->
-  <!--            &lt;!&ndash;            </p> &ndash;&gt; -->
-  <!--          </div> -->
-  <!--          <div class="mb-12 lg:mb-0 ml-auto mr-15"> -->
-  <!--            <t-card class="w-99" title="用户登录"> -->
-  <!--                <t-form -->
-  <!--                  ref="form" :data="formData" -->
-  <!--                  :rules="rules" -->
-  <!--                  :label-width="0" -->
-  <!--                  @reset="onReset" -->
-  <!--                  @submit="onSubmit" -->
-  <!--                > -->
-  <!--                  <t-form-item name="agencyId"> -->
-  <!--                    <t-select -->
-  <!--                      v-model="formData.agencyId" -->
-  <!--                      clearable -->
-  <!--                      placeholder="请选择机构" -->
-  <!--                      size="large" -->
-  <!--                      :options="selectData" -->
-  <!--                      filterable -->
-  <!--                      :keys="{ -->
-  <!--                        label: 'name', -->
-  <!--                        value: 'id', -->
-  <!--                      }" -->
-  <!--                    > -->
-  <!--                      <template #prefix-icon> -->
-  <!--                        <ForkIcon /> -->
-  <!--                      </template> -->
-  <!--                    </t-select> -->
-  <!--                  </t-form-item> -->
-  <!--                  <t-form-item name="username"> -->
-  <!--                    <t-input v-model="formData.username" clearable placeholder="请输入用户名" size="large"> -->
-  <!--                      <template #prefix-icon> -->
-  <!--                        <DesktopIcon /> -->
-  <!--                      </template> -->
-  <!--                    </t-input> -->
-  <!--                  </t-form-item> -->
-  <!--                  <t-form-item name="password"> -->
-  <!--                    <t-input v-model="formData.password" type="password" clearable placeholder="请输入密码" size="large"> -->
-  <!--                      <template #prefix-icon> -->
-  <!--                        <LockOnIcon /> -->
-  <!--                      </template> -->
-  <!--                    </t-input> -->
-  <!--                  </t-form-item> -->
-  <!--                  <t-form-item name="captcha"> -->
-  <!--                    <t-input-adornment class="!w-full"> -->
-  <!--                      <template #append> -->
-  <!--                        <Captcha :content-height="40" /> -->
-  <!--                      </template> -->
-  <!--                      <t-input v-model="formData.captcha" clearable placeholder="请输入验证码" size="large"> -->
-  <!--                        <template #prefix-icon> -->
-  <!--                          <SecuredIcon /> -->
-  <!--                        </template> -->
-  <!--                      </t-input> -->
-  <!--                    </t-input-adornment> -->
-  <!--                  </t-form-item> -->
-  <!--                  <t-form-item> -->
-  <!--                    <t-button theme="primary" type="submit" block :disabled="isDisabled" size="large"> -->
-  <!--                      登录 -->
-  <!--                    </t-button> -->
-  <!--                  </t-form-item> -->
-  <!--                </t-form> -->
-  <!--              <div class="flex-center justify-between mt-6"> -->
-  <!--                <div> -->
-  <!--                  忘记密码？ -->
-  <!--                </div> -->
-  <!--                <div> -->
-  <!--                  注册 -->
-  <!--                </div> -->
-  <!--              </div> -->
-  <!--            </t-card> -->
-  <!--          </div> -->
-  <!--        </div> -->
-  <!--      </section> -->
-  <!--    </div> -->
-  <!--  </div> -->
   <div class="login-page">
     <div class="login-header pt-8 pb-0 px-10">
       <router-link to="/">
@@ -214,6 +124,7 @@ function onReset() {
                   label: 'name',
                   value: 'id',
                 }"
+                :loading="selectLoading"
               >
                 <template #prefixIcon>
                   <ForkIcon />
@@ -287,25 +198,3 @@ function onReset() {
   width: 100%;
 }
 </style>
-<!-- <style scoped lang="scss"> -->
-<!-- .login-container{ -->
-<!--  @apply w-full bg-blend-multiply bg-no-repeat bg-[50%] bg-cover h-[800px]; -->
-<!--  background-image: url('../assets/img/loginbg001.jpg'); -->
-<!-- } -->
-<!-- .dark{ -->
-<!--  .login-container{ -->
-<!--    background-color: rgb(55 65 81/0.6); -->
-<!--  } -->
-<!-- } -->
-<!-- :deep(.t-card__header){ -->
-<!--  margin-top: 10px; -->
-<!-- } -->
-<!-- :deep(.t-card__body){ -->
-<!--  margin-bottom: 5px; -->
-<!-- } -->
-<!-- :deep(.t-card__title){ -->
-<!--  margin-top: 5px; -->
-<!--  font: var(&#45;&#45;td-font-title-large); -->
-<!--  font-weight: 600; -->
-<!-- } -->
-<!-- </style> -->

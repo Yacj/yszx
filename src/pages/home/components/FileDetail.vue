@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { DownloadIcon, FullscreenIcon } from 'tdesign-icons-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { fileTypeEnum } from '@/utils/enums'
 import { resourceService } from '@/api/modules/resource'
 import baseUrl from '@/utils/url'
-import {fileDownload} from "@/utils/file";
-import {Message, MessagePlugin} from "tdesign-vue-next";
+import { fileDownload } from '@/utils/file'
+import VideoPlayer from '@/components/VideoPlayer/VideoPlayer.vue'
 
 const props = defineProps({
   resCode: {
@@ -16,16 +17,33 @@ const fileRef = ref<HTMLElement | null>(null)
 const { toggle } = useFullscreen(fileRef)
 const typeName = ref('')
 const fileData = ref({})
-resourceService.get_details({
-  ResCode: props.resCode,
-  ResType: 'File',
-}).then((res) => {
-  const {
-    format,
-  } = res.data
-  typeName.value = format
-  fileData.value = res.data
+const fileLoading = ref(false)
+
+// 推荐列表
+const recommendList = ref([])
+//
+const resName = ref('')
+onMounted(() => {
+  handleGetFileDetails()
 })
+
+function handleGetFileDetails() {
+  fileLoading.value = true
+  resourceService.get_details({
+    ResCode: props.resCode,
+    ResType: 'File',
+  }).then((res) => {
+    const {
+      format,
+      name,
+    } = res.data
+    resName.value = name
+    typeName.value = format
+    fileData.value = res.data
+    fileLoading.value = false
+  })
+}
+
 function getFileType(type: string) {
   const typeName = type.split('.')[1]
   return Object.keys(fileTypeEnum).find(key => fileTypeEnum[key].includes(typeName))
@@ -50,14 +68,19 @@ function handleRenderMask() {
 
 <template>
   <div class="flex mt-6 mb-3 preview">
-    <t-card :bordered="false" title="资源预览" class="!mr-3 card-title">
+    <t-card
+      :bordered="false"
+      :title="`资源预览 - ${resName} `"
+      class="!mr-3 card-title"
+      :loading="fileLoading"
+    >
       <div
         class="h-250 w-295 overflow-y-scroll relative"
       >
         <embed
           v-if="getFileType(typeName) === 'pdf' "
           ref="fileRef"
-          :src="`https://wlapi.jqweike.cn/pdfRead/web/viewer.html?file=${baseUrl.file + fileData.path}`"
+          :src="`${baseUrl.file + fileData.path}`"
           class="wh-full"
         >
         <div v-if="getFileType(typeName) === 'img'" ref="fileRef" class="img">
@@ -94,13 +117,8 @@ function handleRenderMask() {
             class="wh-full"
           />
         </div>
-        <div v-if="getFileType(typeName) === 'video'">
-          <video
-            ref="fileRef"
-            :src="baseUrl.file + fileData.path"
-            controls
-            class="wh-full"
-          />
+        <div v-if="getFileType(typeName) === 'video'" class="h-150">
+          <VideoPlayer id="fileDetail" ref="fileRef" :src="baseUrl.file + fileData.path" class="w-full !h-150" />
         </div>
       </div>
       <template #actions>
@@ -117,9 +135,9 @@ function handleRenderMask() {
           <!--          <t-button variant="outline"> -->
           <!--            点击收藏 -->
           <!--          </t-button> -->
-          <t-button @click="handleFileDown">
+          <t-button class="file-entry" @click="handleFileDown">
             <template #icon>
-              <DownloadIcon />
+              <DownloadIcon class="file-icon" />
             </template>
             文件下载
           </t-button>
@@ -145,5 +163,11 @@ function handleRenderMask() {
 </template>
 
 <style scoped lang="scss">
-
+.file-entry{
+  &:hover{
+    .file-icon{
+      animation: iconJump .3s;
+    }
+  }
+}
 </style>

@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ChevronDownIcon, PoweroffIcon, UserCircleIcon } from 'tdesign-icons-vue-next'
+import { ChevronDownIcon, PoweroffIcon, SearchIcon, UserCircleIcon } from 'tdesign-icons-vue-next'
 import { DialogPlugin, MessagePlugin } from 'tdesign-vue-next'
 
 import { useUserStore } from '@/store/modules/user'
 import { categoryService } from '@/api/modules/category'
+import storageUtil from '@/utils/storage'
+import { isDev } from '@/utils/is'
 
 const title = import.meta.env.VITE_APP_TITLE
 const searchVal = ref('')
@@ -16,6 +18,7 @@ const orgId = computed(() => userStore.orgID)
 const router = useRouter()
 const route = useRoute()
 const menuId = ref<number>(2)
+const searchHistoryList = ref(storageUtil.getItem('searchHistoryList') || [])
 
 onMounted(() => {
   getCateGoryList()
@@ -112,9 +115,7 @@ function getMenuId() {
   <t-head-menu :value="menuId" expand-type="popup">
     <template #logo>
       <router-link to="/home">
-        <h1 class="text-3xl font-bold tracking-wide">
-          {{ title }}
-        </h1>
+        <img src="@/assets/img/logo.png" alt="logo" class="h-10">
       </router-link>
     </template>
     <template v-for="item in menuList" :key="item.cid">
@@ -130,6 +131,39 @@ function getMenuId() {
         </t-menu-item>
       </t-submenu>
     </template>
+    <t-select-input
+      v-if="isDev()"
+      v-model:input-value="searchVal"
+      :value="searchVal"
+      placeholder="请输入关键词搜索"
+      class="ml-12 search-input"
+      allow-input
+    >
+      <template #panel>
+        <div v-if="searchHistoryList.length !== 0 && searchVal === '' ">
+          <div class="search-history">
+            <div class="history-title p-2 border-b-1 flex-y-center justify-between">
+              <div class="text-[12px]">
+                搜索历史
+              </div>
+              <div class="text-[color:var(--td-brand-color)] cursor-pointer text-[12px]">
+                清空
+              </div>
+            </div>
+            <ul class="history-list p-2 space-y-3">
+              <li v-for="(item, index) in searchHistoryList" :key="index + 1" class="cursor-pointer hover:text-[color:var(--td-brand-color)]">
+                {{ item.name }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </template>
+      <template #suffix>
+        <t-button type="submit" @click="handleNavSearch">
+          <SearchIcon :style="{ cursor: 'pointer' }" />
+        </t-button>
+      </template>
+    </t-select-input>
     <!--    <t-input-adornment> -->
     <!--      <t-input -->
     <!--        v-model="searchVal" placeholder="请输入关键词搜索" class="ml-12 !w-60" size="medium" -->
@@ -211,6 +245,12 @@ function getMenuId() {
   .t-icon {
     font-size: var(--td-comp-size-xxxs);
     margin-right: var(--td-comp-margin-s);
+  }
+}
+:deep(.search-input) {
+  width: 360px;
+  .t-input {
+    padding: 0 0 0 var(--td-comp-paddingLR-s);
   }
 }
 </style>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SvgIcon from '@/components/SvgIcon/SvgIcon.vue'
-import {useUserStore} from "@/store/modules/user";
+import { useUserStore } from '@/store/modules/user'
 
 const route = useRoute()
 const userMenuList = ref([
@@ -61,11 +61,11 @@ function handleMenuClick(path: any, id: number) {
         <t-card :bordered="false">
           <div class="user-menu-header mt-3 flex-center flex-col">
             <t-avatar size="100px">
-              {{userInfo.realName[0]}}
+              {{ userInfo.realName[0] }}
             </t-avatar>
             <div class="user-menu-header-info mt-2">
               <div class="text-xl">
-                {{userInfo.realName}}
+                {{ userInfo.realName }}
               </div>
             </div>
           </div>
@@ -81,7 +81,7 @@ function handleMenuClick(path: any, id: number) {
       </t-col>
       <t-col :flex="6">
         <router-view v-slot="{ Component }">
-            <component :is="Component" />
+          <component :is="Component" />
         </router-view>
       </t-col>
     </t-row>
@@ -97,5 +97,4 @@ function handleMenuClick(path: any, id: number) {
     font-size: 15px;
   }
 }
-
 </style>

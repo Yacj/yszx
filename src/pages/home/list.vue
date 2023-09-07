@@ -2,12 +2,15 @@
 // import { DownloadIcon, HeartFilledIcon, HeartIcon } from 'tdesign-icons-vue-next'
 import { MessagePlugin } from 'tdesign-vue-next'
 import type { LocationQueryValue } from 'vue-router'
+import { ChevronDownIcon, ChevronUpIcon } from 'tdesign-icons-vue-next'
+import { nextTick } from 'vue'
 import { fileDownload } from '@/utils/file'
 import { useUserStore } from '@/store/modules/user'
 import { categoryService } from '@/api/modules/category'
 import baseUrl from '@/utils/url'
 import Result from '@/components/Result/Result.vue'
 
+const filterRef = ref(null)
 const list = ref([])
 const userStore = useUserStore()
 const token = computed(() => userStore.token)
@@ -31,6 +34,9 @@ const pagination = ref({
 })
 
 const loadMoreShow = ref(false)
+
+const filterLoading = ref(false)
+
 watch(
   () => route.query,
   (value) => {
@@ -60,12 +66,14 @@ onMounted(() => {
 })
 
 function getCategoryList() {
+  filterLoading.value = true
   categoryService.get({
     orgID: orgId.value,
     hasRow: true,
   }).then((res) => {
     categoryList.value = res.data
     categoryId.value = Number(RouteId) || res.data[0].cid
+    filterLoading.value = false
   })
 }
 
@@ -92,11 +100,12 @@ function handleCategoryRowClick(code: string) {
 }
 
 function getResByCateList() {
+  const twoHeight = 40 * 2
   categoryService.resByCate({
     Code: Code.value,
     PageIndex: pagination.value.current,
     PageSize: pagination.value.pageSize,
-  }).then((res) => {
+  }).then(async (res) => {
     const {
       categoryGroups,
       resRow,
@@ -124,6 +133,17 @@ function getResByCateList() {
     }
     else {
       list.value = list.value.concat(resRow)
+    }
+    await nextTick()
+    if (filterRef.value) {
+      filterRef.value.forEach((item, index) => {
+        const currentHeight = item.offsetHeight
+        const isOpen = currentHeight > twoHeight
+        const listHeight = isOpen ? `${twoHeight}px` : null
+        cateList.value[index].listOpenFlag = isOpen
+        cateList.value[index].listHeight = listHeight
+        cateList.value[index].showListBtnFlag = isOpen
+      })
     }
   })
 }
@@ -155,7 +175,7 @@ function handleNavTo(resCode: string, type: string) {
 <template>
   <div class="home-list max-w-screen-1430 mx-auto my-7">
     <div class="filter">
-      <t-card :bordered="false">
+      <t-card :bordered="false" :loading="filterLoading">
         <ul class="space-y-2 mb-5">
           <li class="flex-y-center border-dashed border-b-1 pb-1">
             <div class="filter-title">
@@ -181,17 +201,34 @@ function handleNavTo(resCode: string, type: string) {
             <div class="filter-title">
               <span>{{ item.name }}：</span>
             </div>
-            <div class="ml-5 flex-1">
+            <div
+              ref="filterRef"
+              class="ml-5 flex-1 filter-row relative"
+              :style="{ 'max-height': item.listOpenFlag ? item.listHeight : '' }"
+            >
               <t-button
                 v-for="row in item.row"
                 :key="row.cid"
                 :variant="row.code === Code ? 'base' : 'text'"
                 :theme="row.code === Code ? 'primary' : 'default'"
-                class="m-1"
+                class="!m-1"
                 @click="handleCategoryRowClick(row.code)"
               >
                 {{ row.name }}
               </t-button>
+              <div
+                v-if="item.showListBtnFlag"
+                class="absolute right-[-7px] bottom-0"
+                @click="item.listOpenFlag = !item.listOpenFlag"
+              >
+                <t-button theme="default" variant="text" size="small">
+                  <template #icon>
+                    <ChevronDownIcon v-if="item.listOpenFlag" />
+                    <ChevronUpIcon v-else />
+                  </template>
+                  {{ item.listOpenFlag ? "更多" : "收起" }}
+                </t-button>
+              </div>
             </div>
           </li>
         </ul>
@@ -216,7 +253,22 @@ function handleNavTo(resCode: string, type: string) {
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <t-card v-for="item in list" :key="item.id" :bordered="false" class="list-card">
           <template #cover>
-            <t-image :src="baseUrl.file + item.logo" alt="" class="h-[190px]" @click="handleNavTo(item.resCode, item.type)" />
+            <router-link
+              :to="{
+                name: 'HomeListDetail',
+                query: {
+                  ResCode: item.resCode,
+                  ResType: item.type,
+                },
+              }
+              "
+            >
+              <t-image
+                :src="baseUrl.file + item.logo"
+                class="h-[190px]"
+                fit="cover"
+              />
+            </router-link>
           </template>
           <router-link
             :to="{
@@ -338,5 +390,12 @@ function handleNavTo(resCode: string, type: string) {
 
 .cate-list:last-child {
   border-bottom: none;
+}
+:deep(.t-skeleton__col){
+  background-color: var(--td-gray-color-2 );
+}
+.filter-row{
+  overflow: hidden;
+  transition: all 0.3s ease-in;
 }
 </style>

@@ -1,5 +1,13 @@
 import request from '@/api'
 
+export interface LoginDataInterface {
+  username: string
+  password: string
+  captcha: string
+  agencyId: number
+  verify_hash: string
+  isAjax: boolean
+}
 export const userService = {
   getAgency: (params: {
     keyword?: string
@@ -11,14 +19,7 @@ export const userService = {
   getPicCode: (params?: any) => {
     return request.get('/api/User/get/piccode', params)
   },
-  login: (params: {
-    username: string
-    password: string
-    captcha: string
-    agencyId: number
-    verify_hash: string
-    isAjax: boolean
-  }) => {
+  login: (params: LoginDataInterface) => {
     return request.post('/api/User/login', params)
   },
   getUserInfo: (params: {

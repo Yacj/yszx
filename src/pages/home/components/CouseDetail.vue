@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { resourceService } from '@/api/modules/resource'
 import baseUrl from '@/utils/url'
+import VideoPlayer from "@/components/VideoPlayer/VideoPlayer.vue";
 
 const props = defineProps({
   resCode: {
@@ -61,13 +62,23 @@ function getChapterVideoData() {
     videoSrc.value = baseUrl.file + videoPath
   })
 }
+function formatSecondsToMinutes(seconds: number): string {
+  const minutes = Math.floor(seconds / 60)
+  const remainingSeconds = seconds % 60
+
+  const formattedMinutes = minutes.toString().padStart(2, '0')
+  const formattedSeconds = remainingSeconds.toString().padStart(2, '0')
+
+  return `${formattedMinutes}:${formattedSeconds}`
+}
 </script>
 
 <template>
   <div class="course-detail flex wh-full mb-5">
-    <div class="course-detail-left w-300 mr-5">
-      <t-card :bordered="false" class="course-detail-play">
-        <video :src="videoSrc" controls class="w-full" />
+    <div class="course-detail-left w-290 mr-5">
+      <t-card :bordered="false" class="course-detail-play" >
+<!--        <video :src="videoSrc" controls class="w-full"  muted autoplay />-->
+        <video-player :src="videoSrc" class="w-full !h-150"/>
       </t-card>
       <t-card :bordered="false">
         <t-tabs :default-value="1">
@@ -106,6 +117,7 @@ function getChapterVideoData() {
                   @click="handleClick(row.id)"
                 >
                   {{ row.name }}
+                  ({{ formatSecondsToMinutes(row.playTime) }})
                 </t-menu-item>
               </template>
             </t-submenu>

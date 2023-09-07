@@ -43,3 +43,11 @@ export function isBasicType(val: unknown): boolean {
 export function isObjectEmpty(obj: object): boolean {
   return Object.keys(obj).length === 0
 }
+
+/**
+ * @description 判断是否是开发环境
+ * @return {boolean} - true/false
+ */
+export function isDev() {
+  return import.meta.env.MODE === 'development'
+}

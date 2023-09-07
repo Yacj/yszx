@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia'
 import storageUtil from '@/utils/storage'
-import { userService } from '@/api/modules/user'
+import {LoginDataInterface, userService} from '@/api/modules/user'
 import { deepClone } from '@/utils/object'
 
+interface userInfo {
+}
 export const useUserStore = defineStore({
   id: 'User',
   state: () => ({
@@ -28,14 +30,15 @@ export const useUserStore = defineStore({
     },
   },
   actions: {
-    async login(data: any) {
+    async login(data: LoginDataInterface) {
       const resData = await userService.login(data)
       if (resData.data) {
         await this.getUserInfo(resData.data.access_token)
       }
     },
     async getUserInfo(token: string) {
-      userService.getUserInfo({ token }).then((res: any) => {
+      userService.getUserInfo({ token }).then((res) => {
+        console.log('userInfo', res)
         const data = deepClone(res.data)
         delete data.userToken
         delete data.orgID

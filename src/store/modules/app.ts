@@ -9,7 +9,6 @@ export const useAppStore = defineStore({
   },
   actions: {
     setColorScheme(val: string) {
-      console.log(val)
       this.colorScheme = val
     },
   },
