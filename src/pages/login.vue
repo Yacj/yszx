@@ -11,6 +11,7 @@ import { userService } from '@/api/modules/user'
 
 const title = import.meta.env.VITE_APP_TITLE
 const userStore = useUserStore()
+const btnLoading = ref(false)
 const formData = reactive({
   username: '',
   password: '',
@@ -40,10 +41,10 @@ const isDisabled = computed(() => {
   return !formData.username || !formData.password || !formData.agencyId || !formData.captcha
 })
 
-const selectData = ref([])
-const router = useRouter()
+const selectData = ref()
 const redirect = getQueryObject().redirect as string
 const selectLoading = ref(false)
+const router = useRouter()
 
 onMounted(() => {
   getAgencyList()
@@ -70,15 +71,18 @@ function getPicCodeData() {
   })
 }
 async function onSubmit({ validateResult, firstError }: SubmitContext) {
+  btnLoading.value = true
   if (validateResult === true) {
     const [err] = await awaitTo(userStore.login(formData))
     if (!err) {
       MessagePlugin.success('登录成功')
       router.push({ path: redirect || '/home' })
     }
+    btnLoading.value = false
   }
   else {
     console.warn('Validate Errors: ', firstError, validateResult)
+    btnLoading.value = false
   }
 }
 function onReset() {
@@ -158,7 +162,14 @@ function onReset() {
               </t-input-adornment>
             </t-form-item>
             <t-form-item class="!mt-10">
-              <t-button theme="primary" type="submit" block :disabled="isDisabled" size="large">
+              <t-button
+                theme="primary"
+                type="submit"
+                block
+                :disabled="isDisabled"
+                size="large"
+                :loading="btnLoading"
+              >
                 登录
               </t-button>
             </t-form-item>

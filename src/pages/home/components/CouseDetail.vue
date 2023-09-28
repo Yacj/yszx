@@ -1,14 +1,14 @@
 <script setup lang="ts">
+import type { DetailFileProps } from '@/pages/home/components/prop'
 import { resourceService } from '@/api/modules/resource'
+import {fileDownload} from "@/utils/file";
 import baseUrl from '@/utils/url'
-import VideoPlayer from "@/components/VideoPlayer/VideoPlayer.vue";
+import VideoPlayer from '@/components/VideoPlayer/VideoPlayer.vue'
+import {DownloadIcon} from "tdesign-icons-vue-next";
+import {MessagePlugin} from "tdesign-vue-next";
 
-const props = defineProps({
-  resCode: {
-    type: String,
-    required: true,
-  },
-})
+const props = defineProps<DetailFileProps>()
+
 const videoSrc = ref('')
 const resourceData = ref({})
 const chapterList = ref([])
@@ -21,8 +21,8 @@ onMounted(() => {
 
 function getResDetail() {
   resourceService.get_details({
-    ResCode: props.resCode,
-    ResType: 'Couse',
+    ResCode: props.rescode,
+    ResType: props.restype,
   }).then((res) => {
     const {
       chapter,
@@ -36,7 +36,7 @@ function getResDetail() {
       else {
         ChapterID.value = chapter[0].sub[0].id
       }
-      chapter.forEach((item) => {
+      chapter.forEach((item: any) => {
         if (item.sub.length > 0) {
           expanded.value.push(item.id)
         }
@@ -48,7 +48,7 @@ function getResDetail() {
 }
 
 function handleClick(id: number) {
-  ChapterID.value = id
+  ChapterID.value = `${id}`
   getChapterVideoData()
 }
 
@@ -60,6 +60,16 @@ function getChapterVideoData() {
       videoPath,
     } = res.data
     videoSrc.value = baseUrl.file + videoPath
+  })
+}
+function handleFileDown() {
+  resourceService.download({
+    ResCode: props.rescode,
+    ResType: props.restype,
+    ChapterID: ChapterID.value,
+  }).then((res) => {
+    fileDownload(baseUrl.file + res.data)
+    MessagePlugin.success('文件下载成功')
   })
 }
 function formatSecondsToMinutes(seconds: number): string {
@@ -76,11 +86,21 @@ function formatSecondsToMinutes(seconds: number): string {
 <template>
   <div class="course-detail flex wh-full mb-5">
     <div class="course-detail-left w-290 mr-5">
-      <t-card :bordered="false" class="course-detail-play" >
-<!--        <video :src="videoSrc" controls class="w-full"  muted autoplay />-->
-        <video-player :src="videoSrc" class="w-full !h-150"/>
+      <t-card :bordered="false" class="course-detail-play">
+        <!--        <video :src="videoSrc" controls class="w-full"  muted autoplay /> -->
+        <VideoPlayer :src="videoSrc" class="w-full !h-150" />
+        <template #footer>
+          <div class="text-right">
+            <t-button class="file-entry" variant="outline" theme="primary" @click="handleFileDown">
+              <template #icon>
+                <DownloadIcon class="file-icon" />
+              </template>
+              文件下载
+            </t-button>
+          </div>
+        </template>
       </t-card>
-      <t-card :bordered="false">
+      <t-card :bordered="false" class="mt-5">
         <t-tabs :default-value="1">
           <t-tab-panel :value="1" label="介绍">
             <p class="m-8">
@@ -129,16 +149,18 @@ function formatSecondsToMinutes(seconds: number): string {
 </template>
 
 <style scoped lang="scss">
-:deep(.course-detail-left){
-  .t-card__body{
+:deep(.course-detail-left) {
+  .t-card__body {
     padding: 0;
   }
 }
-:deep(.course-detail-right){
-  .t-button{
+
+:deep(.course-detail-right) {
+  .t-button {
     justify-content: normal;
   }
-  .t-card__body{
+
+  .t-card__body {
     padding: 0;
   }
 }

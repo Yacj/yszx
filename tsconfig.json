@@ -35,7 +35,8 @@
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "auto-imports.d.ts"
+    "auto-imports.d.ts",
+    "node_modules/tdesign-vue-next/global.d.ts"
   ],
   "references": [
     {

@@ -48,7 +48,7 @@ function getCateGoryList() {
       level: 0,
       code: '',
     })
-    menuList.value = data
+    menuList.value = data.slice(0, 7)
     if (route.path === '/home') {
       menuId.value = 0
     }

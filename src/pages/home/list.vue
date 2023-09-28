@@ -163,6 +163,7 @@ function handleClickCollect(isCollect: boolean, index: number) {
 }
 
 function handleLoadMoreClick() {
+  cateList.value.forEach(item => item.listOpenFlag = false)
   pagination.value.current += 1
   getResByCateList()
 }
@@ -187,7 +188,7 @@ function handleNavTo(resCode: string, type: string) {
                 :key="item.cid"
                 :variant="item.cid === categoryId ? 'base' : 'text'"
                 :theme="item.cid === categoryId ? 'primary' : 'default'"
-                class="m-1"
+                class="!m-1"
                 @click="handleCategoryClick(item.cid, item.code)"
               >
                 {{ item.name }}
@@ -262,6 +263,7 @@ function handleNavTo(resCode: string, type: string) {
                 },
               }
               "
+              target="_blank"
             >
               <t-image
                 :src="baseUrl.file + item.logo"
@@ -285,6 +287,30 @@ function handleNavTo(resCode: string, type: string) {
               {{ item.name }}
             </div>
           </router-link>
+          <template v-if="item.type === 'Exam'" #footer>
+            <div class="flex justify-between items-center">
+              <div class="text-[13px] text-[color:var(--td-gray-color-7)]">
+                发布时间：{{ item.createTime.replace(/T.*/, "") }}
+              </div>
+              <router-link
+                :to="{
+                  name: 'HomeListDetail',
+                  query: {
+                    ResCode: item.resCode,
+                    ResType: item.type,
+                  },
+                }"
+                target="_blank"
+              >
+                <t-button
+                  block
+                  class="!w-20"
+                >
+                  答题
+                </t-button>
+              </router-link>
+            </div>
+          </template>
           <!--          <template #footer> -->
           <!--            <div class="grid grid-cols-2 gap-5"> -->
           <!--              <div class="flex-y-center cursor-pointer"> -->

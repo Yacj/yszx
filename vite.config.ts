@@ -25,6 +25,15 @@ export default ({ mode, command }) => {
       outDir: mode === 'production' ? 'dist' : `dist-${mode}`,
       sourcemap: env.VITE_BUILD_SOURCEMAP === 'true',
     },
+    /** 混淆器 */
+    esbuild: {
+      /** 打包时移除 console.log */
+      pure: ['console.log'],
+      /** 打包时移除 debugger */
+      drop: ['debugger'],
+      /** 打包时移除所有注释 */
+      legalComments: 'none',
+    },
     plugins: createVitePlugins(env, command === 'build'),
   })
 }
