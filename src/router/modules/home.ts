@@ -52,6 +52,14 @@ const routes: RouteRecordRaw[] = [
           title: '详情页',
         },
       },
+      {
+        path: 'examResult',
+        name: 'HomeExamResult',
+        component: () => import('@/pages/home/examResult.vue'),
+        meta: {
+          title: '考试结果',
+        }
+      },
     ],
   },
 ]

@@ -12,4 +12,10 @@ export const examService = {
   }) => {
     return request.post('/api/ResExam/result/set', params)
   },
+  get_result: (params: {
+    userID: string
+    ID: string | LocationQueryValue[]
+  }) => {
+    return request.get('/api/ResExam/result/get', params)
+  },
 }

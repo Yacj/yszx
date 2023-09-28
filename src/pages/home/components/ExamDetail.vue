@@ -87,6 +87,17 @@ watch(
   (val) => {
     if (val === 0) {
       pause()
+      const alert = DialogPlugin.alert({
+        body: '时间已到，强制提交',
+        header: '温馨提示',
+        onConfirm: () => {
+          alert.destroy()
+          handleSubmitExam()
+        },
+        onClose: () => {
+          alert.hide()
+        },
+      })
     }
   },
 )
@@ -99,8 +110,8 @@ function handleClickPause() {
     confirmBtn: '立刻交卷',
     cancelBtn: '继续答题',
     onConfirm: () => {
-      console.log('交卷')
       resumeConfirm.destroy()
+      handleSubmitExam()
     },
     onClose: () => {
       resume()
@@ -130,9 +141,10 @@ function handleSubmitExam() {
     isEnd,
     resultList: resultList.value.map(({ order, ...rest }) => rest),
   }
-  console.log(params)
   examService.set(params).then((res) => {
-    console.log(res)
+    if (res.data) {
+      router.push(`/home/examResult?id=${res.data}`)
+    }
   })
   // const params ={
   //   userID,
@@ -167,7 +179,7 @@ function handleSubmitExam() {
                   <div v-html="data.value" />
                 </li>
               </ul>
-              <t-radio-group v-model:value="item.keyword" class="!px-3 mt-2" @change="onChange(item.id, $event)">
+              <t-radio-group v-model:value="item.keyword" class="!px-3 !mt-2" @change="onChange(item.id, $event)">
                 <t-radio v-for="data in item.options" :key="data.key" allow-uncheck :value="data.key">
                   {{ data.key }}
                 </t-radio>

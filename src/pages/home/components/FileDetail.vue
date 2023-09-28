@@ -122,9 +122,6 @@ function handleBack() {
             </template>
             文件下载
           </t-button>
-          <t-button @click="handleBack">
-            返回上一页
-          </t-button>
         </div>
       </template>
       <div
