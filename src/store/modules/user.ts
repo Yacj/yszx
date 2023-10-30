@@ -1,14 +1,13 @@
 import { defineStore } from 'pinia'
 import storageUtil from '@/utils/storage'
-import {LoginDataInterface, userService} from '@/api/modules/user'
+import type { LoginDataInterface } from '@/api/modules/user'
+import { userService } from '@/api/modules/user'
 import { deepClone } from '@/utils/object'
-
-interface userInfo {
-}
 export const useUserStore = defineStore({
   id: 'User',
   state: () => ({
     token: storageUtil.getItem('token') || '',
+    guestToken: storageUtil.getItem('guestToken') || '',
     userInfo: storageUtil.getItem('userInfo') || {},
     failure_times: storageUtil.getItem('failure_times') || 0,
     orgID: storageUtil.getItem('orgID') || '',
@@ -36,9 +35,18 @@ export const useUserStore = defineStore({
         await this.getUserInfo(resData.data.access_token)
       }
     },
+    // 游客登陆
+    async guestLogin() {
+      const {
+        data: {
+          userToken,
+        },
+      } = await userService.guest()
+      storageUtil.setItem('guestToken', userToken)
+      this.guestToken = userToken
+    },
     async getUserInfo(token: string) {
       userService.getUserInfo({ token }).then((res) => {
-        console.log('userInfo', res)
         const data = deepClone(res.data)
         delete data.userToken
         delete data.orgID
@@ -53,6 +61,10 @@ export const useUserStore = defineStore({
 
         this.failure_times = Math.floor(new Date().getTime() / 1000) + 60 * 60 * 24 * 365
         storageUtil.setItem('failure_times', this.failure_times)
+
+        // 登陆成功后，能成功获取正式的用户信息 最好要删除游客数据
+        this.guestToken = ''
+        storageUtil.removeItem('guestToken')
       })
     },
     logout() {

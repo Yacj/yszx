@@ -32,7 +32,6 @@ const routes: RouteRecordRaw[] = [
             path: '',
             name: 'HomeListIndex',
             component: () => import('@/pages/home/list.vue'),
-            meta: {},
           },
           {
             path: 'detail',
@@ -58,7 +57,8 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/pages/home/examResult.vue'),
         meta: {
           title: '考试结果',
-        }
+          needLogin: true,
+        },
       },
     ],
   },

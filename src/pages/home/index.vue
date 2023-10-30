@@ -1,82 +1,10 @@
 <script setup lang="ts">
+import { formatDate } from '@vueuse/shared'
+import { replaceUrlImage } from '@/utils'
+import { resourceService } from '@/api/modules/resource'
 import Result from '@/components/Result/Result.vue'
+import {formatDay} from "@/utils/dateUtils";
 
-const hostList = ref([
-  {
-    name: '教学案例',
-    id: 1,
-  },
-  {
-    name: '教学题库',
-    id: 2,
-  },
-  {
-    name: '教学指导',
-    id: 3,
-  },
-  {
-    name: '信息素养',
-    id: 4,
-  },
-  {
-    name: '教资认证',
-    id: 5,
-  },
-  {
-    name: '教学模板',
-    id: 6,
-  },
-])
-
-const value = ref(1)
-
-// 资源列表
-const resourceList = ref([
-  {
-    id: 1,
-    name: '能力提示',
-  },
-  {
-    id: 2,
-    name: '信息素养',
-  },
-  {
-    id: 3,
-    name: '教学模板',
-  },
-  {
-    id: 4,
-    name: '能力提升',
-  },
-  {
-    id: 5,
-    name: '学科教学案例',
-  },
-])
-
-// 课本教材
-const textbookList = ref([
-  {
-    id: 1,
-    name: '五年级上',
-  },
-  {
-    id: 2,
-    name: '七年级下',
-  },
-  {
-    id: 3,
-    name: '八年级上',
-  },
-  {
-    id: 4,
-    name: '高中数学',
-  },
-  {
-    id: 5,
-    name: '高中物理',
-  },
-])
 const skeletonRowCol = computed(() => {
   return [
     [1, 1, 1].map(() => ({ type: 'rect', content: '', width: '33%', height: '180px' })),
@@ -85,9 +13,32 @@ const skeletonRowCol = computed(() => {
   ]
 })
 const loading = ref(false)
-// setTimeout(() => {
-//   loading.value = false
-// }, 2000)
+const homeList = ref([])
+const hotList = ref([])
+
+onMounted(() => {
+  loading.value = true
+  getHomeList()
+})
+
+function getHomeList() {
+  resourceService.homeList().then((res) => {
+    homeList.value = res.data
+    loading.value = false
+  })
+  resourceService.hotList({
+    pageSize: 8,
+  }).then((res) => {
+    hotList.value = res.data
+  })
+}
+function shouldShowImages(title: string): boolean {
+  const allowedTitles = ['热门案例', '信息素养']
+  return allowedTitles.includes(title)
+}
+function handleDetailTo(resCode: string, type: string, resName: string, Code: string) {
+  window.open(`/#/home/detail?ResCode=${resCode}&ResType=${type}&ResName=${resName}&categoryCode=${Code}`, '_blank')
+}
 </script>
 
 <template>
@@ -112,160 +63,121 @@ const loading = ref(false)
       </t-swiper>
     </div>
     <div class="ad container mx-auto mt-5">
-      <div class="grid gap-4  grid-cols-1 sm:grid-cols-3 2xl:gap-5">
+      <div class="grid gap-2  grid-cols-1 sm:grid-cols-3 2xl:gap-5">
         <div
           class="rounded-sm h-full group flex justify-center relative overflow-hidden  transition duration-300 ease-in-out hover:opacity-90 cursor-pointer"
         >
-          <img src="../../assets/img/ad.png" class="bg-skin-thumbnail h-36 w-full" alt="">
+          <router-link to="home/list?name=教学案例&id=700&code=B">
+            <img src="../../assets/img/ad01.png" class="bg-skin-thumbnail h-36 w-full rounded" alt="">
+          </router-link>
         </div>
         <div class="rounded-sm h-full group flex justify-center relative overflow-hidden hover:opacity-90 cursor-pointer">
-          <img src="../../assets/img/ad.png" class="bg-skin-thumbnail h-36 w-full" alt="">
+          <router-link to="home/list?name=教资认证&id=1005&code=F">
+            <img src="../../assets/img/ad02.png" class="bg-skin-thumbnail h-36 w-full rounded" alt="">
+          </router-link>
         </div>
         <div class="rounded-sm h-full group flex justify-center relative overflow-hidden hover:opacity-90 cursor-pointer">
-          <img src="../../assets/img/ad.png" class="bg-skin-thumbnail h-36 w-full" alt="">
+          <router-link to="home/list?name=教学指导&id=555&code=E">
+            <img src="../../assets/img/ad03.png" class="bg-skin-thumbnail h-36 w-full rounded" alt="">
+          </router-link>
         </div>
       </div>
     </div>
     <div class="wh-full container mx-auto mt-8">
       <t-skeleton :row-col="skeletonRowCol" animation="gradient" :loading="loading" class="space-y-10 mb-10">
-        <div class="hot w-full">
-          <h4 class="text-2xl font-bold dark:text-white text-center mt-3 hot-title">
-            热门分类
-          </h4>
-          <ul class="grid gap-1  grid-cols-1 sm:grid-cols-3 2xl:gap-5 max-w-screen-lg mx-auto mt-9">
-            <li v-for="item in hostList" :key="item.id" class="text-center relative  cursor-pointer transition duration-300 ease-in-out hover:scale-104 mx-auto">
-              <img src="../../assets/img/hot-bg.jpg" class="rounded-md w-[325px] h-[222px]" alt="">
-              <span class="absolute bg-gray-900 bg-opacity-30 flex justify-center w-[325px]  h-[222px] items-center text-white rounded-md inset-0 text-2xl">
-                {{ item.name }}
-              </span>
-            </li>
-          </ul>
-        </div>
-        <div class="ranking container mx-auto p-6 md:p-0">
-          <div class="flex-y-center justify-between">
-            <h3 class="text-2xl font-bold dark:text-white  mt-3 title-before">
-              资源排行
-            </h3>
-            <div class="other">
-              查看全部>
-            </div>
-          </div>
-          <div class="mt-5 grid grid-cols-1 md:grid-cols-5 gap-6">
-            <Result v-if="resourceList.length === 0" :height="120" title="暂无数据" />
-            <t-card v-for="item in resourceList" :key="item.id" hover-shadow :bordered="false" class="home-full-card">
-              <template #cover>
-                <router-link to="/home/list?name=信息素养&id=1&code=A">
-                  <img src="../../assets/img/list-cover.png" alt="" class="h-[152px]">
-                </router-link>
-              </template>
-              <router-link to="/home/list?name=信息素养&id=1&code=A">
-                <div class="desc text-base font-400">
-                  {{ item.name }}
-                </div>
-              </router-link>
-            </t-card>
-          </div>
-        </div>
-        <div class="hot-class container mx-auto">
-          <div class="flex-y-center justify-between">
-            <div class="title-left flex-center">
-              <h3 class="text-2xl font-bold dark:text-white title-before">
-                热门案例
-              </h3>
-              <t-tabs v-model="value" class="ml-10 !bg-transparent" size="large">
-                <t-tab-panel :value="1" label="学前音乐" />
-                <t-tab-panel :value="2" label="小学英语" />
-                <t-tab-panel :value="3" label="初中语文" />
-              </t-tabs>
-            </div>
-            <div class="other">
-              <span>
-                查看全部 >
-              </span>
-            </div>
-          </div>
-          <div class="hot-class-list flex mt-3">
-            <div class="w-[230px]">
-              <img src="../../assets/img/img-cover-1.png" alt="" class="rounded">
-            </div>
-            <div class="flex-1 ml-5">
-              <!--              <Result :height="120" title="暂无数据" /> -->
-              <ul class="grid gap-1  grid-cols-1 sm:grid-cols-5 2xl:gap-6">
-                <t-card class="home-full-card" :bordered="false">
-                  <template #cover>
-                    <router-link to="/home/list?name=信息素养&id=1&code=A">
-                      <img src="../../assets/img/list-cover.png" alt="" class="h-[152px]">
-                    </router-link>
-                  </template>
-                  <router-link to="/home/list?name=信息素养&id=1&code=A">
-                    <div class="desc  text-base font-400">
-                      2021年教师资格证面试备考指导
-                    </div>
-                  </router-link>
-                </t-card>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class=" container mx-auto">
-          <div class="flex-y-center justify-between">
-            <div class="title-left flex-center">
-              <h3 class="text-2xl font-bold dark:text-white title-before">
-                信息素养
-              </h3>
-            </div>
-            <div class="other">
-              <span>
-                查看全部 >
-              </span>
-            </div>
-          </div>
-          <div class="hot-class-list flex mt-3">
-            <div class="w-[230px]">
-              <img src="../../assets/img/img-cover.png" alt="" class="rounded">
-            </div>
-            <div class="flex-1 ml-5">
-              <!--              <Result :height="120" title="暂无数据" /> -->
-              <ul class="grid gap-1  grid-cols-1 sm:grid-cols-5 2xl:gap-6">
-                <t-card class="home-full-card" :bordered="false">
-                  <template #cover>
-                    <router-link to="/home/list?name=信息素养&id=1&code=A">
-                      <img src="../../assets/img/list-cover.png" alt="" class="h-[152px]">
-                    </router-link>
-                  </template>
-                  <router-link to="/home/list?name=信息素养&id=1&code=A">
-                    <div class="desc  text-base font-400">
-                      word
-                    </div>
-                  </router-link>
-                </t-card>
-              </ul>
-            </div>
-          </div>
-        </div>
         <div class="container mx-auto p-6 md:p-0">
           <div class="flex-y-center justify-between">
             <h3 class="text-2xl font-bold dark:text-white  mt-3 title-before">
-              课本教材
+              热门资源
             </h3>
-            <div class="other">
-              查看全部>
-            </div>
           </div>
-          <div class="mt-5 grid grid-cols-1 md:grid-cols-5 gap-6">
-            <Result v-if="resourceList.length === 0" :height="120" title="暂无数据" />
-            <t-card v-for="item in textbookList" :key="item.id" hover-shadow :bordered="false" class="home-full-card">
-              <template #cover>
-                <router-link to="/home/list?name=信息素养&id=1&code=A">
-                  <img src="../../assets/img/list-cover.png" alt="" class="h-[152px]">
-                </router-link>
-              </template>
-              <router-link to="/home/list?name=信息素养&id=1&code=A">
-                <div class="desc text-base font-400">
+          <div class="hot-class-list flex mt-5 w-full">
+            <Result v-if="hotList.length === 0" :height="120" title="暂无数据" />
+            <ul
+              class="grid gap-1 2xl:gap-4 grid-cols-1 lg:grid-cols-4 w-full"
+            >
+              <t-card v-for="item in hotList" :key="item.cid" class="home-full-card" :bordered="false">
+                <template #cover>
+                  <div @click="handleDetailTo(item.resCode, item.type, item.name, item.cateCode)">
+                    <t-image fit="cover" :src="replaceUrlImage(item.logo)" alt="" class="h-[152px]" />
+                  </div>
+                </template>
+                <div class="desc text-base font-400 " @click="handleDetailTo(item.resCode, item.type, item.name, item.cateCode)">
                   {{ item.name }}
                 </div>
-              </router-link>
-            </t-card>
+              </t-card>
+            </ul>
+          </div>
+        </div>
+        <!--        <div class="hot w-full"> -->
+        <!--          <h4 class="text-2xl font-bold dark:text-white text-center mt-3 hot-title"> -->
+        <!--            热门分类 -->
+        <!--          </h4> -->
+        <!--          <ul class="grid gap-1  grid-cols-1 sm:grid-cols-3 2xl:gap-5 max-w-screen-lg mx-auto mt-9"> -->
+        <!--            <li v-for="item in hostList" :key="item.id" class="text-center relative  cursor-pointer transition duration-300 ease-in-out hover:scale-104 mx-auto"> -->
+        <!--              <img src="../../assets/img/hot-bg.jpg" class="rounded-md w-[325px] h-[222px]" alt=""> -->
+        <!--              <span class="absolute bg-gray-900 bg-opacity-30 flex justify-center w-[325px]  h-[222px] items-center text-white rounded-md inset-0 text-2xl"> -->
+        <!--                {{ item.name }} -->
+        <!--              </span> -->
+        <!--            </li> -->
+        <!--          </ul> -->
+        <!--        </div> -->
+        <!--        <div class="hot-class container mx-auto"> -->
+        <!--          <div class="flex-y-center justify-between"> -->
+        <!--            <div class="title-left flex-center"> -->
+        <!--              <h3 class="text-2xl font-bold dark:text-white title-before"> -->
+        <!--                热门案例 -->
+        <!--              </h3> -->
+        <!--              <t-tabs v-model="value" class="ml-10 !bg-transparent" size="large"> -->
+        <!--                <t-tab-panel :value="1" label="学前音乐" /> -->
+        <!--                <t-tab-panel :value="2" label="小学英语" /> -->
+        <!--                <t-tab-panel :value="3" label="初中语文" /> -->
+        <!--              </t-tabs> -->
+        <!--            </div> -->
+        <!--            <div class="other"> -->
+        <!--              <span> -->
+        <!--                查看全部 > -->
+        <!--              </span> -->
+        <!--            </div> -->
+        <!--          </div> -->
+        <div v-for="item in homeList" :key="item.cateCode" class="container mx-auto p-6 md:p-0">
+          <div class="flex-y-center justify-between">
+            <h3 class="text-2xl font-bold dark:text-white  mt-3 title-before">
+              {{ item.title }}
+            </h3>
+          </div>
+          <div class="hot-class-list flex mt-5">
+            <div v-if="shouldShowImages(item.title)" class="w-[285px]">
+              <img v-if="item.title === '热门案例'" src="../../assets/img/img-cover-1.png" alt="" class="rounded">
+              <img v-if="item.title === '信息素养'" src="../../assets/img/img-cover.png" alt="" class="rounded">
+            </div>
+            <div
+              class="flex-1"
+              :class="shouldShowImages(item.title) ? 'ml-5' : ''"
+            >
+              <Result v-if="item.row.length === 0" :height="120" title="暂无数据" />
+              <ul
+                v-else class="grid gap-1  grid-cols-4 2xl:gap-6"
+              >
+                <t-card v-for="data in item.row.slice(0, 8)" :key="data.cateCode" class="home-full-card" :bordered="false">
+                  <template #cover>
+                    <div @click="handleDetailTo(data.resCode, data.type, data.name, data.cateCode)">
+                      <t-image v-if="shouldShowImages(item.title)" fit="cover" :src="replaceUrlImage(data.logo)" alt="" class="h-[152px]" />
+                      <div v-else class="flex-center w-full mt-2">
+                        <t-image
+                          :src="replaceUrlImage(data.logo)"
+                          class="max-w-45"
+                          fit="cover"
+                        />
+                      </div>
+                    </div>
+                  </template>
+                  <div class="desc text-base font-400 h-11 cursor-pointer text-ellipsis" @click="handleDetailTo(data.resCode, data.type, data.name, data.cateCode)">
+                    {{ data.name }}
+                  </div>
+                </t-card>
+              </ul>
+            </div>
           </div>
         </div>
       </t-skeleton>

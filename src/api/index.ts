@@ -1,6 +1,7 @@
 import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 import axios from 'axios'
 import { MessagePlugin } from 'tdesign-vue-next'
+import { useUserStore } from '@/store/modules/user'
 
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   hideLoading?: boolean
@@ -19,6 +20,11 @@ const service = axios.create({
 })
 service.interceptors.request.use(
   (config) => {
+    const userStore = useUserStore()
+    const token = userStore.token || userStore.guestToken
+    if (token) {
+      config.headers!.Authorization = `Bearer ${token}`
+    }
     return config
   },
   (error) => {
@@ -62,11 +68,29 @@ request.get = <T = any>(url: string, params?: object): Promise<T> =>
   })
 
 request.post = <T = any>(url: string, params?: object): Promise<T> =>
-
   request({
     method: 'post',
     url,
     data: params,
   })
 
+request.upload = <T = any>(url: string, params?: object): Promise<T> =>
+  request({
+    method: 'post',
+    url,
+    data: params,
+    onUploadProgress: (progressEvent) => {
+      const total: any = progressEvent.total
+      const loaded = progressEvent.loaded
+      const percent = Math.floor((loaded / total) * 100)
+      return {
+        percent,
+        loaded,
+        total,
+      }
+    },
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
 export default request

@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import type { DetailFileProps } from '@/pages/home/components/prop'
+import { CollectionIcon, DownloadIcon } from 'tdesign-icons-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
+import type { DetailFileProps } from '@/pages/home/prop'
 import { resourceService } from '@/api/modules/resource'
-import {fileDownload} from "@/utils/file";
+import { fileDownload } from '@/utils/file'
 import baseUrl from '@/utils/url'
 import VideoPlayer from '@/components/VideoPlayer/VideoPlayer.vue'
-import {DownloadIcon} from "tdesign-icons-vue-next";
-import {MessagePlugin} from "tdesign-vue-next";
+import UserAddCollect from '@/pages/home/components/UserAddCollect.vue'
+import collectService from '@/api/modules/collect'
 
 const props = defineProps<DetailFileProps>()
 
+const isAddCollection = ref(false)
 const videoSrc = ref('')
 const resourceData = ref({})
 const chapterList = ref([])
@@ -81,22 +84,53 @@ function formatSecondsToMinutes(seconds: number): string {
 
   return `${formattedMinutes}:${formattedSeconds}`
 }
+function handleCollection() {
+  isAddCollection.value = true
+}
+function handleCollectConfirm(e: number) {
+  const params = {
+    ResCode: props.rescode,
+    ResType: props.restype,
+    CollectID: e,
+  }
+  collectService.res_add(params).then((res) => {
+    if (res) {
+      MessagePlugin.success('收藏成功')
+    }
+    else {
+      MessagePlugin.error('收藏失败')
+    }
+    isAddCollection.value = false
+  })
+}
 </script>
 
 <template>
   <div class="course-detail flex wh-full mb-5">
     <div class="course-detail-left w-290 mr-5">
       <t-card :bordered="false" class="course-detail-play">
-        <!--        <video :src="videoSrc" controls class="w-full"  muted autoplay /> -->
         <VideoPlayer :src="videoSrc" class="w-full !h-150" />
         <template #footer>
-          <div class="text-right">
-            <t-button class="file-entry" variant="outline" theme="primary" @click="handleFileDown">
-              <template #icon>
-                <DownloadIcon class="file-icon" />
-              </template>
-              文件下载
-            </t-button>
+          <div class="flex justify-between">
+            <div>
+              <h1 class="text-xl">
+                {{ resourceData.name }}
+              </h1>
+            </div>
+            <div class="space-x-3">
+              <t-button class="file-entry" variant="outline" @click="handleCollection">
+                <template #icon>
+                  <CollectionIcon class="file-icon" />
+                </template>
+                视频收藏
+              </t-button>
+              <t-button class="file-entry" variant="outline" @click="handleFileDown">
+                <template #icon>
+                  <DownloadIcon class="file-icon" />
+                </template>
+                文件下载
+              </t-button>
+            </div>
           </div>
         </template>
       </t-card>
@@ -111,7 +145,7 @@ function formatSecondsToMinutes(seconds: number): string {
         </t-tabs>
       </t-card>
     </div>
-    <div class="course-detail-right flex-1 h-180 overflow-y-scroll relative">
+    <div class="course-detail-right flex-1 h-190 overflow-y-scroll relative">
       <t-card title="章节目录" :bordered="false" header-bordered>
         <t-menu
           v-model:expanded="expanded"
@@ -146,6 +180,7 @@ function formatSecondsToMinutes(seconds: number): string {
       </t-card>
     </div>
   </div>
+  <UserAddCollect :visible="isAddCollection" @confirm="handleCollectConfirm" @close="isAddCollection = false" />
 </template>
 
 <style scoped lang="scss">

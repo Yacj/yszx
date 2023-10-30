@@ -36,7 +36,13 @@ a {
 a:hover {
   color: var(--td-brand-color);
 }
-
+.color-theme{
+  color: var(--td-brand-color);
+}
+.color-theme:hover{
+  color: var(--td-brand-color);
+  transition: color 0.3s ease-in-out;
+}
 .main {
   transition: all 0.3s ease-in-out;
 }

@@ -30,6 +30,12 @@ function autoRemovePreFix(key: string) {
 }
 
 const storageUtil = {
+  /**
+   * @description 存储storage
+   * @param key - 要存储的值
+   * @return storage
+   * @example storageUtil.setItem('key', 'value')
+   */
   getItem(key: string) {
     // 获取指定值
     if (config.prefix) {

@@ -1,3 +1,6 @@
+import { isUrl } from '@/utils/is'
+import baseUrl from '@/utils/url'
+
 export function setPageTitle(titleText: string | unknown) {
   window.document.title = `${titleText ? ` ${titleText} - ` : ''}${import.meta.env.VITE_APP_TITLE}`
 }
@@ -141,4 +144,29 @@ export function evaluatePasswordStrength(password: string): 0 | 1 | 2 {
   }
 
   return 2 // 强密码
+}
+/**
+ * 将浮点数四舍五入为整数。
+ * @param {number} num - 输入的浮点数。
+ * @returns {number} - 返回四舍五入后的整数。
+ * @example
+ * roundToInteger(1.5) // 2
+ */
+export function roundToInteger(num: number): number {
+  // 使用 Math.round 方法将浮点数四舍五入为整数
+  return Math.round(num)
+}
+
+/**
+ * @description 处理url图片
+ * @param url - url地址
+ * @return {string}
+ */
+export function replaceUrlImage(url: string) {
+  if (isUrl(url)) {
+    return url
+  }
+  else {
+    return `${baseUrl?.file}${url}`
+  }
 }

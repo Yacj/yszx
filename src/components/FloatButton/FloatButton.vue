@@ -92,18 +92,18 @@ function handleToggleTheme(event: MouseEvent) {
           <HomeIcon />
         </template>
       </t-sticky-item>
-      <t-sticky-item
-        label="微信扫码"
-        class="!z-50"
-        :popup-props="{ overlayInnerStyle: { padding: '4px', height: '128px' } }"
-      >
-        <template #icon>
-          <QrcodeIcon />
-        </template>
-        <template #popup>
-          <img :src="getAssetsImg ('footer-code.png')" alt="" class="w-30 h-33">
-        </template>
-      </t-sticky-item>
+<!--      <t-sticky-item-->
+<!--        label="微信扫码"-->
+<!--        class="!z-50"-->
+<!--        :popup-props="{ overlayInnerStyle: { padding: '4px', height: '128px' } }"-->
+<!--      >-->
+<!--        <template #icon>-->
+<!--          <QrcodeIcon />-->
+<!--        </template>-->
+<!--        <template #popup>-->
+<!--          <img :src="getAssetsImg ('footer-code.png')" alt="" class="w-30 h-33">-->
+<!--        </template>-->
+<!--      </t-sticky-item>-->
       <t-sticky-item
         :label="appStore.colorScheme === 'dark' ? '明亮主题' : '暗黑主题'"
         class="!z-50"

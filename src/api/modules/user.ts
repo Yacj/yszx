@@ -4,7 +4,7 @@ export interface LoginDataInterface {
   username: string
   password: string
   captcha: string
-  agencyId: number
+  agencyId: number | string
   verify_hash: string
   isAjax: boolean
 }
@@ -27,11 +27,7 @@ export const userService = {
   }) => {
     return request.get('/api/User/get/user_info', params)
   },
-  add_log: (params: {
-    resName?: string
-    resCode?: string
-    cateCode?: string
-  }) => {
-    return request.post('/api/Log/getResource/get_details', params)
+  guest: () => {
+    return request.post('/api/User/login/guest')
   },
 }

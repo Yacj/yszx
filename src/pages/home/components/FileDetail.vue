@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { DownloadIcon, FullscreenIcon } from 'tdesign-icons-vue-next'
+import { CollectionIcon, DownloadIcon, FullscreenIcon } from 'tdesign-icons-vue-next'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { fileDownload } from '@/utils/file'
-import type { DetailFileProps } from '@/pages/home/components/prop'
+import type { DetailFileProps } from '@/pages/home/prop'
 import { fileTypeEnum } from '@/utils/enums'
 import { resourceService } from '@/api/modules/resource'
 import baseUrl from '@/utils/url'
 import VideoPlayer from '@/components/VideoPlayer/VideoPlayer.vue'
+import UserAddCollect from '@/pages/home/components/UserAddCollect.vue'
+import collectService from "@/api/modules/collect";
 
 const props = defineProps<DetailFileProps>()
 const fileRef = ref<HTMLElement | null>(null)
@@ -14,7 +16,7 @@ const { toggle } = useFullscreen(fileRef)
 const typeName = ref('')
 const fileData = ref({})
 const fileLoading = ref(false)
-
+const isAddCollection = ref(false)
 // 推荐列表
 const recommendList = ref([])
 const resName = ref('')
@@ -87,10 +89,27 @@ function handleRenderMask() {
   }, '预览查看大图')
 }
 const router = useRouter()
-function handleNavTo(resCode: string, type: string) {
-  window.open(`/#/home/detail?ResCode=${resCode}&ResType=${type}`, '_blank')
+function handleNavTo(resCode: string, type: string, resName: string, Code: string) {
+  window.open(`/#/home/detail?ResCode=${resCode}&ResType=${type}&ResName=${resName}&categoryCode=${Code}`, '_blank')
 }
-function handleBack() {
+function handleCollection() {
+  isAddCollection.value = true
+}
+function handleCollectConfirm(e: number) {
+  const params = {
+    ResCode: props.rescode,
+    ResType: props.restype,
+    CollectID: e,
+  }
+  collectService.res_add(params).then((res) => {
+    if (res) {
+      MessagePlugin.success('收藏成功')
+    }
+    else {
+      MessagePlugin.error('收藏失败')
+    }
+    isAddCollection.value = false
+  })
 }
 </script>
 
@@ -113,9 +132,12 @@ function handleBack() {
             </template>
             全屏
           </t-button>
-          <!--          <t-button variant="outline"> -->
-          <!--            点击收藏 -->
-          <!--          </t-button> -->
+          <t-button variant="outline" @click="handleCollection">
+            <template #icon>
+              <CollectionIcon class="file-icon" />
+            </template>
+            点击收藏
+          </t-button>
           <t-button class="file-entry" @click="handleFileDown">
             <template #icon>
               <DownloadIcon class="file-icon" />
@@ -181,11 +203,17 @@ function handleBack() {
       </div>
     </t-card>
     <div class="flex-1 recommend h-180 overflow-y-scroll relative">
-      <t-card title="资源推荐" :bordered="false" header-bordered>
+      <t-card :bordered="false" header-bordered class="card-title">
+        <template #title>
+          <div class="title">
+            资源推荐
+          </div>
+        </template>
         <t-space direction="vertical" class="w-full">
           <t-card
             v-for="(item, index) in recommendList" :key="index + 1" class="cursor-pointer"
-            @click="handleNavTo(item.resCode, item.type)"
+            :bordered="false"
+            @click="handleNavTo(item.resCode, item.type, item.name, item.cateCode)"
           >
             <template #cover>
               <t-image
@@ -194,13 +222,15 @@ function handleBack() {
                 fit="cover"
               />
             </template>
-            <div class="text-center text-base font-medium mt-1">
+            <div class="text-center text-base font-medium mt-1 cursor-pointer hover:text-[color:var(--td-brand-color)]">
               {{ item.name }}
             </div>
+            <t-divider />
           </t-card>
         </t-space>
       </t-card>
     </div>
+    <UserAddCollect :visible="isAddCollection" @confirm="handleCollectConfirm" @close="isAddCollection = false" />
   </div>
 </template>
 
@@ -209,6 +239,25 @@ function handleBack() {
   &:hover{
     .file-icon{
       animation: iconJump .3s;
+    }
+  }
+}
+:deep(.recommend){
+  .t-card__title--bordered{
+    border: none;
+  }
+  .title{
+    position: relative;
+    &::after{
+      content: "";
+      display: inline-block;
+      width: 40px;
+      height: 2px;
+      background: var(--td-brand-color);
+      border-radius: 2px;
+      position: absolute;
+      left: 0;
+      bottom: -10px;
     }
   }
 }

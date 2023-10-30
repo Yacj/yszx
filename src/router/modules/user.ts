@@ -16,6 +16,25 @@ export default {
       },
     },
     {
+      path: 'resource',
+      name: 'UserResource',
+      component: () => import('@/pages/user/index.vue'),
+      meta: {
+        title: '看板统计',
+        needLogin: true,
+      },
+      children: [
+        {
+          path: '',
+          name: 'UserResourceIndex',
+          component: () => import('@/pages/user/resource.vue'),
+          meta: {
+            title: '看板统计',
+          },
+        }
+      ]
+    },
+    {
       path: 'recent',
       name: 'UserRecent',
       component: () => import('@/pages/user/index.vue'),

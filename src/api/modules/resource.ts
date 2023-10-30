@@ -1,7 +1,7 @@
-import type { LocationQueryValue } from 'vue-router'
+import type {LocationQueryValue} from 'vue-router'
 import request from '@/api'
 
-export type ResDetailType = 'Couse' | 'File' | 'Test' | 'Exam'
+export type ResDetailType = 'Couse' | 'File' | 'Test' | 'Exam' | 'Book'
 
 export const resourceService = {
   get_details: (params: {
@@ -26,5 +26,13 @@ export const resourceService = {
     ResCode: string | LocationQueryValue[] | null
   }) => {
     return request.get('/api/Resource/get_recommend', params)
+  },
+  homeList: () => {
+    return request.get('/api/Resource/homeList')
+  },
+  hotList: (params: {
+    pageSize: number
+  }) => {
+    return request.get('/api/Resource/hotList', params)
   },
 }

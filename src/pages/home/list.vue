@@ -1,14 +1,23 @@
 <script setup lang="ts">
-// import { DownloadIcon, HeartFilledIcon, HeartIcon } from 'tdesign-icons-vue-next'
 import { MessagePlugin } from 'tdesign-vue-next'
 import type { LocationQueryValue } from 'vue-router'
 import { ChevronDownIcon, ChevronUpIcon } from 'tdesign-icons-vue-next'
 import { nextTick } from 'vue'
-import { fileDownload } from '@/utils/file'
+import { formatDay } from '@/utils/dateUtils'
+import { replaceUrlImage } from '@/utils'
 import { useUserStore } from '@/store/modules/user'
 import { categoryService } from '@/api/modules/category'
-import baseUrl from '@/utils/url'
 import Result from '@/components/Result/Result.vue'
+import type { ResDetailType } from '@/api/modules/resource'
+import { resourceService } from '@/api/modules/resource'
+import { fileDownload } from '@/utils/file'
+import baseUrl from '@/utils/url'
+import UserAddCollect from '@/pages/home/components/UserAddCollect.vue'
+import collectService from '@/api/modules/collect'
+
+defineOptions({
+  name: 'HomeListIndex',
+})
 
 const filterRef = ref(null)
 const list = ref([])
@@ -19,14 +28,13 @@ const orgId = computed(() => userStore.orgID)
 const {
   query: { id: RouteId },
 } = route
-
+const router = useRouter()
 // 分类
 const categoryList = ref([])
 const categoryId = ref(0)
 
 const cateList = ref([])
 const Code = ref<string | LocationQueryValue[] | null>('')
-
 const total = ref(0)
 const pagination = ref({
   current: 1,
@@ -36,7 +44,8 @@ const pagination = ref({
 const loadMoreShow = ref(false)
 
 const filterLoading = ref(false)
-
+const isOpenCollect = ref(false)
+const collectParams = ref({})
 watch(
   () => route.query,
   (value) => {
@@ -147,18 +156,27 @@ function getResByCateList() {
     }
   })
 }
-function handleDownload() {
-  fileDownload('http://wlapi.jqweike.cn/wlxt_Data/WKK/GZ/FL0601/RJGZ010108/0101/03/wlxtRJGZYW0000003.mp4')
-  MessagePlugin.success('下载成功')
+function handleDownload(ResCode: string, ResType: ResDetailType) {
+  resourceService.download({
+    ResCode,
+    ResType,
+  }).then((res) => {
+    fileDownload(baseUrl.file + res.data)
+    MessagePlugin.success('文件下载成功')
+  })
 }
 
-function handleClickCollect(isCollect: boolean, index: number) {
+function handleCollect(ResCode: string, ResType: ResDetailType) {
   if (token.value) {
-    MessagePlugin.success(isCollect ? '取消收藏成功' : '收藏成功')
-    list.value[index].isCollect = !isCollect
+    collectParams.value = {
+      ResCode,
+      ResType,
+    }
+    isOpenCollect.value = true
   }
   else {
     MessagePlugin.warning('请先登录')
+    router.push('/login')
   }
 }
 
@@ -168,8 +186,18 @@ function handleLoadMoreClick() {
   getResByCateList()
 }
 
-function handleNavTo(resCode: string, type: string) {
-  window.open(`/#/home/detail?ResCode=${resCode}&ResType=${type}`, '_blank')
+function handleDetailTo(resCode: string, type: string, resName: string) {
+  window.open(`/#/home/detail?ResCode=${resCode}&ResType=${type}&ResName=${resName}&categoryCode=${Code.value}`, '_blank')
+}
+
+function handleAddCollect(CollectID: number) {
+  const params = {
+    ...collectParams.value,
+    CollectID,
+  }
+  collectService.res_add(params).then((res) => {
+    console.log(res)
+  })
 }
 </script>
 
@@ -254,95 +282,65 @@ function handleNavTo(resCode: string, type: string) {
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <t-card v-for="item in list" :key="item.id" :bordered="false" class="list-card">
           <template #cover>
-            <router-link
-              :to="{
-                name: 'HomeListDetail',
-                query: {
-                  ResCode: item.resCode,
-                  ResType: item.type,
-                },
-              }
-              "
-              target="_blank"
-            >
+            <div @click="handleDetailTo(item.resCode, item.type, item.name)">
+              <div v-if="item.type === 'Book'" class="flex-center w-full mt-2">
+                <t-image
+                  :src="replaceUrlImage(item.logo)"
+                  class="max-w-45"
+                  fit="cover"
+                />
+              </div>
               <t-image
-                :src="baseUrl.file + item.logo"
+                v-else
+                :src="replaceUrlImage(item.logo)"
                 class="h-[190px]"
                 fit="cover"
               />
-            </router-link>
-          </template>
-          <router-link
-            :to="{
-              name: 'HomeListDetail',
-              query: {
-                ResCode: item.resCode,
-                ResType: item.type,
-              },
-            }"
-            :aria-label="item.title"
-            target="_blank"
-          >
-            <div class="text-base h-11 cursor-pointer text-ellipsis overflow-hidden">
-              {{ item.name }}
             </div>
-          </router-link>
-          <template v-if="item.type === 'Exam'" #footer>
-            <div class="flex justify-between items-center">
+          </template>
+          <div
+            class="text-base h-11 cursor-pointer text-ellipsis overflow-hidden"
+            @click="handleDetailTo(item.resCode, item.type, item.name)"
+          >
+            {{ item.name }}
+          </div>
+          <template v-if="item.type !== 'Book'" #footer>
+            <div v-if="item.type === 'Exam'" class="flex justify-between items-center">
               <div class="text-[13px] text-[color:var(--td-gray-color-7)]">
                 发布时间：{{ item.createTime.replace(/T.*/, "") }}
               </div>
-              <router-link
-                :to="{
-                  name: 'HomeListDetail',
-                  query: {
-                    ResCode: item.resCode,
-                    ResType: item.type,
-                  },
-                }"
-                target="_blank"
+              <t-button
+                block
+                class="!w-20"
+                @click="handleDetailTo(item.resCode, item.type, item.name)"
               >
-                <t-button
-                  block
-                  class="!w-20"
-                >
-                  答题
-                </t-button>
-              </router-link>
+                答题
+              </t-button>
+            </div>
+            <div v-else class="">
+              <div class="time text-[13px] text-[color:var(--td-gray-color-7)]">
+                发布时间：{{ formatDay(item.createTime, 'YYYY-MM-DD') }}
+              </div>
+              <!--              <div class="flex-y-center cursor-pointer" @click="handleCollect(item.resCode, item.type)"> -->
+              <!--                <CollectionIcon class="text-xl " /> -->
+              <!--                <span class="ml-1 text-base"> -->
+              <!--                  收藏 -->
+              <!--                </span> -->
+              <!--              </div> -->
+              <!--              <div class="flex-center ml-auto" @click="handleDownload(item.resCode, item.type)"> -->
+              <!--                <DownloadIcon class="text-xl" /> -->
+              <!--                <span class="ml-1 text-base"> -->
+              <!--                  下载 -->
+              <!--                </span> -->
+              <!--              </div> -->
+              <!--              <div class="flex-center"> -->
+              <!--                <ShareIcon class="" /> -->
+              <!--                <span class=" ml-2"> -->
+              <!--                  分享 -->
+              <!--                </span> -->
+              <!--              </div> -->
             </div>
           </template>
-          <!--          <template #footer> -->
-          <!--            <div class="grid grid-cols-2 gap-5"> -->
-          <!--              <div class="flex-y-center cursor-pointer"> -->
-          <!--                <transition :name="item.isCollect ? 'zoom' : '' " mode="out-in"> -->
-          <!--                  <HeartFilledIcon -->
-          <!--                    v-if="item.isCollect" key="like" -->
-          <!--                    class="text-2xl collect-icon collect-active" -->
-          <!--                    @click="handleClickCollect(item.isCollect, index)" -->
-          <!--                  /> -->
-          <!--                  <HeartIcon -->
-          <!--                    v-else key="unlike" class="text-2xl collect-icon" -->
-          <!--                    @click="handleClickCollect(item.isCollect, index)" -->
-          <!--                  /> -->
-          <!--                </transition> -->
-          <!--                <span class="ml-1 text-base"> -->
-          <!--                  收藏 -->
-          <!--                </span> -->
-          <!--              </div> -->
-          <!--              <div class="flex-center ml-auto" @click="handleDownload"> -->
-          <!--                <DownloadIcon class="text-xl" /> -->
-          <!--                <span class="ml-1 text-base"> -->
-          <!--                  下载 -->
-          <!--                </span> -->
-          <!--              </div> -->
-          <!--              &lt;!&ndash;              <div class="flex-center"> &ndash;&gt; -->
-          <!--              &lt;!&ndash;                <ShareIcon class="" /> &ndash;&gt; -->
-          <!--              &lt;!&ndash;                <span class=" ml-2"> &ndash;&gt; -->
-          <!--              &lt;!&ndash;                  分享 &ndash;&gt; -->
-          <!--              &lt;!&ndash;                </span> &ndash;&gt; -->
-          <!--              &lt;!&ndash;              </div> &ndash;&gt; -->
-          <!--            </div> -->
-          <!--          </template> -->
         </t-card>
       </div>
       <div class="loading-more flex-center mt-8">
@@ -357,6 +355,7 @@ function handleNavTo(resCode: string, type: string) {
       </div>
     </div>
     <Result v-else type="404" height="120" title="暂无数据" />
+    <UserAddCollect :visible="isOpenCollect" @confirm="handleAddCollect" @close="isOpenCollect = false" />
   </div>
 </template>
 
@@ -385,21 +384,6 @@ function handleNavTo(resCode: string, type: string) {
 
 .collect-active, .filter-active {
   color: var(--brand-main);
-}
-
-/** 动画进行时的class **/
-.zoom-enter-active, .zoom-leave-active {
-  transition: all .15s cubic-bezier(0.42, 0, 0.34, 1.55);
-}
-
-/** 设置进场开始的状态和离场结束的状态，都是缩放到0 **/
-.zoom-enter, .zoom-leave-to {
-  transform: scale(0);
-}
-
-/** 设置进场结束的状态和离场开始的状态, 都是缩放到1 **/
-.zoom-enter-to, .zoom-leave {
-  transform: scale(1);
 }
 
 .list-card {

@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import { DesktopIcon, ForkIcon, LockOnIcon, SecuredIcon } from 'tdesign-icons-vue-next'
-import type { SubmitContext } from 'tdesign-vue-next'
+import type { FormRule, SubmitContext } from 'tdesign-vue-next'
 import { MessagePlugin } from 'tdesign-vue-next'
+import type { UnwrapNestedRefs } from 'vue'
 import { awaitTo, getQueryObject } from '@/utils'
 import { useUserStore } from '@/store/modules/user'
 import BaseFooter from '@/components/BaseFooter/BaseFooter.vue'
 import FloatButton from '@/components/FloatButton/FloatButton.vue'
 import Captcha from '@/components/Captcha/Captcha.vue'
+import type { LoginDataInterface } from '@/api/modules/user'
 import { userService } from '@/api/modules/user'
 
 const title = import.meta.env.VITE_APP_TITLE
 const userStore = useUserStore()
 const btnLoading = ref(false)
-const formData = reactive({
+const formData: UnwrapNestedRefs<LoginDataInterface> = reactive({
   username: '',
   password: '',
   agencyId: '',
@@ -22,7 +24,7 @@ const formData = reactive({
 })
 const captChaCode = ref('')
 const form = ref(null)
-const rules = {
+const rules: Record<string, FormRule[]> = {
   username: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
   ],
@@ -42,7 +44,7 @@ const isDisabled = computed(() => {
 })
 
 const selectData = ref()
-const redirect = getQueryObject().redirect as string
+const redirect = getQueryObject().redirect
 const selectLoading = ref(false)
 const router = useRouter()
 
@@ -94,14 +96,12 @@ function onReset() {
   <div class="login-page">
     <div class="login-header pt-8 pb-0 px-10">
       <router-link to="/">
-        <h2 class="text-3xl font-bold tracking-1">
-          {{ title }}
-        </h2>
+        <img src="../assets/img/logo.png" alt="" class="w-50">
       </router-link>
     </div>
     <div class="login-container flex-center box-border h-[calc(100vh_-_123px)] max-w-[1300px] min-h-[650px] mx-auto my-0">
       <div class="login-container-left flex-1 h-full max-h-[700PX] relative" />
-      <div class="login-container-right">
+      <t-space class="login-container-right">
         <t-card :bordered="false">
           <div class="title text-2xl font-medium tracking-[.003em] leading-8">
             用户登录
@@ -161,7 +161,17 @@ function onReset() {
                 </t-input>
               </t-input-adornment>
             </t-form-item>
-            <t-form-item class="!mt-10">
+            <!--            <t-form-item> -->
+            <!--              <div class="w-full"> -->
+            <!--                <t-checkbox class="!float-right !ml-5"> -->
+            <!--                  记住账户 -->
+            <!--                </t-checkbox> -->
+            <!--                <t-checkbox class="!float-right"> -->
+            <!--                  记住密码 -->
+            <!--                </t-checkbox> -->
+            <!--              </div> -->
+            <!--            </t-form-item> -->
+            <t-form-item class="!mt-8">
               <t-button
                 theme="primary"
                 type="submit"
@@ -175,11 +185,11 @@ function onReset() {
             </t-form-item>
           </t-form>
         </t-card>
-      </div>
+      </t-space>
     </div>
-    <FloatButton />
-    <BaseFooter />
   </div>
+  <FloatButton />
+  <BaseFooter />
 </template>
 
 <style scoped lang="scss">

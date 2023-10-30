@@ -37,6 +37,7 @@ const defaultOptions = {
   screenShot: false,
   cssFullscreen: false,
 }
+
 watch(
   () => props.src,
   (newVal) => {
@@ -45,6 +46,7 @@ watch(
     }
   },
 )
+
 onMounted(() => {
   handleInitPlayer()
 })

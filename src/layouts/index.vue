@@ -2,17 +2,24 @@
 import BaseHeader from '@/components/BaseHeader/BaseHeader.vue'
 import BaseFooter from '@/components/BaseFooter/BaseFooter.vue'
 import FloatButton from '@/components/FloatButton/FloatButton.vue'
+import useKeepAliveStore from '@/store/modules/keepAlive'
+
+const keepAliveStore = useKeepAliveStore()
 </script>
 
 <template>
   <t-layout>
     <t-header class="z-5">
-      <BaseHeader class="hidden md:block"/>
+      <BaseHeader class="hidden md:block" />
     </t-header>
     <t-layout class="layout">
       <t-layout>
         <t-content class="main mt-5">
-          <RouterView />
+          <router-view v-slot="{ Component, route }">
+            <keep-alive :include="keepAliveStore.list">
+              <component :is="Component" :key="route.path" />
+            </keep-alive>
+          </router-view>
         </t-content>
         <BaseFooter />
       </t-layout>

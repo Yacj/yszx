@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChevronDownIcon, PoweroffIcon, SearchIcon, UserCircleIcon } from 'tdesign-icons-vue-next'
+import { PoweroffIcon, SearchIcon, UserCircleIcon,ChevronDownIcon } from 'tdesign-icons-vue-next'
 import { DialogPlugin, MessagePlugin } from 'tdesign-vue-next'
 
 import { useUserStore } from '@/store/modules/user'
@@ -24,6 +24,44 @@ onMounted(() => {
   getCateGoryList()
 })
 
+const userMenuList = ref([
+  {
+    name: '看板统计',
+    path: '/user/resource',
+    id: 0,
+    icon: 'clarity:resource-pool-outline-alerted',
+  },
+  {
+    name: '最近浏览',
+    path: '/user/recent',
+    id: 1,
+    icon: 'mdi:recent',
+  },
+  {
+    name: '我的收藏',
+    path: '/user/collection',
+    id: 2,
+    icon: 'heroicons-outline:collection',
+  },
+  {
+    name: '我的考试',
+    path: '/user/exam',
+    id: 3,
+    icon: 'healthicons:i-exam-qualification-outline',
+  },
+  {
+    name: '个人信息',
+    path: '/user/info',
+    id: 4,
+    icon: 'tabler:message',
+  },
+  {
+    name: '安全设置',
+    path: '/user/safe',
+    id: 5,
+    icon: 'mingcute:safe-alert-line',
+  },
+])
 function getCateGoryList() {
   categoryService.get({
     orgID: orgId.value,
@@ -190,10 +228,10 @@ function getMenuId() {
         <!--        </router-link> -->
       </t-space>
       <div v-else class="flex-center">
-        <t-dropdown :min-column-width="120" trigger="click">
+        <t-dropdown :min-column-width="120" trigger="hover">
           <template #dropdown>
             <t-dropdown-menu>
-              <t-dropdown-item class="user-dropdown-container-item mb-2" @click="handleNav('/user/recent', -1)">
+              <t-dropdown-item class="user-dropdown-container-item mb-2" @click="handleNav('/user/resource', -1)">
                 <UserCircleIcon />
                 个人中心
               </t-dropdown-item>
@@ -205,7 +243,7 @@ function getMenuId() {
           </template>
           <t-button class="header-user-btn" theme="default" variant="text" size="large">
             <div class="header-user-account flex">
-              <t-avatar size="medium">
+              <t-avatar size="marge">
                 {{ userInfo.realName[0] }}
               </t-avatar>
               <div class="relative top-[5px] ml-2">
@@ -252,5 +290,24 @@ function getMenuId() {
   .t-input {
     padding: 0 0 0 var(--td-comp-paddingLR-s);
   }
+}
+:deep(.t-menu__item.t-is-active){
+  background: none !important;
+  position: relative;
+  transition: all .2s;
+  //&::after{
+  //  content: "";
+  //  position: absolute;
+  //  display: block;
+  //  top: 100%;
+  //  left: 50%;
+  //  background-color: var(--td-brand-color);
+  //  width: 30%;
+  //  height: 3px;
+  //  margin-top: 5px;
+  //  transform: translateX(-50%);
+  //  border-radius: 3px;
+  //  transition: all .2s;
+  //}
 }
 </style>

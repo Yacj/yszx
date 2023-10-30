@@ -51,3 +51,12 @@ export function isObjectEmpty(obj: object): boolean {
 export function isDev() {
   return import.meta.env.MODE === 'development'
 }
+
+/**
+ * 检查字符串是否符合 URL 格式
+ * @param url 要检查的字符串
+ * @returns 如果是合法的 URL 返回 true，否则返回 false
+ */
+export function isUrl(url: string): boolean {
+  return /^(?:\w+:)?\/\/([^\s\.]+\.\S{2}|localhost[\:?\d]*)\S*$/.test(url)
+}

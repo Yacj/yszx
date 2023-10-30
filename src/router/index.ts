@@ -5,6 +5,7 @@ import NProgress from 'nprogress'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { setPageTitle } from '@/utils'
 import { useUserStore } from '@/store/modules/user'
+import useKeepAliveStore from '@/store/modules/keepAlive'
 
 let routes: RouteRecordRaw[] = [
   {
@@ -53,6 +54,11 @@ router.beforeEach((to, from, next) => {
   NProgress.start()
   const userStore = useUserStore()
   const token = userStore.token
+  const guestToken = userStore.guestToken
+  // 这里要做个判断 如果用户没有登陆 没有token 则调用 userStore 的 guestLogin 方法 获取临时访客token
+  if (!token && !guestToken) {
+    useUserStore().guestLogin()
+  }
   if (!token && to.meta.needLogin) {
     MessagePlugin.error('请先登录')
     next(`/login?redirect=${to.fullPath}`)
@@ -62,13 +68,43 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-router.afterEach((to) => {
+router.afterEach((to, from) => {
+  const keepAliveStore = useKeepAliveStore()
+  const cache = to.meta?.cache
+  const fromCache: any = from.meta?.cache
+  if (cache) {
+    const componentName = to.matched.at(-1)?.components?.default.name
+    if (componentName) {
+      keepAliveStore.add(componentName)
+    }
+    else {
+      console.warn('该页面组件未设置组件名，会导致缓存失效，请检查')
+    }
+  }
+  if (fromCache) {
+    const componentName = from.matched.at(-1)?.components?.default.name
+    if (componentName) {
+      switch (typeof from.meta.cache) {
+        case 'string':
+          if (from.meta.cache !== to.name) {
+            keepAliveStore.remove(componentName)
+          }
+          break
+        case 'object':
+          if (!fromCache.includes(to.name as string)) {
+            keepAliveStore.remove(componentName)
+          }
+          break
+      }
+    }
+  }
   if (to.path === '/home/list') {
     setPageTitle(to.query.name || '列表页')
   }
   else {
     setPageTitle(to.meta.title ?? '')
   }
+  document.documentElement.scrollTop = 0
   NProgress.done()
 })
 

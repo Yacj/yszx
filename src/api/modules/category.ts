@@ -11,7 +11,7 @@ export const categoryService = {
   resByCate: (params: {
     PageSize: number
     PageIndex: number
-    Code: string | LocationQueryValue | null
+    Code: string | LocationQueryValue[] | null
   }) => {
     return request.get('/api/Category/get/resByCate', params)
   },
