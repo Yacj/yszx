@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { PlusIcon, SearchIcon } from 'tdesign-icons-vue-next'
-import { formatDay } from '../../utils/dateUtils'
+import { formatDay } from '@/utils/dateUtils'
 import { powerService } from '@/api/modules/power'
 
-const organOptions = ref([])
 
 const listParams = reactive({
   Status: 1,
