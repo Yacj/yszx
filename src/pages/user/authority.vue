@@ -14,10 +14,10 @@ const listParams = reactive({
 const tableList = ref([])
 const columns = [
   {
-    title: '机构ID',
+    title: '机构编码',
     align: 'left',
     colKey: 'orgID',
-    width: 90
+    width: 90,
   },
   {
     title: '机构名称',
@@ -99,9 +99,9 @@ function handleGetAuthorityList() {
             { label: '启用', value: 1 },
             { label: '禁用', value: 0 },
           ]"
-          @change="handleGetAuthorityList"
-
           class="!w-50"
+
+          @change="handleGetAuthorityList"
         />
       </div>
       <div class="flex-center">
@@ -118,7 +118,7 @@ function handleGetAuthorityList() {
       </div>
       <div class="flex-center">
         名称搜索：
-        <t-input v-model="listParams.keyWord" placeholder="请输入机构名称进行搜索"  class="!w-50">
+        <t-input v-model="listParams.keyWord" placeholder="请输入机构名称进行搜索" class="!w-50">
           <template #suffix-icon>
             <SearchIcon />
           </template>
@@ -132,7 +132,7 @@ function handleGetAuthorityList() {
       </template>
       新增机构
     </t-button>
-    <t-table :columns="columns" :data="tableList" :stripe="true" row-key="orgID">
+    <t-table :columns="columns" :data="tableList" :stripe="true" row-key="orgID" :bordered="true">
       <template #startTime="{ row }">
         {{ formatDay(row.startTime) }}
       </template>
@@ -156,7 +156,7 @@ function handleGetAuthorityList() {
           <t-button variant="text" theme="primary" class="!color-[#0052d9]">
             编辑
           </t-button>
-          <t-button variant="text" :theme="row.status ? 'warning' : 'success'" >
+          <t-button variant="text" :theme="row.status ? 'warning' : 'success'">
             {{ row.status ? '禁用' : '启用' }}
           </t-button>
           <t-button variant="text">
