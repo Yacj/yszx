@@ -1,7 +1,7 @@
 import type {LocationQueryValue} from 'vue-router'
 import request from '@/api'
 
-export type ResDetailType = 'Couse' | 'File' | 'Test' | 'Exam' | 'Book'
+export type ResDetailType = 'Couse' | 'File' | 'Test' | 'Exam' | 'Book' | 'Image'
 
 export const resourceService = {
   get_details: (params: {

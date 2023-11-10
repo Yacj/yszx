@@ -13,6 +13,7 @@ export default {
       meta: {
         title: '用户',
         needLogin: true,
+
       },
     },
     {
@@ -22,6 +23,7 @@ export default {
       meta: {
         title: '看板统计',
         needLogin: true,
+        icon: 'clarity:resource-pool-outline-alerted',
       },
       children: [
         {
@@ -31,8 +33,8 @@ export default {
           meta: {
             title: '看板统计',
           },
-        }
-      ]
+        },
+      ],
     },
     {
       path: 'recent',
@@ -41,6 +43,7 @@ export default {
       meta: {
         title: '最近浏览',
         needLogin: true,
+        icon: 'mdi:recent',
       },
       children: [
         {
@@ -57,6 +60,7 @@ export default {
       meta: {
         title: '我的收藏',
         needLogin: true,
+        icon: 'heroicons-outline:collection'
       },
       children: [
         {
@@ -70,12 +74,51 @@ export default {
       ],
     },
     {
+      name: 'exam',
+      path: 'exam',
+      component: () => import('@/pages/user/index.vue'),
+      meta: {
+        title: '我的考试',
+        needLogin: true,
+        icon: 'healthicons:i-exam-qualification-outline',
+      },
+      children: [
+        {
+          path: '',
+          name: 'UserExamIndex',
+          component: () => import('@/pages/user/exam.vue'),
+          meta: {
+            title: '我的考试',
+          },
+        },
+      ],
+    },
+    {
+      name: 'authority',
+      path: 'authority',
+      component: () => import('@/pages/user/index.vue'),
+      meta: {
+        title: '授权管理',
+        requireAuth: true,
+        role: ['sadmin'],
+        icon: 'mdi:account-cog',
+      },
+      children: [
+        {
+          path: '',
+          name: 'UserAuthorityIndex',
+          component: () => import('@/pages/user/authority.vue'),
+        },
+      ],
+    },
+    {
       name: 'info',
       path: 'info',
       component: () => import('@/pages/user/index.vue'),
       meta: {
         title: '个人信息',
         needLogin: true,
+        icon: 'tabler:message',
       },
       children: [
         {
@@ -95,6 +138,7 @@ export default {
       meta: {
         title: '安全设置',
         needLogin: true,
+        icon: 'mingcute:safe-alert-line',
       },
       children: [
         {
@@ -103,25 +147,6 @@ export default {
           component: () => import('@/pages/user/safe.vue'),
           meta: {
             title: '安全设置',
-          },
-        },
-      ],
-    },
-    {
-      name: 'exam',
-      path: 'exam',
-      component: () => import('@/pages/user/index.vue'),
-      meta: {
-        title: '我的考试',
-        needLogin: true,
-      },
-      children: [
-        {
-          path: '',
-          name: 'UserExamIndex',
-          component: () => import('@/pages/user/exam.vue'),
-          meta: {
-            title: '我的考试',
           },
         },
       ],

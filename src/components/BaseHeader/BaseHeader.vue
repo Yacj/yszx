@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { PoweroffIcon, SearchIcon, UserCircleIcon,ChevronDownIcon } from 'tdesign-icons-vue-next'
+import { SearchIcon } from 'tdesign-icons-vue-next'
 import { DialogPlugin, MessagePlugin } from 'tdesign-vue-next'
 
 import { useUserStore } from '@/store/modules/user'
 import { categoryService } from '@/api/modules/category'
 import storageUtil from '@/utils/storage'
 import { isDev } from '@/utils/is'
+import SvgIcon from '@/components/SvgIcon/SvgIcon.vue'
 
 const title = import.meta.env.VITE_APP_TITLE
 const searchVal = ref('')
@@ -26,7 +27,7 @@ onMounted(() => {
 
 const userMenuList = ref([
   {
-    name: '看板统计',
+    name: '数据统计',
     path: '/user/resource',
     id: 0,
     icon: 'clarity:resource-pool-outline-alerted',
@@ -44,22 +45,10 @@ const userMenuList = ref([
     icon: 'heroicons-outline:collection',
   },
   {
-    name: '我的考试',
-    path: '/user/exam',
-    id: 3,
-    icon: 'healthicons:i-exam-qualification-outline',
-  },
-  {
     name: '个人信息',
     path: '/user/info',
     id: 4,
     icon: 'tabler:message',
-  },
-  {
-    name: '安全设置',
-    path: '/user/safe',
-    id: 5,
-    icon: 'mingcute:safe-alert-line',
   },
 ])
 function getCateGoryList() {
@@ -116,7 +105,7 @@ function handleLogout() {
       MessagePlugin.success('退出登录成功')
       userStore.logout()
       router.push('/login')
-      dialog.hide()
+      dialog.destroy()
     },
   })
 }
@@ -228,19 +217,7 @@ function getMenuId() {
         <!--        </router-link> -->
       </t-space>
       <div v-else class="flex-center">
-        <t-dropdown :min-column-width="120" trigger="hover">
-          <template #dropdown>
-            <t-dropdown-menu>
-              <t-dropdown-item class="user-dropdown-container-item mb-2" @click="handleNav('/user/resource', -1)">
-                <UserCircleIcon />
-                个人中心
-              </t-dropdown-item>
-              <t-dropdown-item class="user-dropdown-container-item" @click="handleLogout">
-                <PoweroffIcon />
-                退出登录
-              </t-dropdown-item>
-            </t-dropdown-menu>
-          </template>
+        <t-popup placement="bottom" show-arrow destroy-on-close>
           <t-button class="header-user-btn" theme="default" variant="text" size="large">
             <div class="header-user-account flex">
               <t-avatar size="marge">
@@ -250,11 +227,56 @@ function getMenuId() {
                 {{ userInfo.realName }}
               </div>
             </div>
-            <template #suffix>
-              <ChevronDownIcon />
-            </template>
           </t-button>
-        </t-dropdown>
+          <template #content>
+            <ul>
+              <li v-for="item in userMenuList" :key="item.id" class="my-1" @click="handleNav(item.path, item.id)">
+                <t-button variant="text">
+                  <template #icon>
+                    <SvgIcon :name="item.icon" type="iconify" :size="20" class="mr-3" />
+                  </template>
+                  {{ item.name }}
+                </t-button>
+              </li>
+              <t-divider class="!m-1" />
+              <li class="my-2" @click="handleLogout">
+                <t-button variant="text">
+                  <template #icon>
+                    <SvgIcon name="material-symbols:exit-to-app" type="iconify" :size="20" class="mr-3" />
+                  </template>
+                  退出登录
+                </t-button>
+              </li>
+            </ul>
+          </template>
+        </t-popup>
+        <!--        <t-dropdown :min-column-width="120" trigger="hover"> -->
+        <!--          <template #dropdown> -->
+        <!--            <t-dropdown-menu> -->
+        <!--              <t-dropdown-item class="user-dropdown-container-item mb-2" @click="handleNav('/user/resource', -1)"> -->
+        <!--                <UserCircleIcon /> -->
+        <!--                个人中心 -->
+        <!--              </t-dropdown-item> -->
+        <!--              <t-dropdown-item class="user-dropdown-container-item" @click="handleLogout"> -->
+        <!--                <PoweroffIcon /> -->
+        <!--                退出登录 -->
+        <!--              </t-dropdown-item> -->
+        <!--            </t-dropdown-menu> -->
+        <!--          </template> -->
+        <!--                  <t-button class="header-user-btn" theme="default" variant="text" size="large"> -->
+        <!--                    <div class="header-user-account flex"> -->
+        <!--                      <t-avatar size="marge"> -->
+        <!--                        {{ userInfo.realName[0] }} -->
+        <!--                      </t-avatar> -->
+        <!--                      <div class="relative top-[5px] ml-2"> -->
+        <!--                        {{ userInfo.realName }} -->
+        <!--                      </div> -->
+        <!--                    </div> -->
+        <!--                    <template #suffix> -->
+        <!--                      <ChevronDownIcon /> -->
+        <!--                    </template> -->
+        <!--                  </t-button> -->
+        <!--        </t-dropdown> -->
       </div>
     </template>
   </t-head-menu>

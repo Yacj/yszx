@@ -33,7 +33,9 @@ let routes: RouteRecordRaw[] = [
     },
   },
 ]
-const routesContext: any = import.meta.glob('./modules/*.ts', { eager: true })
+export const routesContext: any = import.meta.glob('./modules/*.ts', { eager: true})
+export const asyncRoutes: RouteRecordRaw[] = Object.keys(routesContext).map(key => routesContext[key] || {})
+
 Object.keys(routesContext).forEach((v) => {
   routes.push(routesContext[v].default)
 })
@@ -50,12 +52,11 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   NProgress.start()
   const userStore = useUserStore()
   const token = userStore.token
   const guestToken = userStore.guestToken
-  // 这里要做个判断 如果用户没有登陆 没有token 则调用 userStore 的 guestLogin 方法 获取临时访客token
   if (!token && !guestToken) {
     useUserStore().guestLogin()
   }
@@ -64,6 +65,10 @@ router.beforeEach((to, from, next) => {
     next(`/login?redirect=${to.fullPath}`)
   }
   else {
+    const toRole: any = to.meta?.role
+    if (to.meta.requireAuth && !toRole.includes(userStore.role)) {
+      next('/403')
+    }
     next()
   }
 })

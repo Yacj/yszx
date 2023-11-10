@@ -20,16 +20,16 @@ const props = defineProps(
     separator: { type: String, default: ',' },
     decimal: { type: String, default: '.' },
     /**
-         * font color
-         */
+     * font color
+     */
     color: { type: String },
     /**
-         * Turn on digital animation
-         */
+     * Turn on digital animation
+     */
     useEasing: { type: Boolean, default: true },
     /**
-         * Digital animation
-         */
+     * Digital animation
+     */
     transition: { type: String, default: 'linear' },
   },
 )

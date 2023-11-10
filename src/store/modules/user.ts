@@ -3,6 +3,7 @@ import storageUtil from '@/utils/storage'
 import type { LoginDataInterface } from '@/api/modules/user'
 import { userService } from '@/api/modules/user'
 import { deepClone } from '@/utils/object'
+
 export const useUserStore = defineStore({
   id: 'User',
   state: () => ({
@@ -11,6 +12,7 @@ export const useUserStore = defineStore({
     userInfo: storageUtil.getItem('userInfo') || {},
     failure_times: storageUtil.getItem('failure_times') || 0,
     orgID: storageUtil.getItem('orgID') || '',
+    role: storageUtil.getItem('role') || [],
   }),
   getters: {
     isLogin(): boolean {
@@ -48,8 +50,14 @@ export const useUserStore = defineStore({
     async getUserInfo(token: string) {
       userService.getUserInfo({ token }).then((res) => {
         const data = deepClone(res.data)
+
         delete data.userToken
         delete data.orgID
+        delete data.role
+
+        this.role = res.data.role
+        storageUtil.setItem('role', res.data.role)
+
         this.userInfo = data
         storageUtil.setItem('userInfo', data)
 

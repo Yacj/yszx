@@ -38,7 +38,7 @@ function handleAddLog() {
     <CouseDetail v-if="ResType === 'Couse'" :rescode="ResCode" :restype="ResType" />
     <ExamDetail v-if="ResType === 'Exam'" :rescode="ResCode" :restype="ResType" />
     <BookDetail v-if="ResType === 'Book'" :rescode="ResCode" :restype="ResType" />
-    <FileDetail v-if="ResType === 'File' || ResType === 'Test' " :rescode="ResCode" :restype="ResType" />
+    <FileDetail v-if="ResType === 'File' || ResType === 'Test' || ResType === 'Image'" :rescode="ResCode" :restype="ResType" />
   </div>
 </template>
 

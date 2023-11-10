@@ -80,6 +80,11 @@ async function onSubmit({ validateResult, firstError }: SubmitContext) {
       MessagePlugin.success('登录成功')
       router.push({ path: redirect || '/home' })
     }
+    else {
+      if (err.toString().includes('验证码')) {
+        getPicCodeData()
+      }
+    }
     btnLoading.value = false
   }
   else {

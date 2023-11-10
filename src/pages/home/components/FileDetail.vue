@@ -8,7 +8,8 @@ import { resourceService } from '@/api/modules/resource'
 import baseUrl from '@/utils/url'
 import VideoPlayer from '@/components/VideoPlayer/VideoPlayer.vue'
 import UserAddCollect from '@/pages/home/components/UserAddCollect.vue'
-import collectService from "@/api/modules/collect";
+import collectService from '@/api/modules/collect'
+import { replaceUrlImage } from '@/utils'
 
 const props = defineProps<DetailFileProps>()
 const fileRef = ref<HTMLElement | null>(null)
@@ -156,7 +157,14 @@ function handleCollectConfirm(e: number) {
           class="wh-full"
         >
         <div v-if="getFileType(typeName) === 'img'" ref="fileRef" class="img">
-          <t-space direction="vertical" class="w-full">
+          <div v-if="props.restype === 'Image'">
+            <t-image-viewer :images="[replaceUrlImage(fileData.path)]">
+              <template #trigger="{ open }">
+                <t-image :src="replaceUrlImage(fileData.path)" fit="cover" class="cursor-pointer" @click="open" />
+              </template>
+            </t-image-viewer>
+          </div>
+          <t-space v-else direction="vertical" class="w-full">
             <t-image-viewer
               v-for="item in fileData.temRow"
               :key="item.id"
@@ -202,7 +210,7 @@ function handleCollectConfirm(e: number) {
         </div>
       </div>
     </t-card>
-    <div class="flex-1 recommend h-180 overflow-y-scroll relative">
+    <div class="flex-1 recommend h-180 overflow-y-scroll relative ">
       <t-card :bordered="false" header-bordered class="card-title">
         <template #title>
           <div class="title">

@@ -186,7 +186,7 @@ function handleCloseUserCollection(code: string) {
           </template>
           <Result v-if="collectionResList.length === 0" type="404" title="暂无数据" :height="150" />
           <t-list split size="large" class="user-res-list" :async-loading="asyncLoading" @load-more="handleLoadMoreClick">
-            <t-list-item v-for="item in collectionResList" :key="item.cid">
+            <t-list-item v-for="item in collectionResList" :key="item.cid" class="!cursor-pointer">
               <t-list-item-meta :title="item.name" :description="`收藏时间：${formatDay(item.createTime, 'YYYY-MM-DD HH:mm:ss')}`" @click="handleDetailTo(item.resCode, item.type, item.name, item.cateCode)">
                 <template #image>
                   <t-image :src="replaceUrlImage(item.logo)" class="!wh-full rounded" fit="cover" />
