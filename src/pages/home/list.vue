@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { MessagePlugin } from 'tdesign-vue-next'
 import type { LocationQueryValue } from 'vue-router'
 import { ChevronDownIcon, ChevronUpIcon } from 'tdesign-icons-vue-next'
 import { nextTick } from 'vue'
@@ -8,10 +7,6 @@ import { replaceUrlImage } from '@/utils'
 import { useUserStore } from '@/store/modules/user'
 import { categoryService } from '@/api/modules/category'
 import Result from '@/components/Result/Result.vue'
-import type { ResDetailType } from '@/api/modules/resource'
-import { resourceService } from '@/api/modules/resource'
-import { fileDownload } from '@/utils/file'
-import baseUrl from '@/utils/url'
 import UserAddCollect from '@/pages/home/components/UserAddCollect.vue'
 import collectService from '@/api/modules/collect'
 
@@ -46,6 +41,7 @@ const loadMoreShow = ref(false)
 const filterLoading = ref(false)
 const isOpenCollect = ref(false)
 const collectParams = ref({})
+
 watch(
   () => route.query,
   (value) => {
@@ -156,30 +152,6 @@ function getResByCateList() {
     }
   })
 }
-function handleDownload(ResCode: string, ResType: ResDetailType) {
-  resourceService.download({
-    ResCode,
-    ResType,
-  }).then((res) => {
-    fileDownload(baseUrl.file + res.data)
-    MessagePlugin.success('文件下载成功')
-  })
-}
-
-function handleCollect(ResCode: string, ResType: ResDetailType) {
-  if (token.value) {
-    collectParams.value = {
-      ResCode,
-      ResType,
-    }
-    isOpenCollect.value = true
-  }
-  else {
-    MessagePlugin.warning('请先登录')
-    router.push('/login')
-  }
-}
-
 function handleLoadMoreClick() {
   cateList.value.forEach(item => item.listOpenFlag = false)
   pagination.value.current += 1
@@ -279,19 +251,13 @@ function handleAddCollect(CollectID: number) {
       <!--          </div> -->
       <!--        </div> -->
       <!--      </t-card> -->
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <t-card v-for="item in list" :key="item.id" :bordered="false" class="list-card">
+      <div
+        class="grid grid-cols-1 lg:grid-cols-4 gap-6"
+      >
+        <t-card v-for="item in list" :key="item.id" :bordered="false" class="list-card" size="small">
           <template #cover>
-            <div @click="handleDetailTo(item.resCode, item.type, item.name)">
-              <div v-if="item.type === 'Book'" class="flex-center w-full mt-2">
-                <t-image
-                  :src="replaceUrlImage(item.logo)"
-                  class="max-w-45"
-                  fit="cover"
-                />
-              </div>
+            <div v-if="item.type !== 'Book'" @click="handleDetailTo(item.resCode, item.type, item.name)">
               <t-image
-                v-else
                 :src="replaceUrlImage(item.logo)"
                 class="h-[190px]"
                 fit="cover"
@@ -299,7 +265,8 @@ function handleAddCollect(CollectID: number) {
             </div>
           </template>
           <div
-            class="text-base h-11 cursor-pointer text-ellipsis overflow-hidden"
+            v-if="item.type !== 'Book'"
+            class="text-base h-11 cursor-pointer text-ellipsis overflow-hidden mt-1"
             @click="handleDetailTo(item.resCode, item.type, item.name)"
           >
             {{ item.name }}
@@ -341,6 +308,21 @@ function handleAddCollect(CollectID: number) {
               <!--              </div> -->
             </div>
           </template>
+          <div v-if="item.type === 'Book'" class="flex">
+            <t-image
+              :src="replaceUrlImage(item.logo)"
+              class="h-[190px] !rounded"
+              fit="cover"
+            />
+            <div class="ml-5 flex-1 relative">
+              <div class="name text-base font-bold">
+                {{ item.name }}
+              </div>
+              <div class="time absolute bottom-1">
+                发布时间：{{ formatDay(item.createTime) }}
+              </div>
+            </div>
+          </div>
         </t-card>
       </div>
       <div class="loading-more flex-center mt-8">

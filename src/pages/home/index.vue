@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { formatDate } from '@vueuse/shared'
+import { formatDay } from '../../utils/dateUtils'
 import { replaceUrlImage } from '@/utils'
 import { resourceService } from '@/api/modules/resource'
 import Result from '@/components/Result/Result.vue'
-import {formatDay} from "@/utils/dateUtils";
 
 const skeletonRowCol = computed(() => {
   return [
@@ -147,7 +146,7 @@ function handleDetailTo(resCode: string, type: string, resName: string, Code: st
             </h3>
           </div>
           <div class="hot-class-list flex mt-5">
-            <div v-if="shouldShowImages(item.title)" class="w-[285px]">
+            <div v-if="shouldShowImages(item.title)" class="w-[268px]">
               <img v-if="item.title === '热门案例'" src="../../assets/img/img-cover-1.png" alt="" class="rounded">
               <img v-if="item.title === '信息素养'" src="../../assets/img/img-cover.png" alt="" class="rounded">
             </div>
@@ -159,21 +158,25 @@ function handleDetailTo(resCode: string, type: string, resName: string, Code: st
               <ul
                 v-else class="grid gap-1  grid-cols-4 2xl:gap-6"
               >
-                <t-card v-for="data in item.row.slice(0, 8)" :key="data.cateCode" class="home-full-card" :bordered="false">
-                  <template #cover>
+                <t-card v-for="data in item.row.slice(0, 8)" :key="data.cateCode" class="home-full-card" :bordered="false" size="small">
+                  <template v-if="shouldShowImages(item.title)" #cover>
                     <div @click="handleDetailTo(data.resCode, data.type, data.name, data.cateCode)">
-                      <t-image v-if="shouldShowImages(item.title)" fit="cover" :src="replaceUrlImage(data.logo)" alt="" class="h-[152px]" />
-                      <div v-else class="flex-center w-full mt-2">
-                        <t-image
-                          :src="replaceUrlImage(data.logo)"
-                          class="max-w-45"
-                          fit="cover"
-                        />
-                      </div>
+                      <t-image fit="cover" :src="replaceUrlImage(data.logo)" alt="" class="h-[152px]" />
                     </div>
                   </template>
-                  <div class="desc text-base font-400 h-11 cursor-pointer text-ellipsis" @click="handleDetailTo(data.resCode, data.type, data.name, data.cateCode)">
+                  <div v-if="shouldShowImages(item.title)" class="desc text-base font-400 h-11 cursor-pointer text-ellipsis " @click="handleDetailTo(data.resCode, data.type, data.name, data.cateCode)">
                     {{ data.name }}
+                  </div>
+                  <div v-else class="flex">
+                    <t-image :src="replaceUrlImage(data.logo)" class="h-50" />
+                    <div class="ml-5 flex-1 relative">
+                      <div class="name text-base font-bold">
+                        {{ data.name }}
+                      </div>
+                      <div class="time absolute bottom-1">
+                        发布时间：{{ formatDay(data.createTime) }}
+                      </div>
+                    </div>
                   </div>
                 </t-card>
               </ul>
