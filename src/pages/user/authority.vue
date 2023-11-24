@@ -1,23 +1,18 @@
 <script setup lang="ts">
 import { PlusIcon, SearchIcon } from 'tdesign-icons-vue-next'
+import type { PageInfo } from 'tdesign-vue-next'
 import { formatDay } from '@/utils/dateUtils'
 import { powerService } from '@/api/modules/power'
 
-
+const router = useRouter()
 const listParams = reactive({
   Status: 1,
   IsPurchase: 1,
   IsAuthorized: true,
-  keyWord: '',
+  keyword: '',
 })
 const tableList = ref([])
 const columns = [
-  {
-    title: '机构编码',
-    align: 'left',
-    colKey: 'orgID',
-    width: 90,
-  },
   {
     title: '机构名称',
     align: 'center',
@@ -47,35 +42,26 @@ const columns = [
     title: '操作',
     align: 'center',
     colKey: 'action',
-    width: 200,
+    width: 150,
   },
 ]
+const pagination = ref({
+  defaultPageSize: 10,
+  total: 0,
+  defaultCurrent: 1,
+})
 onMounted(() => {
-  handleGetOrganList()
   handleGetAuthorityList()
 })
-const page = reactive({
-  current: 1,
-  pageSize: 10,
-  total: 0,
-})
-function handleGetOrganList() {
-  // powerService.get_organ_list({
-  //   pageInt: 1,
-  //   pageSize: 9999999,
-  //   Status: 0,
-  //   IsPurchase: 0,
-  // }).then((res) => {
-  //   console.log(res)
-  //   organOptions.value = res.data.row
-  // })
-}
-
 function handleGetAuthorityList() {
   const params = {
     ...listParams,
-    pageInt: page.current,
-    pageSize: page.pageSize,
+    pageInt: pagination.value.defaultCurrent,
+    pageSize: pagination.value.defaultPageSize,
+  }
+  // params keyword去掉空格
+  if (params.keyword) {
+    params.keyword = params.keyword.trim()
   }
   powerService.get_organ_list(params).then((res) => {
     const {
@@ -83,15 +69,32 @@ function handleGetAuthorityList() {
       total,
     } = res.data
     tableList.value = row
+    pagination.value.total = total
   })
+}
+
+function handleChangeStatus(row: any) {
+  const params = {
+    orgID: row.orgID,
+    Status: !row.status,
+  }
+  powerService.update_Status(params).then((res) => {
+    MessagePlugin.success('修改状态成功')
+    handleGetAuthorityList()
+  })
+}
+function handlePageChange(pageInfo: PageInfo) {
+  pagination.value.defaultPageSize = pageInfo.pageSize
+  pagination.value.defaultCurrent = pageInfo.current
+  handleGetAuthorityList()
 }
 </script>
 
 <template>
   <t-card title="授权管理" class="card-title" :bordered="false">
-    <div class="grid grid-cols-3 gap-4">
+    <div class="grid grid-cols-2 gap-2">
       <div class="flex-y-center">
-        授权状态：
+        使用状态：
         <t-select
           v-model="listParams.Status"
           :options="[
@@ -103,8 +106,8 @@ function handleGetAuthorityList() {
           @change="handleGetAuthorityList"
         />
       </div>
-      <div class="flex-center">
-        是否购买的用户：
+      <div class="flex-y-center">
+        是否可购买：
         <t-select
           v-model="listParams.IsPurchase"
           :options="[
@@ -115,23 +118,30 @@ function handleGetAuthorityList() {
           @change="handleGetAuthorityList"
         />
       </div>
-      <div class="flex-center">
-        名称搜索：
-        <t-input v-model="listParams.keyWord" placeholder="请输入机构名称进行搜索" class="!w-50">
-          <template #suffix-icon>
-            <SearchIcon />
-          </template>
-        </t-input>
-      </div>
     </div>
     <t-divider />
-    <t-button class="mb-3">
-      <template #icon>
-        <PlusIcon class="!text-2xl" />
-      </template>
-      新增机构
-    </t-button>
-    <t-table :columns="columns" :data="tableList" :stripe="true" row-key="orgID" :bordered="true">
+    <div class="mb-3 flex justify-between">
+      <t-button @click="router.push('/user/authority/add')">
+        <template #icon>
+          <PlusIcon class="!text-2xl" />
+        </template>
+        新增授权
+      </t-button>
+      <t-input v-model="listParams.keyword" placeholder="请输入机构名称进行搜索" class="!w-50">
+        <template #suffix-icon>
+          <SearchIcon class="!cursor-pointer" @click="handleGetAuthorityList" />
+        </template>
+      </t-input>
+    </div>
+    <t-table
+      :columns="columns"
+      :data="tableList"
+      :stripe="true"
+      row-key="orgID"
+      :bordered="true"
+      :pagination="pagination"
+      @page-change="handlePageChange"
+    >
       <template #startTime="{ row }">
         {{ formatDay(row.startTime) }}
       </template>
@@ -152,21 +162,26 @@ function handleGetAuthorityList() {
       </template>
       <template #action="{ row }">
         <div class="flex space-x-1">
-          <t-button variant="text" theme="primary" class="!color-[#0052d9]">
+          <t-button variant="text" theme="primary" class="!color-[#0052d9]" @click="router.push(`/user/authority/edit?orgID=${row.orgID}`)">
             编辑
           </t-button>
-          <t-button variant="text" :theme="row.status ? 'warning' : 'success'">
-            {{ row.status ? '禁用' : '启用' }}
-          </t-button>
-          <t-button variant="text">
-            导出资源
-          </t-button>
+          <t-popconfirm
+            :content="`确定${row.status ? '禁用' : '启用'}么`"
+            @confirm="handleChangeStatus(row)"
+          >
+            <t-button variant="text" :theme="row.status ? 'warning' : 'success'">
+              {{ row.status ? '禁用' : '启用' }}
+            </t-button>
+          </t-popconfirm>
+          <!--          <t-button variant="text"> -->
+          <!--            导出资源 -->
+          <!--          </t-button> -->
         </div>
       </template>
     </t-table>
   </t-card>
 </template>
 
-<style scoped>
+<style>
 
 </style>

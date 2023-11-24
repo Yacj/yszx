@@ -60,7 +60,7 @@ export default {
       meta: {
         title: '我的收藏',
         needLogin: true,
-        icon: 'heroicons-outline:collection'
+        icon: 'heroicons-outline:collection',
       },
       children: [
         {
@@ -100,7 +100,7 @@ export default {
       meta: {
         title: '授权管理',
         requireAuth: true,
-        role: ['sadmin'],
+        role: ['admin'],
         icon: 'mdi:account-cog',
       },
       children: [
@@ -108,6 +108,22 @@ export default {
           path: '',
           name: 'UserAuthorityIndex',
           component: () => import('@/pages/user/authority.vue'),
+        },
+        {
+          path: 'add',
+          name: 'UserAuthorityAdd',
+          component: () => import('@/pages/user/updateAuthority.vue'),
+          meta: {
+            title: '添加授权',
+          },
+        },
+        {
+          path: 'edit',
+          name: 'UserAuthorityEdit',
+          component: () => import('@/pages/user/updateAuthority.vue'),
+          meta: {
+            title: '修改授权',
+          },
         },
       ],
     },

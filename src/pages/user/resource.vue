@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { statService } from '@/api/modules/stat'
-import CountTo from '@/components/CountTo/CountTo.vue'
 
 const resourceData = ref({})
 
@@ -24,7 +23,9 @@ function getResourceData() {
           class="text-center"
           :class="index > 0 ? 'divide-x' : ''"
         >
-          <div class="text-sm"> {{ item.name }}</div>
+          <div class="text-sm">
+            {{ item.name }}
+          </div>
           <div class="mt-3">
             <h2 class="text-2xl">
               <CountTo :start-val="0" :end-val="item.resCount" :duration="3000" />

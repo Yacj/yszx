@@ -256,6 +256,13 @@ function handleAddCollect(CollectID: number) {
       >
         <t-card v-for="item in list" :key="item.id" :bordered="false" class="list-card" size="small">
           <template #cover>
+            <div v-if="item.type === 'Book'" class="flex-center w-full mt-2" @click="handleDetailTo(item.resCode, item.type, item.name)">
+              <t-image
+                :src="replaceUrlImage(item.logo)"
+                class="max-w-45"
+                fit="cover"
+              />
+            </div>
             <div v-if="item.type !== 'Book'" @click="handleDetailTo(item.resCode, item.type, item.name)">
               <t-image
                 :src="replaceUrlImage(item.logo)"
@@ -265,7 +272,6 @@ function handleAddCollect(CollectID: number) {
             </div>
           </template>
           <div
-            v-if="item.type !== 'Book'"
             class="text-base h-11 cursor-pointer text-ellipsis overflow-hidden mt-1"
             @click="handleDetailTo(item.resCode, item.type, item.name)"
           >
@@ -308,21 +314,21 @@ function handleAddCollect(CollectID: number) {
               <!--              </div> -->
             </div>
           </template>
-          <div v-if="item.type === 'Book'" class="flex">
-            <t-image
-              :src="replaceUrlImage(item.logo)"
-              class="h-[190px] !rounded"
-              fit="cover"
-            />
-            <div class="ml-5 flex-1 relative">
-              <div class="name text-base font-bold">
-                {{ item.name }}
-              </div>
-              <div class="time absolute bottom-1">
-                发布时间：{{ formatDay(item.createTime) }}
-              </div>
-            </div>
-          </div>
+<!--          <div v-if="item.type === 'Book'" class="flex"   @click="handleDetailTo(item.resCode, item.type, item.name)">-->
+<!--            <t-image-->
+<!--              :src="replaceUrlImage(item.logo)"-->
+<!--              class="h-[190px] !rounded !w-[140px]"-->
+<!--              fit="cover"-->
+<!--            />-->
+<!--            <div class="ml-5 flex-1 relative">-->
+<!--              <div class="name text-base font-bold">-->
+<!--                {{ item.name }}-->
+<!--              </div>-->
+<!--              <div class="time absolute bottom-1">-->
+<!--                发布时间：{{ formatDay(item.createTime) }}-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
         </t-card>
       </div>
       <div class="loading-more flex-center mt-8">

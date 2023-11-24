@@ -82,7 +82,7 @@ function handleMenuClick(path: string) {
               </div>
             </div>
             <t-menu v-model:value="userMenuId">
-              <t-menu-item v-for="item in userMenuList" :key="item.id" :value="item.id" class="!my-2" @click="handleMenuClick(item.path, item.id)">
+              <t-menu-item v-for="item in userMenuList" :key="item.id" :value="item.id" class="!my-2" @click="handleMenuClick(item.path)">
                 <template #icon>
                   <SvgIcon :name="item.icon" type="iconify" :size="20" class="mr-3" />
                 </template>

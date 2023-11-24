@@ -52,13 +52,7 @@ export default function createVitePlugins(viteEnv: object, isBuild = false) {
     }),
   ]
   if (isBuild) {
-    vitePlugins.push(
-      visualizer({
-        open: false,
-        gzipSize: true,
-        brotliSize: true,
-      }) as PluginOption,
-    )
+
   }
   return vitePlugins
 }
