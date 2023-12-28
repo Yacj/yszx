@@ -63,7 +63,6 @@ declare module 'vue' {
     TSelectInput: typeof import('tdesign-vue-next')['SelectInput']
     TSkeleton: typeof import('tdesign-vue-next')['Skeleton']
     TSpace: typeof import('tdesign-vue-next')['Space']
-    TStatistic: typeof import('tdesign-vue-next')['Statistic']
     TStickyItem: typeof import('tdesign-vue-next')['StickyItem']
     TStickyTool: typeof import('tdesign-vue-next')['StickyTool']
     TSubmenu: typeof import('tdesign-vue-next')['Submenu']

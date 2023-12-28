@@ -73,11 +73,11 @@ function handleMenuClick(path: string) {
           <t-card :bordered="false" class="!mt-5">
             <div class="user-menu-header mt-3 flex-center flex-col">
               <t-avatar v-if="userInfo.realName" size="100px">
-                {{ userInfo.realName[0] }}
+                {{ userInfo.realName[0] || userInfo.nickName[0] }}
               </t-avatar>
               <div class="user-menu-header-info mt-2">
                 <div class="text-xl">
-                  {{ userInfo.realName || '' }}
+                  {{ userInfo.realName || userInfo.nickName }}
                 </div>
               </div>
             </div>

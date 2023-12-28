@@ -170,3 +170,21 @@ export function replaceUrlImage(url: string) {
     return `${baseUrl?.file}${url}`
   }
 }
+
+/**
+ * 解析包含特定格式的字符串，并返回相应的对象。
+ *
+ * @param {string} input - 包含特定格式的字符串，例如: "{\"message\":\"Ok\",...}"。
+ * @returns {object} - 解析后的对象。
+ */
+export function parseStringToObject(input: string): object {
+  try {
+    // 尝试将输入字符串解析为 JSON 对象
+    const result = JSON.parse(input);
+    return result;
+  } catch (error) {
+    // 处理解析失败的情况
+    console.error('解析失败:', error);
+    return {}; // 或者返回其他默认值
+  }
+}

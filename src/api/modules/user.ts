@@ -30,4 +30,26 @@ export const userService = {
   guest: () => {
     return request.post('/api/User/login/guest')
   },
+  is_exist: (params: {
+    tel: string
+  }) => {
+    return request.get('/api/User/register/is_exist', params)
+  },
+  set_code: (params: {
+    tel: string
+  }) => {
+    return request.get('/api/User/register/set_code', params)
+  },
+  mobile: (params: {
+    mobile: string
+    code: string
+    verify_hash: string
+    nick_name: string
+    password: string
+    repass: string
+    isAjax: true
+    return_url: string
+  }) => {
+    return request.post('/api/User/register/mobile', params)
+  },
 }

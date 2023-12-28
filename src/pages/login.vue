@@ -10,8 +10,8 @@ import FloatButton from '@/components/FloatButton/FloatButton.vue'
 import Captcha from '@/components/Captcha/Captcha.vue'
 import type { LoginDataInterface } from '@/api/modules/user'
 import { userService } from '@/api/modules/user'
+import Register from '@/pages/register.vue'
 
-const title = import.meta.env.VITE_APP_TITLE
 const userStore = useUserStore()
 const btnLoading = ref(false)
 const formData: UnwrapNestedRefs<LoginDataInterface> = reactive({
@@ -47,7 +47,7 @@ const selectData = ref()
 const redirect = getQueryObject().redirect
 const selectLoading = ref(false)
 const router = useRouter()
-
+const formType = ref('login')
 onMounted(() => {
   getAgencyList()
   getPicCodeData()
@@ -95,6 +95,19 @@ async function onSubmit({ validateResult, firstError }: SubmitContext) {
 function onReset() {
   MessagePlugin.success('重置成功')
 }
+
+function handleChangeFormType() {
+  formType.value = formType.value === 'login' ? 'register' : 'login'
+  if (formType.value === 'login') {
+    getPicCodeData()
+  }
+}
+
+function handleRegister(val: boolean) {
+  if (val) {
+    handleChangeFormType()
+  }
+}
 </script>
 
 <template>
@@ -107,11 +120,12 @@ function onReset() {
     <div class="login-container flex-center box-border h-[calc(100vh_-_123px)] max-w-[1300px] min-h-[650px] mx-auto my-0">
       <div class="login-container-left flex-1 h-full max-h-[700PX] relative" />
       <t-space class="login-container-right">
-        <t-card :bordered="false">
+        <t-card :bordered="false" class="relative">
           <div class="title text-2xl font-medium tracking-[.003em] leading-8">
-            用户登录
+            用户{{ formType === 'login' ? '登录' : '注册' }}
           </div>
           <t-form
+            v-if="formType === 'login'"
             ref="form"
             class="!mt-8"
             :data="formData"
@@ -189,6 +203,17 @@ function onReset() {
               </t-button>
             </t-form-item>
           </t-form>
+          <Register v-else @register="handleRegister" />
+          <template #footer>
+            <div class="absolute bottom-0 flex-center w-full mb-3">
+              <div class="mr-13">
+                {{ formType === 'login' ? '没有账号？' : '已有账号？' }}
+                <t-link theme="danger" underline @click="handleChangeFormType">
+                  去{{ formType === 'login' ? '注册' : '登录' }}
+                </t-link>
+              </div>
+            </div>
+          </template>
         </t-card>
       </t-space>
     </div>

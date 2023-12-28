@@ -221,10 +221,10 @@ function getMenuId() {
           <t-button class="header-user-btn" theme="default" variant="text" size="large">
             <div class="header-user-account flex">
               <t-avatar size="marge">
-                {{ userInfo.realName[0] }}
+                {{ userInfo.realName[0] || userInfo.nickName[0] }}
               </t-avatar>
               <div class="relative top-[5px] ml-2">
-                {{ userInfo.realName }}
+                {{ userInfo.realName || userInfo.nickName }}
               </div>
             </div>
           </t-button>
